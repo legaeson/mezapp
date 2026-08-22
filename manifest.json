@@ -1,0 +1,60 @@
+{
+  "name": "LezgiMez — изучение лезгинского языка",
+  "short_name": "LezgiMez",
+  "description": "Словарь, алфавит, грамматика, интервальное повторение и offline-режим для изучения лезгинского языка.",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#059669",
+  "orientation": "portrait-primary",
+  "lang": "ru",
+  "categories": ["education", "books", "reference"],
+  "shortcuts": [
+    {
+      "name": "Словарь",
+      "short_name": "Словарь",
+      "description": "Открыть словарь LezgiMez",
+      "url": "./index.html#vocabulary",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Практика",
+      "short_name": "Практика",
+      "description": "Начать тренировку слов",
+      "url": "./index.html#practice",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Алфавит",
+      "short_name": "Алфавит",
+      "description": "Открыть алфавит и произношение",
+      "url": "./index.html#alphabet",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "LezgiMez"
+    }
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

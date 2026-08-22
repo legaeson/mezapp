@@ -1,0 +1,72 @@
+# 1. Полностью отключаем возможность просматривать содержимое любых папок (Directory Listing)
+Options -Indexes
+
+# 2. Запрещаем доступ к скрытым файлам (например, к самому .htaccess, .git и т.д.)
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Запрещаем прямой доступ к файлам с серверными секретами
+<Files "secrets.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# 3. Запрещаем прямой доступ к текстовым файлам, документации и логам
+<FilesMatch "\.(txt|md|log|bat|sh|sql)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Разрешаем доступ к robots.txt для поисковиков
+<Files "robots.txt">
+    Order allow,deny
+    Allow from all
+</Files>
+
+# 4. Заголовки для корректной работы Telegram Mini App
+<IfModule mod_headers.c>
+    # Разрешаем встраивание в iframe Telegram
+    Header always set X-Frame-Options "ALLOWALL"
+    Header always unset X-Frame-Options
+
+    # MIME для манифеста PWA
+    AddType application/manifest+json .webmanifest
+    AddType application/json .json
+
+    # Разрешаем Service Worker на корневом пути
+    <FilesMatch "sw\.js$">
+        Header set Service-Worker-Allowed "/"
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+
+    # Кэширование статических файлов
+    <FilesMatch "\.(js|css|woff2|png|svg|ico)$">
+        Header set Cache-Control "public, max-age=604800, stale-while-revalidate=86400"
+    </FilesMatch>
+
+    # JSON данные — без кэша
+    <FilesMatch "\.(json)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+
+    # CORS для аудиофайлов
+    <FilesMatch "\.(mp3|wav|ogg)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+
+# 5. MIME-типы
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType text/css .css
+    AddType audio/mpeg .mp3
+    AddType image/svg+xml .svg
+    AddType application/manifest+json .webmanifest
+</IfModule>
+
+# 6. Gzip сжатие
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>

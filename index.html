@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' data: blob:; font-src 'self'; connect-src 'self';">
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#059669">
+    <meta name="description"
+        content="LezgiMez — бесплатное приложение для изучения лезгинского языка. Словарь 2900+ слов, интервальное повторение (SRS), грамматика, тесты и карточки. Офлайн-режим.">
+    <title>LezgiMez — Изучение лезгинского языка</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+
+    <!-- Open Graph / Meta -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LezgiMez — Изучение лезгинского языка">
+    <meta property="og:description" content="Интерактивный помощник для изучения лезгинского языка.">
+    <meta property="og:image" content="./icons/icon.svg">
+
+    <link rel="stylesheet" href="./output.css">
+    <link rel="stylesheet" href="./fa/all.min.css">
+    <style>
+        /* ========== БЛОКИРОВКА ВЫДЕЛЕНИЯ ТЕКСТА ========== */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea, [contenteditable="true"] {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        /* ========== АНИМАЦИИ ========== */
+
+        /* Fade + Slide Up — для карточек */
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Fade In */
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Scale In */
+        @keyframes scale-in {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Slide In From Bottom — для экранов */
+        @keyframes slide-in-from-bottom {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Slide In From Top */
+        @keyframes slide-in-from-top {
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Slide Up — для модалок */
+        @keyframes slide-up {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Shake — для ошибок */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-6px);
+            }
+
+            40% {
+                transform: translateX(6px);
+            }
+
+            60% {
+                transform: translateX(-4px);
+            }
+
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
+        /* Pulse — для лоадера (уже есть, но дублировать не будем) */
+
+        /* Utility классы для прочих анимаций */
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out both;
+        }
+
+        .animate-scale-in {
+            animation: scale-in 0.25s ease-out both;
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-out;
+        }
+
+        /* Входная анимация — только при первом показе */
+        .app-screen.entrance {
+            animation: slide-in-from-bottom 0.25s ease-out both;
+        }
+
+        .app-screen.entrance.fast {
+            animation-duration: 0.18s;
+        }
+
+        /* Анимация букв/слов — однократно, через staggerCards() */
+
+        /* Анимация для модальных окон */
+        #word-modal:not(.hidden),
+        #practice-modal:not(.hidden) {
+            animation: fade-in 0.2s ease-out both;
+        }
+
+        #word-modal:not(.hidden) .modal,
+        #practice-modal:not(.hidden)>div {
+            animation: slide-up 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+        }
+
+        /* Главный контейнер с мягким серо-голубым фоном */
+        main {
+            background-color: #f8fafc;
+            /* Светлая тема по умолчанию */
+        }
+
+        /* Темная тема для main */
+        [data-theme="dark"] main {
+            background-color: var(--bg-body) !important;
+        }
+
+        /* Верхняя и нижняя панели — чисто белые в светлой теме */
+        header,
+        .bottom-nav {
+            background-color: #ffffff !important;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Темная тема для панелей */
+        .dark header,
+        .dark .bottom-nav {
+            background-color: #1a1a1a !important;
+            border-color: #333 !important;
+        }
+
+        /* Анимация нижней навигации — активный индикатор */
+        .bottom-nav .nav-tab {
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        /* Анимация для dropdown панелей */
+        .dropdown-panel:not(.hidden) {
+            animation: scale-in 0.15s ease-out both;
+            transform-origin: top right;
+        }
+
+        #practice-category-panel:not(.hidden) {
+            transform-origin: bottom left;
+        }
+
+        /* Анимация прогресс-бара */
+        .progress-bar-fill {
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100dvh;
+            overflow: hidden;
+            overscroll-behavior-y: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            touch-action: pan-x pan-y;
+        }
+
+
+
+        /* Запрещаем выделение кнопок и иконок внутри выделяемых областей */
+        button, 
+        .nav-tab, 
+        .dropdown-trigger, 
+        .dropdown-option, 
+        .letter-card, 
+        .flip-card,
+        i[class^="fa-"] {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -ms-user-select: none !important;
+        }
+
+        /* ========== СТИЛИ ПОЛОСЫ ПРОКРУТКИ ========== */
+        /* Для стандартных современных браузеров (Firefox) */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(4, 120, 87, 0.1) transparent;
+        }
+
+        /* Для Webkit-браузеров (Chrome, Safari, Edge) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(4, 120, 87, 0.1);
+            border-radius: 9999px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(4, 120, 87, 0.55);
+        }
+
+        /* Настройки для темной темы */
+        [data-theme="dark"] * {
+            scrollbar-color: rgba(16, 185, 129, 0.15) transparent;
+        }
+
+        [data-theme="dark"] ::-webkit-scrollbar-thumb {
+            background-color: rgba(16, 185, 129, 0.15);
+        }
+
+        [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(16, 185, 129, 0.45);
+        }
+
+        /* Стили для лоадера */
+        #app-loader {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s;
+            pointer-events: all;
+        }
+
+        body.loading {
+            overflow: hidden;
+        }
+
+        .custom-dropdown .scroll-area {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .custom-dropdown .scroll-area::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        #app-loader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            /* FIX: Safari keeps intercepting touches without this */
+        }
+
+        .loader-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #059669;
+            letter-spacing: -0.05em;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(0.95);
+                opacity: 0.8;
+            }
+        }
+
+        .loader-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #059669;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        main.max-w-3xl {
+            flex: 1;
+            width: 100%;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 0;
+        }
+
+
+        /* Анимация экранов теперь задаётся выше */
+
+        .grammar-content .grammar-p {
+            margin: 1rem 0;
+            color: #334155;
+            line-height: 1.7;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .grammar-content .grammar-h3 {
+            margin: 2.25rem 0 1rem;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grammar-content .grammar-lead,
+        .grammar-content .grammar-note,
+        .grammar-content .grammar-summary,
+        .grammar-content .grammar-see {
+            margin: 1.5rem 0;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025);
+        }
+
+        .grammar-content .grammar-note {
+            background-color: #fffbeb;
+            padding: 1.25rem 1.5rem;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .grammar-wrong {
+            color: #e11d48;
+        }
+
+        .grammar-right {
+            color: #059669;
+        }
+
+        .grammar-wrong-card {
+            background-color: #fff1f2;
+            border: 1px solid #ffe4e6;
+            color: #881337;
+        }
+
+        .grammar-right-card {
+            background-color: #ecfdf5;
+            border: 1px solid #d1fae5;
+            color: #064e3b;
+        }
+
+        .grammar-content .grammar-lead .grammar-strong:first-child,
+        .grammar-content .grammar-note .grammar-strong:first-child,
+        .grammar-content .grammar-summary .grammar-strong:first-child {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 1.05rem;
+            letter-spacing: -0.01em;
+            color: inherit;
+            font-weight: 800;
+        }
+
+        .grammar-content .grammar-lead,
+        .grammar-content .grammar-summary {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #dcfce7;
+        }
+
+        .grammar-content .grammar-see {
+            background-color: #f8fafc;
+            color: #475569;
+            border: 1.5px dashed #cbd5e1;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            box-shadow: none;
+            font-size: 0.9rem;
+        }
+
+        .grammar-content .grammar-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .grammar-content .grammar-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .grammar-content .grammar-table th,
+        .grammar-content .grammar-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .grammar-content .grammar-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .grammar-content .grammar-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .grammar-content .grammar-table tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .grammar-content .grammar-ul,
+        .grammar-content .grammar-ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+            color: #334155;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .grammar-content .grammar-ul {
+            list-style-type: disc !important;
+        }
+
+        .grammar-content .grammar-ol {
+            list-style-type: decimal !important;
+        }
+
+        .grammar-content .grammar-ul li,
+        .grammar-content .grammar-ol li {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        .grammar-content .grammar-examples li {
+            background: transparent;
+            border: none;
+            color: #334155;
+        }
+
+        .grammar-content .grammar-sublist {
+            margin: 0.5rem 0 0 0;
+            padding-left: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            list-style-type: circle !important;
+        }
+
+        .grammar-content .grammar-sublist li {
+            background: transparent;
+            border: none;
+            color: #475569;
+            font-size: 0.89rem;
+            padding: 0;
+        }
+
+        .grammar-content .grammar-strong {
+            font-weight: 800;
+            color: #064e3b;
+        }
+
+        .grammar-content .grammar-em {
+            font-style: italic;
+            color: #065f46;
+        }
+
+        .grammar-content .grammar-code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.85em;
+            color: #047857;
+            background: #ecfeff;
+            border: 1px solid #bae6fd;
+            border-radius: 0.4rem;
+            padding: 0.05rem 0.28rem;
+        }
+
+        /* =============== ТЁМНАЯ ТЕМА (серая) =============== */
+        [data-theme="dark"] {
+            --bg-body: #1e1e1e;
+            --bg-surface: #2a2a2a;
+            --bg-surface-alt: #323232;
+            --bg-emerald-subtle: #1a2e24;
+            --bg-amber-subtle: #2e261a;
+            --bg-rose-subtle: #2e1a1a;
+            --bg-blue-subtle: #1a1e2e;
+            --text-primary: #e8e8e8;
+            --text-secondary: #a0a0a0;
+            --text-muted: #6b6b6b;
+            --border-color: #3a3a3a;
+            --border-color-strong: #4a4a4a;
+        }
+
+        [data-theme="dark"] body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] #app-loader {
+            background: var(--bg-body);
+        }
+
+        [data-theme="dark"] .app-header {
+            background-color: var(--bg-surface) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .bottom-nav {
+            background: rgba(42, 42, 42, 0.95) !important;
+            border-color: var(--border-color) !important;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (min-width: 768px) {
+            [data-theme="dark"] .bottom-nav {
+                background: var(--bg-body) !important;
+                box-shadow: none !important;
+            }
+        }
+
+        [data-theme="dark"] .bg-white,
+        [data-theme="dark"] [class*="bg-white"] {
+            background-color: var(--bg-surface) !important;
+        }
+
+        [data-theme="dark"] .bg-slate-50,
+        [data-theme="dark"] [class*="bg-slate-50"] {
+            background-color: var(--bg-surface-alt) !important;
+        }
+
+        [data-theme="dark"] .bg-slate-100,
+        [data-theme="dark"] [class*="bg-slate-100"] {
+            background-color: #383838 !important;
+        }
+
+        [data-theme="dark"] .bg-emerald-50,
+        [data-theme="dark"] .\!bg-emerald-50 {
+            background-color: var(--bg-emerald-subtle) !important;
+        }
+
+        [data-theme="dark"] .bg-amber-50,
+        [data-theme="dark"] .\!bg-amber-50 {
+            background-color: var(--bg-amber-subtle) !important;
+        }
+
+        [data-theme="dark"] .bg-rose-50,
+        [data-theme="dark"] .\!bg-rose-50,
+        [data-theme="dark"] .bg-red-50,
+        [data-theme="dark"] .\!bg-red-50 {
+            background-color: var(--bg-rose-subtle) !important;
+        }
+
+        [data-theme="dark"] .bg-blue-50,
+        [data-theme="dark"] .\!bg-blue-50 {
+            background-color: var(--bg-blue-subtle) !important;
+        }
+
+        [data-theme="dark"] .text-slate-900,
+        [data-theme="dark"] .text-slate-800,
+        [data-theme="dark"] .text-slate-700 {
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="dark"] .text-slate-600 {
+            color: #c8c8c8 !important;
+        }
+
+        [data-theme="dark"] .text-slate-500,
+        [data-theme="dark"] .text-slate-400 {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .text-slate-300 {
+            color: var(--text-muted) !important;
+        }
+
+        [data-theme="dark"] .text-emerald-950,
+        [data-theme="dark"] .text-emerald-900 {
+            color: #d4edda !important;
+        }
+
+        [data-theme="dark"] .text-emerald-800 {
+            color: #a8d8b8 !important;
+        }
+
+        [data-theme="dark"] .text-emerald-700 {
+            color: #6ecc8c !important;
+        }
+
+        [data-theme="dark"] .border-slate-50,
+        [data-theme="dark"] .border-slate-100,
+        [data-theme="dark"] [class*="border-slate-100"] {
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .border-slate-200,
+        [data-theme="dark"] [class*="border-slate-200"] {
+            border-color: var(--border-color-strong) !important;
+        }
+
+        [data-theme="dark"] .border-emerald-100 {
+            border-color: #1a4a2a !important;
+        }
+
+        [data-theme="dark"] .border-emerald-200 {
+            border-color: #1a5a2a !important;
+        }
+
+        [data-theme="dark"] .border-emerald-500,
+        [data-theme="dark"] [class*="border-emerald-500"] {
+            border-color: #065f46 !important;
+        }
+
+        [data-theme="dark"] .border-red-300,
+        [data-theme="dark"] [class*="border-red-300"] {
+            border-color: #991b1b !important;
+        }
+
+        [data-theme="dark"] .border-rose-100,
+        [data-theme="dark"] .border-red-100 {
+            border-color: #4a1a1a !important;
+        }
+
+        [data-theme="dark"] .h-px {
+            background-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .nav-tab.text-slate-500,
+        [data-theme="dark"] .nav-tab.text-slate-400 {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .modal {
+            background-color: var(--bg-body) !important;
+        }
+
+        [data-theme="dark"] #word-modal {
+            background: rgba(0, 0, 0, 0.8) !important;
+        }
+
+        [data-theme="dark"] #practice-modal {
+            background: rgba(0, 0, 0, 0.85) !important;
+        }
+
+        [data-theme="dark"] #practice-modal>div {
+            background-color: var(--bg-body) !important;
+        }
+
+        [data-theme="dark"] .letter-card {
+            background-color: var(--bg-surface) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .letter-card:active {
+            border-color: #059669 !important;
+            background-color: rgba(5, 150, 105, 0.08) !important;
+        }
+
+        [data-theme="dark"] .word-card {
+            background-color: var(--bg-surface) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .dropdown-panel {
+            background-color: var(--bg-surface) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .dropdown-option:hover {
+            background-color: #383838 !important;
+        }
+
+        [data-theme="dark"] .grammar-wrong {
+            color: #fb7185 !important;
+        }
+
+        [data-theme="dark"] .grammar-right {
+            color: #34d399 !important;
+        }
+
+        [data-theme="dark"] .grammar-wrong-card {
+            background-color: rgba(136, 19, 55, 0.15) !important;
+            border-color: rgba(136, 19, 55, 0.3) !important;
+            color: #fecdd3 !important;
+        }
+
+        [data-theme="dark"] .grammar-right-card {
+            background-color: rgba(6, 78, 59, 0.15) !important;
+            border-color: rgba(6, 78, 59, 0.3) !important;
+            color: #a7f3d0 !important;
+        }
+
+        [data-theme="dark"] .dropdown-option.active,
+        [data-theme="dark"] .dropdown-option.active .opt-name {
+            background-color: var(--bg-emerald-subtle) !important;
+            color: #6ecc8c !important;
+        }
+
+        [data-theme="dark"] input,
+        [data-theme="dark"] textarea {
+            background-color: #333 !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="dark"] input::placeholder,
+        [data-theme="dark"] textarea::placeholder {
+            color: var(--text-muted) !important;
+        }
+
+        [data-theme="dark"] .grammar-content p,
+        [data-theme="dark"] .grammar-content ul,
+        [data-theme="dark"] .grammar-content ol,
+        [data-theme="dark"] .grammar-content li,
+        [data-theme="dark"] .grammar-content .grammar-p {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-table th {
+            background-color: #333 !important;
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-table td,
+        [data-theme="dark"] .grammar-content .grammar-table th {
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-table-wrapper {
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-table tbody tr:hover {
+            background-color: #383838 !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-lead,
+        [data-theme="dark"] .grammar-content .grammar-summary {
+            background-color: var(--bg-emerald-subtle) !important;
+            color: #a8d8b8 !important;
+            border-color: #1a4a2a !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-note {
+            background-color: var(--bg-amber-subtle) !important;
+            color: #d4b878 !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-see {
+            background-color: #2a2a2a !important;
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .grammar-content h3 {
+            color: #6ecc8c !important;
+        }
+
+        [data-theme="dark"] .grammar-content strong {
+            color: #d4edda !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-code {
+            color: #6ecc8c !important;
+            background: #1a3a2a !important;
+            border-color: #1a4a2a !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-ul,
+        [data-theme="dark"] .grammar-content .grammar-ol {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-examples li {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-sublist li {
+            color: var(--text-muted) !important;
+        }
+
+        [data-theme="dark"] .grammar-content .grammar-em {
+            color: #6ecc8c !important;
+        }
+
+        [data-theme="dark"] .flip-card-inner {
+            background-color: var(--bg-surface) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .flip-card-back {
+            background-color: var(--bg-emerald-subtle) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .bg-emerald-50\/40,
+        [data-theme="dark"] .bg-emerald-50\/50 {
+            background-color: rgba(26, 46, 36, 0.7) !important;
+        }
+
+        [data-theme="dark"] .bg-emerald-100 {
+            background-color: #1a3a2a !important;
+        }
+
+        [data-theme="dark"] .text-emerald-100 {
+            color: #2a5a3a !important;
+        }
+
+        [data-theme="dark"] .text-emerald-600 {
+            color: #4ade80 !important;
+        }
+
+        [data-theme="dark"] .text-red-600 {
+            color: #f87171 !important;
+        }
+
+        [data-theme="dark"] #notif-banner {
+            background-color: var(--bg-surface) !important;
+        }
+
+        [data-theme="dark"] ::selection {
+            background: #4a7a5a !important;
+            color: #fff !important;
+        }
+
+        [data-theme="dark"] .bg-slate-800 {
+            background-color: #1a1a1a !important;
+        }
+
+        [data-theme="dark"] .border-red-100 {
+            border-color: #4a2020 !important;
+        }
+
+        [data-theme="dark"] .border-amber-100 {
+            border-color: #4a4020 !important;
+        }
+
+        [data-theme="dark"] .shadow-sm,
+        [data-theme="dark"] .shadow-md,
+        [data-theme="dark"] .shadow-lg,
+        [data-theme="dark"] .shadow-xl,
+        [data-theme="dark"] .shadow-2xl {
+            box-shadow: none !important;
+        }
+
+        [data-theme="dark"] .bottom-nav {
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.4) !important;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 h-[100dvh] overflow-hidden flex flex-col md:flex-row antialiased loading" ontouchstart="">
+
+    <div id="app-loader" role="status" aria-live="polite" aria-label="Загрузка приложения LezgiMez">
+        <div class="loader-logo">LezgiMez</div>
+        <div class="loader-spinner" aria-hidden="true"></div>
+        <div id="loader-status" class="mt-6 text-sm font-semibold text-slate-600">Готовим приложение...</div>
+        <div class="mt-4 w-64 h-2 bg-slate-100 rounded-full overflow-hidden" aria-hidden="true">
+            <div id="loader-progress-fill" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width:0%"></div>
+        </div>
+        <div id="loader-percent" class="mt-2 text-xs font-bold text-emerald-600">0%</div>
+        <div class="mt-6 w-72 max-w-[82vw] text-left text-xs text-slate-500 space-y-2">
+            <div id="loader-step-words"><i class="fa-regular fa-circle mr-3 text-slate-300"></i>Словарь</div>
+            <div id="loader-step-grammar"><i class="fa-regular fa-circle mr-3 text-slate-300"></i>Грамматика</div>
+            <div id="loader-step-audio"><i class="fa-regular fa-circle mr-3 text-slate-300"></i>Озвучка алфавита</div>
+        </div>
+        <button id="loader-skip-btn" type="button" class="mt-6 text-xs font-bold text-slate-400 hover:text-emerald-600 transition-colors">Открыть сразу</button>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <aside class="hidden md:flex flex-col w-56 flex-shrink-0 relative bg-white border-r border-slate-100 z-[60]">
+        <div class="h-14 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
+            <span class="font-bold text-2xl tracking-tighter">LezgiMez <span class="text-emerald-500">β</span></span>
+        </div>
+        <div class="flex-1 overflow-y-auto py-6 flex flex-col gap-2 px-4">
+            <button data-tab="alphabet" class="nav-tab nav-tab-desktop flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-slate-50 transition-colors">
+                <i class="fa-solid fa-font text-xl w-6 text-center"></i>
+                <span class="font-medium">Алфавит</span>
+            </button>
+            <button data-tab="vocabulary" class="nav-tab nav-tab-desktop flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-slate-50 transition-colors">
+                <i class="fa-solid fa-book text-xl w-6 text-center"></i>
+                <span class="font-medium">Словарь</span>
+            </button>
+
+            <button data-tab="practice" class="nav-tab nav-tab-desktop flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-slate-50 transition-colors">
+                <i class="fa-solid fa-graduation-cap text-xl w-6 text-center"></i>
+                <span class="font-medium">Практика</span>
+            </button>
+            <button data-tab="more" class="nav-tab nav-tab-desktop flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-slate-50 transition-colors">
+                <i class="fa-solid fa-ellipsis-h text-xl w-6 text-center"></i>
+                <span class="font-medium">Ещё</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Top Header -->
+    <header class="app-header bg-white border-b border-slate-100 sticky top-0 z-50 md:hidden" style="padding-top: var(--tg-safe-area-inset-top, 0px);">
+        <div class="max-w-3xl mx-auto px-5 h-14 flex items-center justify-center relative">
+            <div class="flex items-center">
+                <span class="font-bold text-2xl tracking-tighter">LezgiMez <span class="text-emerald-500">β</span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full overflow-y-auto overflow-x-hidden relative bg-transparent">
+
+
+        <!-- Update Available Banner -->
+
+
+        <!-- TAB 1: АЛФАВИТ -->
+        <div id="screen-alphabet" class="app-screen active px-5 pt-6 pb-20">
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h1 class="text-5xl font-bold tracking-tighter text-emerald-900">Алфавит</h1>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-500">Кириллица • Содержит 41 букву</p>
+            </div>
+
+            <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3" id="alphabet-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- TAB 2: СЛОВАРЬ -->
+        <div id="screen-vocabulary" class="app-screen flex flex-col h-full px-5 pt-6 pb-0">
+            <!-- Fixed header area -->
+            <div class="flex-shrink-0">
+                <div class="mb-5">
+                    <h1 class="text-4xl font-bold tracking-tighter text-emerald-900">Словарь</h1>
+                    <p id="vocab-stats" class="text-sm text-slate-500 mt-1"></p>
+                </div>
+
+                <!-- Search + Filter -->
+                <div class="bg-transparent pb-3 -mx-5 px-5">
+                    <div class="flex gap-2 items-center">
+                        <div class="flex-1 relative flex items-center">
+                            <i class="fa-solid fa-search absolute left-4 text-slate-400"></i>
+                            <input id="search-input" type="text" placeholder="Поиск слова..."
+                                class="w-full pl-10 pr-10 py-3 bg-white border border-slate-200 focus:border-emerald-500 rounded-3xl text-sm outline-none transition-all">
+                            <button id="search-clear"
+                                class="absolute right-3 w-7 h-7 flex items-center justify-center text-slate-300 hover:text-slate-500 hidden transition-colors">
+                                <i class="fa-solid fa-times-circle"></i>
+                            </button>
+                        </div>
+                        <!-- Custom beautiful dropdown -->
+                        <div id="category-filter-wrapper" class="custom-dropdown relative flex-shrink-0 w-[138px]">
+                            <button id="category-filter-trigger"
+                                class="dropdown-trigger w-full flex items-center justify-between px-3.5 py-3 bg-white border border-slate-200 hover:border-emerald-300 active:bg-emerald-50 rounded-3xl text-sm font-medium transition-all">
+                                <span class="dropdown-value text-emerald-700">Все</span>
+                                <i class="fa-solid fa-chevron-down text-emerald-400 text-xs transition-transform"></i>
+                            </button>
+                            <div id="category-filter-panel"
+                                class="dropdown-panel hidden absolute right-0 z-[70] mt-2 w-[220px] bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden max-h-[280px]">
+                                <div class="scroll-area max-h-[280px] overflow-y-auto pt-0 pb-0">
+                                    <!-- options populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="search-hint"
+                        class="hidden mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-2xl px-3 py-2">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrollable results area -->
+            <div class="flex-1 overflow-y-auto -mx-5 px-5 min-h-0 pb-20"
+                style="scrollbar-width: none; -ms-overflow-style: none;">
+                <div class="flex items-center justify-between mt-4 mb-3 px-1">
+                    <div class="text-sm text-slate-500">
+                        Найдено <span id="results-count" class="font-semibold text-emerald-700">1465</span>
+                        <span id="demo-badge" class="hidden ml-1 text-amber-600">(демо)</span>
+                        <!-- This will be dynamically shown/hidden -->
+                    </div>
+                </div>
+
+                <div id="vocab-context" class="text-xs sm:text-sm text-slate-600 bg-emerald-50/50 border border-emerald-100 rounded-xl px-3 py-2 mb-3 hidden"></div>
+                <div id="words-loading" class="mb-4 hidden"></div>
+                <div id="words-grid"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pb-6">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="flex justify-center gap-2 mt-4 mb-8"></div>
+            </div>
+        </div>
+
+        <!-- TAB 3: ПРАКТИКА -->
+        <div id="screen-practice" class="app-screen px-5 pt-6 pb-20">
+            <!-- Main Practice View -->
+            <div id="practice-main-view">
+                <div class="mb-6">
+                    <h1 class="text-5xl font-bold tracking-tighter text-emerald-900">Практика</h1>
+                    <p class="text-sm text-slate-500 mt-1">Выберите режим и тренируйте память</p>
+                </div>
+
+                <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+                    <!-- Course Mode (Hidden per user request) -->
+                    <div id="prac-mode-course"
+                        class="hidden bg-white border border-slate-100 rounded-3xl p-5 gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
+                        <div class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
+                            <i class="fa-solid fa-graduation-cap text-emerald-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-slate-800">Курс</div>
+                            <div class="text-sm text-slate-500">Пошаговое обучение</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
+                    </div>
+
+                    <!-- Grammar Mode -->
+                    <div id="prac-mode-grammar"
+                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
+                            <i class="fa-solid fa-book-open text-emerald-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-slate-800">Грамматика</div>
+                            <div class="text-sm text-slate-500">Грамматический справочник и тесты</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
+                    </div>
+
+                    <div class="h-px bg-slate-100 my-2 md:hidden"></div>
+
+                    <!-- SRS Repetition (Smart Mode) -->
+                    <div id="prac-mode-srs"
+                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
+                            <i class="fa-solid fa-clock-rotate-left text-emerald-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-slate-800">Повторение</div>
+                            <div class="text-sm text-slate-500">Слова, которые пора закрепить</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
+                    </div>
+
+                    <!-- Flashcards -->
+                    <div id="prac-mode-flashcards"
+                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
+                            <i class="fa-solid fa-sync text-emerald-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-slate-800">Карточки</div>
+                            <div class="text-sm text-slate-500">Переворачивайте и запоминайте</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
+                    </div>
+
+                    <!-- Quiz -->
+                    <div id="prac-mode-quiz"
+                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
+                            <i class="fa-solid fa-question-circle text-emerald-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-slate-800">Тест</div>
+                            <div class="text-sm text-slate-500">Вопросы с выбором ответа</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
+                    </div>
+
+                    <!-- Pairs -->
+                    <div id="prac-mode-pairs"
+                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
+                            <i class="fa-solid fa-puzzle-piece text-emerald-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-slate-800">Пары</div>
+                            <div class="text-sm text-slate-500">Соедините слово и перевод</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
+                    </div>
+
+                    <!-- Odd Word -->
+                    <div id="prac-mode-odd"
+                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
+                            <i class="fa-solid fa-layer-group text-emerald-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-slate-800">Лишнее слово</div>
+                            <div class="text-sm text-slate-500">Найдите слово, не подходящее по теме</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white border border-slate-100 rounded-3xl p-5 shadow-sm">
+                    <div class="text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-widest">Категория слов
+                    </div>
+                    <div id="practice-category-wrapper" class="custom-dropdown relative w-full">
+                        <button id="practice-category-trigger"
+                            class="dropdown-trigger w-full flex items-center justify-between px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-semibold transition-all">
+                            <span class="dropdown-value text-emerald-700">Все слова</span>
+                            <i class="fa-solid fa-chevron-down text-emerald-400 text-xs transition-transform"></i>
+                        </button>
+                        <div id="practice-category-panel"
+                            class="dropdown-panel hidden absolute left-0 right-0 z-[70] bottom-full mb-2 w-full bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden max-h-[280px]">
+                            <div class="scroll-area max-h-[280px] overflow-y-auto pt-0 pb-0">
+                                <!-- options populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grammar Units View -->
+            <div id="practice-grammar-view" class="hidden">
+                <button id="grammar-back-btn"
+                    class="hidden md:flex items-center gap-2 text-emerald-600 font-bold mb-6 active:scale-95 transition-transform">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>К режимам практики</span>
+                </button>
+
+                <div class="mb-5 flex justify-between items-center">
+                    <div>
+                        <h1 class="text-4xl font-bold tracking-tighter text-slate-900">Грамматика</h1>
+                        <p id="grammar-stats" class="text-sm text-slate-500 mt-1">Загрузка юнитов...</p>
+                    </div>
+                    <button id="grammar-search-toggle" type="button" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors" title="Поиск">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+                </div>
+                
+                <!-- Grammar Search Container (collapsible) -->
+                <div id="grammar-search-container" class="hidden mb-6 relative">
+                    <div class="relative w-full">
+                        <i class="fa-solid fa-search text-slate-400" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 16px;"></i>
+                        <input id="grammar-search-input" type="text" placeholder="Поиск по темам, падежам или правилам..." 
+                            style="padding-left: 48px; padding-right: 40px;"
+                            class="w-full py-3 bg-slate-50 border border-slate-200 rounded-2xl text-base placeholder-slate-400 focus:outline-none focus:bg-white focus:border-emerald-400 transition-colors shadow-sm">
+                        <button id="grammar-search-clear" type="button" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Suggestions Dropdown Box -->
+                    <div id="grammar-search-suggestions" class="hidden absolute left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 max-h-72 overflow-y-auto divide-y divide-slate-100">
+                    </div>
+                </div>
+
+                <div id="grammar-units-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pb-4">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: ЕЩЁ -->
+        <div id="screen-more" class="app-screen px-5 pt-6 pb-20">
+            <div class="md:max-w-5xl md:mx-auto">
+                <div class="mb-8">
+                    <h1 class="text-5xl font-bold tracking-tighter text-emerald-900">Ещё</h1>
+                </div>
+
+                <div class="space-y-3">
+
+
+                    <!-- About card -->
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5">
+                        <div class="font-semibold mb-3 flex items-center gap-x-2">
+                            <i class="fa-solid fa-info-circle text-emerald-600"></i>
+                            <span>О лезгинском языке</span>
+                        </div>
+                        <div class="text-base text-slate-600 leading-relaxed">
+                            Лезгинский — один из древнейших и богатейших языков Кавказа. Относится к лезгинской ветви
+                            нахско-дагестанской семьи.
+                            На нём говорят более 650 000 человек, в основном в Южном Дагестане и Северном Азербайджане.
+                            <br><br>
+                            Язык обладает богатой консонантной системой (включая абруптивные согласные КӀ, ПӀ, ТӀ, ЦӀ,
+                            ЧӀ) и сложной эргативной грамматикой.
+                            <br><br>
+                            <a href="https://ru.wikipedia.org/wiki/%D0%9B%D0%B5%D0%B7%D0%B3%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9_%D1%8F%D0%B7%D1%8B%D0%BA"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-emerald-600 font-medium flex items-center gap-x-1.5 hover:underline decoration-emerald-200">
+                                <span>Подробнее в Википедии</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
+                        <div class="flex justify-between items-center py-2">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-check-double w-5 text-emerald-600 text-center"></i>
+                                <span>Изучено слов</span>
+                            </div>
+                            <span id="stats-learned" class="font-semibold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-t border-slate-50">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-spinner w-5 text-blue-500 text-center"></i>
+                                <span>В процессе</span>
+                            </div>
+                            <span id="stats-in-progress" class="font-semibold text-slate-500">0</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-t border-slate-50">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-regular fa-circle w-5 text-slate-400 text-center"></i>
+                                <span>Не начатые</span>
+                            </div>
+                            <span id="stats-not-started" class="font-semibold text-slate-400">0</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-t border-slate-50">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-star w-5 text-amber-500 text-center"></i>
+                                <span>Избранное</span>
+                            </div>
+                            <span id="stats-favs" class="font-semibold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-t border-slate-50">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-fire w-5 text-orange-500 text-center"></i>
+                                <span>Пройдено тренировок</span>
+                            </div>
+                            <span id="stats-quizzes" class="font-semibold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-t border-slate-50">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-chart-bar w-5 text-blue-500 text-center"></i>
+                                <span>Средний балл тренировок</span>
+                            </div>
+                            <span id="stats-avg-score" class="font-semibold text-slate-500">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Settings -->
+                    <div id="notif-card"
+                        class="bg-white border border-slate-100 rounded-3xl p-5 text-base cursor-pointer hover:shadow-md active:scale-[0.98] transition-all duration-200">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-x-3">
+                                <i id="notif-bell-icon"
+                                    class="fa-solid fa-bell w-5 text-center transition-colors duration-200"></i>
+                                <span class="font-semibold">Напоминания</span>
+                            </div>
+                            <div class="text-slate-300">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                        </div>
+                        <p id="notif-status-text"
+                            class="text-xs text-slate-400 mt-2 uppercase tracking-wider font-medium"></p>
+                    </div>
+
+                    <!-- Telegram Stars Donation Card -->
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
+                        <div class="font-semibold mb-2 flex items-center gap-x-2">
+                            <i class="fa-solid fa-star text-amber-400 text-lg"></i>
+                            <span>Поддержать проект</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4 leading-relaxed">
+                            Если вам нравится приложение LezgiMez, вы можете поддержать нашу работу и оплату серверов добровольным пожертвованием в звёздах Telegram:
+                        </p>
+                        <div class="grid grid-cols-5 gap-1.5">
+                            <button type="button" data-donation-amount="50" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                                <span>50</span>
+                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                            </button>
+                            <button type="button" data-donation-amount="100" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                                <span>100</span>
+                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                            </button>
+                            <button type="button" data-donation-amount="250" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                                <span>250</span>
+                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                            </button>
+                            <button type="button" data-donation-amount="500" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                                <span>500</span>
+                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                            </button>
+                            <button type="button" data-donation-amount="1000" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                                <span>1000</span>
+                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
+                        <div class="flex justify-between items-center py-1">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-globe w-5 text-emerald-600"></i>
+                                <span>Версия приложения</span>
+                            </div>
+                            <span class="font-mono text-xs bg-slate-100 px-2 py-0.5 rounded">2.2.19</span>
+                        </div>
+                        <div class="flex justify-between items-center py-1 border-t mt-3 pt-3 border-slate-100">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-database w-5 text-emerald-600"></i>
+                                <span>Слов в базе</span>
+                            </div>
+                            <span id="words-count" class="font-semibold"></span>
+                        </div>
+                        <div id="update-check-row"
+                            class="flex justify-between items-center py-1 border-t mt-3 pt-3 border-slate-100 cursor-pointer hover:text-emerald-600 transition-colors group">
+                            <div class="flex items-center gap-x-3">
+                                <i id="update-check-icon"
+                                    class="fa-solid fa-sync w-5 text-emerald-600 text-center transition-transform group-hover:rotate-180 duration-500"></i>
+                                <span>Проверить обновления</span>
+                            </div>
+                            <div class="flex items-center gap-x-2">
+                                <span id="update-status" class="text-xs text-slate-400 font-medium"></span>
+                                <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
+                        <div class="font-semibold mb-3 flex items-center gap-x-2">
+                            <i class="fa-solid fa-share-nodes text-emerald-600"></i>
+                            <span>Соцсети</span>
+                        </div>
+                        <div class="space-y-2">
+                            <a href="https://t.me/lezgimez" target="_blank" rel="noopener noreferrer"
+                                class="flex justify-between items-center py-2 px-3 rounded-2xl bg-slate-50 active:bg-slate-100">
+                                <div class="flex items-center gap-x-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="w-5 h-5"
+                                        fill="#0ea5e9">
+                                        <path
+                                            d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm121.8 169.9l-40.7 191.8c-3 13.6-11.1 16.9-22.4 10.5l-62-45.7-29.9 28.8c-3.3 3.3-6.1 6.1-12.5 6.1l4.4-63.1 114.9-103.8c5-4.4-1.1-6.9-7.7-2.5l-142 89.4-61.2-19.1c-13.3-4.2-13.6-13.3 2.8-19.7l239.1-92.2c11.1-4 20.8 2.7 17.2 19.5z" />
+                                    </svg>
+                                    <span>Telegram</span>
+                                </div>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400"></i>
+                            </a>
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
+                        <div class="font-semibold mb-3 flex items-center gap-x-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-emerald-600"></i>
+                            <span>Управление прогрессом</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4">Сохраните файл с вашими достижениями, чтобы перенести их
+                            на
+                            другое устройство.</p>
+                        <div class="flex gap-3">
+                            <button id="export-btn"
+                                class="flex-1 py-3 border border-emerald-100 bg-emerald-50 text-emerald-700 rounded-2xl font-medium active:bg-emerald-100 flex items-center justify-center gap-2 transition-colors">
+                                <i class="fa-solid fa-download text-xs"></i> Экспорт
+                            </button>
+                            <label id="import-label"
+                                class="flex-1 py-3 border border-slate-100 bg-slate-50 text-slate-700 rounded-2xl font-medium active:bg-slate-100 flex items-center justify-center gap-2 cursor-pointer transition-colors">
+                                <i class="fa-solid fa-upload text-xs"></i> Импорт
+                                <input id="import-input" type="file" class="hidden" accept=".json">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Theme toggle card -->
+                    <div id="theme-toggle-card" role="button" tabindex="0"
+                        class="bg-white border border-slate-100 rounded-3xl p-5 text-base cursor-pointer hover:shadow-md active:scale-[0.98] transition-all duration-200">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-x-3">
+                                <i id="theme-icon" class="fa-solid fa-moon w-5 text-emerald-600 text-center"></i>
+                                <span id="theme-label" class="font-semibold">Тёмная тема</span>
+                            </div>
+                            <div class="text-slate-300">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
+                        <div class="font-semibold mb-2 flex items-center gap-x-2">
+                            <i class="fa-solid fa-comment-dots text-emerald-600"></i>
+                            <span>Обратная связь</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-3">Нашли ошибку или хотите предложить улучшение? Напишите нам на почту.</p>
+                        <a href="mailto:me@sup.com"
+                            class="flex justify-between items-center py-2 px-3 rounded-2xl bg-emerald-50 active:bg-emerald-100 w-full transition-colors border border-emerald-100/50">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-envelope text-emerald-600 text-xl"></i>
+                                <span class="font-medium text-emerald-800">me@sup.com</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-emerald-400"></i>
+                        </a>
+                    </div>
+
+                    <button id="add-to-home-btn"
+                        class="w-full py-4 bg-emerald-600 active:bg-emerald-700 text-white font-semibold rounded-3xl flex items-center justify-center gap-x-2 text-base transition-colors">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Добавить на главный экран</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center mt-8 text-xs text-slate-400">
+                chalaz away khanvileldi awuna<br>
+            </div>
+        </div>
+
+        <!-- TAB 5: КУРС -->
+        <div id="screen-course" class="app-screen px-5 pt-6 pb-20">
+            <!-- Course Main View: modules & units tree -->
+            <div id="course-main-view">
+                <div class="mb-6">
+                    <h1 class="text-5xl font-bold tracking-tighter text-emerald-900 dark:text-emerald-50">Курс</h1>
+                    <p id="course-stats" class="text-sm text-slate-500 dark:text-slate-400 mt-1">Загрузка...</p>
+                </div>
+
+                <!-- Telegram News Card -->
+                <div class="text-xs sm:text-sm text-slate-600 bg-emerald-50/50 border border-emerald-100 rounded-xl px-3.5 py-3 mb-4 space-y-2">
+                    <div>
+                        <strong class="text-emerald-900">Тестовая версия.</strong>
+                        Этот курс запущен в тестовой версии — в нём могут содержаться ошибки, опечатки или неточности, и он не гарантирует какого-либо результата. Пожалуйста, имейте это в виду.
+                    </div>
+                    <div class="pt-1.5 border-t border-emerald-100/50 text-[11px] sm:text-xs">
+                        Сообщить об ошибках и следить за обновлениями проекта можно в 
+                        <a href="https://t.me/LezgiMez" target="_blank" rel="noopener noreferrer" class="text-emerald-600 hover:text-emerald-700 font-bold underline">
+                            нашем ТГ
+                        </a>.
+                    </div>
+                </div>
+                <div id="course-modules-grid" class="space-y-6">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            <!-- Course Unit View: theory + start exercises -->
+            <div id="course-unit-view" class="hidden md:max-w-5xl md:mx-auto">
+                <button id="course-unit-back-btn"
+                    class="hidden md:flex items-center gap-2 text-emerald-600 font-bold mb-6 active:scale-95 transition-transform">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>К модулям</span>
+                </button>
+                <div id="course-unit-content" class="max-w-none"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav
+        class="bottom-nav fixed bottom-0 left-0 right-0 max-w-3xl mx-auto border-t border-slate-100 z-50 safe-bottom bg-white transition-colors md:hidden">
+        <div class="grid grid-cols-4 text-sm w-full">
+            <button data-tab="alphabet" id="tab-alphabet"
+                class="nav-tab py-2 text-emerald-600 active transition-colors">
+                <i class="fa-solid fa-font text-xl mb-0.5 text-center"></i>
+                <span class="font-medium text-xs sm:text-sm">Алфавит</span>
+            </button>
+            <button data-tab="vocabulary" id="tab-vocabulary"
+                class="nav-tab py-2 text-slate-500 transition-colors">
+                <i class="fa-solid fa-book text-xl mb-0.5 text-center"></i>
+                <span class="font-medium text-xs sm:text-sm">Словарь</span>
+            </button>
+
+            <button data-tab="practice" id="tab-practice"
+                class="nav-tab py-2 text-slate-500 transition-colors">
+                <i class="fa-solid fa-graduation-cap text-xl mb-0.5 text-center"></i>
+                <span class="font-medium text-xs sm:text-sm">Практика</span>
+            </button>
+            <button data-tab="more" id="tab-more"
+                class="nav-tab py-2 text-slate-500 transition-colors">
+                <i class="fa-solid fa-ellipsis-h text-xl mb-0.5 text-center"></i>
+                <span class="font-medium text-xs sm:text-sm">Ещё</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="word-modal"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        role="dialog" aria-modal="true" aria-labelledby="modal-word-title">
+        <div class="modal bg-white w-full max-w-3xl md:rounded-3xl overflow-hidden flex flex-col max-h-[100%] h-full md:h-auto md:max-h-[90vh]">
+            <div id="modal-content" class="flex flex-col flex-1 min-h-0 overflow-hidden"></div>
+        </div>
+    </div>
+
+    <!-- Practice Modal (full screen) -->
+    <div id="practice-modal" class="hidden fixed inset-0 bg-white md:bg-black/70 md:backdrop-blur z-[110] flex flex-col md:items-center md:justify-center p-0 md:p-6" role="dialog"
+        aria-modal="true">
+        <div class="w-full h-full md:max-h-[90vh] md:max-w-5xl md:bg-white md:rounded-3xl overflow-hidden flex flex-col md:shadow-2xl">
+            <div id="practice-content" class="flex-1 overflow-auto md:bg-slate-50 md:rounded-b-3xl md:rounded-t-3xl"></div>
+        </div>
+    </div>
+
+    <!-- Offline indicator -->
+    <div id="offline-banner"
+        class="hidden fixed top-14 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs px-4 py-1.5 rounded-2xl shadow flex items-center gap-x-2 z-[60]">
+        <i class="fa-solid fa-wifi-slash"></i>
+        <span>Работаем оффлайн</span>
+    </div>
+    <div id="custom-app-alert" class="hidden"></div>
+    <script src="./js/utils.js?v=3"></script>
+    <script src="./js/state.js?v=3"></script>
+    <script src="./js/telegram.js?v=4"></script>
+    <script src="./js/ui.js?v=29"></script>
+    <script src="./js/srs.js?v=25"></script>
+    <script src="./js/course.js?v=3"></script>
+    <script src="./js/messenger.js?v=3"></script>
+    <script src="./js/app.js?v=3"></script>
+</body>
+
+</html>

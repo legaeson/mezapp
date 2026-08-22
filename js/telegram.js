@@ -1,0 +1,266 @@
+// Telegram Web App Integration for LezgiMez
+(function () {
+    const tg = window.Telegram?.WebApp;
+
+    const TelegramApp = {
+        isInsideTelegram: Boolean(tg && (tg.initData || window.location.hash.includes('tgWebAppData'))),
+        tg: tg || null,
+
+        init() {
+            if (!tg) return;
+
+            try {
+                tg.ready();
+                // STRICT REQUIREMENT: The app MUST open in full-screen Mini App mode. 
+                // Do NOT remove requestFullscreen(). It is required for the modern UI.
+                if (typeof tg.requestFullscreen === 'function') {
+                    tg.requestFullscreen();
+                } else if (typeof tg.expand === 'function') {
+                    tg.expand();
+                }
+                if (typeof tg.enableClosingConfirmation === 'function') {
+                    tg.enableClosingConfirmation();
+                }
+                
+                // Add fallback padding for overlapping header
+                const updateInsets = () => {
+                    let safeTop = tg.contentSafeAreaInset?.top;
+                    if (safeTop === undefined) safeTop = tg.safeAreaInset?.top;
+                    if (safeTop === undefined) safeTop = 44; // standard iOS fallback
+                    document.documentElement.style.setProperty('--tg-safe-area-inset-top', safeTop + 'px');
+                };
+
+                updateInsets();
+                tg.onEvent?.('safeAreaChanged', updateInsets);
+                tg.onEvent?.('contentSafeAreaChanged', updateInsets);
+
+                this.syncTheme();
+                tg.onEvent?.('themeChanged', () => this.syncTheme());
+                
+                this.setupHaptics();
+                this.setupAlerts();
+                this.setupBackButton();
+            } catch (e) {
+                console.warn('[Telegram WebApp] Init warning:', e);
+            }
+        },
+
+        setupBackButton() {
+            if (!tg || !tg.BackButton) return;
+            
+            const handleBackAction = () => {
+                // 1. Word / Alphabet / Theory modal
+                const modal = document.getElementById('word-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    if (typeof window.closeModal === 'function') {
+                        window.closeModal();
+                    } else {
+                        const closeBtn = document.getElementById('modal-close-btn') || document.getElementById('modal-close-btn-grammar') || document.getElementById('modal-close-btn-letter');
+                        if (closeBtn) closeBtn.click();
+                    }
+                    this.updateBackButton?.();
+                    return;
+                }
+                
+                // 2. Practice modal (SRS Flashcards, Quiz, Pairs, Odd Word, Grammar exercises)
+                const srsView = document.getElementById('practice-modal');
+                if (srsView && !srsView.classList.contains('hidden')) {
+                    if (typeof window.endPractice === 'function') {
+                        window.endPractice();
+                    } else {
+                        const btn = document.getElementById('srs-close-btn') || document.getElementById('srs-close-btn-quiz') || document.getElementById('srs-close-btn-pairs') || document.getElementById('srs-close-btn-odd') || document.getElementById('course-ex-close-btn');
+                        if (btn) btn.click();
+                    }
+                    this.updateBackButton?.();
+                    return;
+                }
+                
+                // 3. Course Unit View (Lesson / Theory in Course tab)
+                const courseUnitView = document.getElementById('course-unit-view');
+                if (courseUnitView && !courseUnitView.classList.contains('hidden')) {
+                    if (typeof window.showCourseMainView === 'function') {
+                        window.showCourseMainView();
+                    } else {
+                        const btn = document.getElementById('course-unit-back-btn');
+                        if (btn) btn.click();
+                    }
+                    this.updateBackButton?.();
+                    return;
+                }
+                
+                // 4. Grammar list view (in Practice tab)
+                const grammarView = document.getElementById('practice-grammar-view');
+                if (grammarView && !grammarView.classList.contains('hidden')) {
+                    if (typeof window.hideGrammarList === 'function') {
+                        window.hideGrammarList();
+                    } else {
+                        const btn = document.getElementById('grammar-back-btn');
+                        if (btn) btn.click();
+                    }
+                    this.updateBackButton?.();
+                    return;
+                }
+            };
+
+            // Listen for native back button clicks (support both onClick and onEvent)
+            try {
+                if (typeof tg.BackButton.onClick === 'function') {
+                    tg.BackButton.onClick(handleBackAction);
+                } else if (typeof tg.onEvent === 'function') {
+                    tg.onEvent('backButtonClicked', handleBackAction);
+                }
+            } catch (e) {
+                console.warn('[Telegram BackButton] Listener setup warning:', e);
+            }
+            
+            // Automatic show/hide based on open sub-views and modals
+            const updateBackButtonState = () => {
+                const modal = document.getElementById('word-modal');
+                const srsView = document.getElementById('practice-modal');
+                const courseUnitView = document.getElementById('course-unit-view');
+                const grammarView = document.getElementById('practice-grammar-view');
+                
+                const isSubViewOpen = 
+                    (modal && !modal.classList.contains('hidden')) || 
+                    (srsView && !srsView.classList.contains('hidden')) || 
+                    (courseUnitView && !courseUnitView.classList.contains('hidden')) ||
+                    (grammarView && !grammarView.classList.contains('hidden'));
+                
+                if (isSubViewOpen) {
+                    tg.BackButton.show();
+                } else {
+                    tg.BackButton.hide();
+                }
+            };
+            
+            this.updateBackButton = updateBackButtonState;
+            window.updateTelegramBackButton = updateBackButtonState;
+            
+            const observer = new MutationObserver(() => {
+                updateBackButtonState();
+            });
+            
+            const observeElements = () => {
+                const modal = document.getElementById('word-modal');
+                const srsView = document.getElementById('practice-modal');
+                const courseUnitView = document.getElementById('course-unit-view');
+                const grammarView = document.getElementById('practice-grammar-view');
+                
+                if (modal) observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
+                if (srsView) observer.observe(srsView, { attributes: true, attributeFilter: ['class'] });
+                if (courseUnitView) observer.observe(courseUnitView, { attributes: true, attributeFilter: ['class'] });
+                if (grammarView) observer.observe(grammarView, { attributes: true, attributeFilter: ['class'] });
+                
+                updateBackButtonState();
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', observeElements);
+            } else {
+                observeElements();
+            }
+        },
+
+        syncTheme() {
+            if (!tg) return;
+            try {
+                const isDark = tg.colorScheme === 'dark' || (tg.themeParams?.bg_color && this.isDarkHex(tg.themeParams.bg_color));
+                if (isDark) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+                if (typeof tg.setHeaderColor === 'function') {
+                    tg.setHeaderColor('#059669');
+                }
+                if (typeof tg.setBackgroundColor === 'function') {
+                    tg.setBackgroundColor(isDark ? '#1e1e1e' : '#f8fafc');
+                }
+            } catch (e) {}
+        },
+
+        isDarkHex(hex) {
+            if (!hex || typeof hex !== 'string') return false;
+            const c = hex.replace('#', '');
+            if (c.length !== 6) return false;
+            const r = parseInt(c.substring(0, 2), 16);
+            const g = parseInt(c.substring(2, 4), 16);
+            const b = parseInt(c.substring(4, 6), 16);
+            return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+        },
+
+        haptic(type = 'light') {
+            if (!tg?.HapticFeedback) return;
+            try {
+                if (type === 'light' || type === 'medium' || type === 'heavy' || type === 'rigid' || type === 'soft') {
+                    tg.HapticFeedback.impactOccurred(type);
+                } else if (type === 'success' || type === 'warning' || type === 'error') {
+                    tg.HapticFeedback.notificationOccurred(type);
+                } else if (type === 'selection') {
+                    tg.HapticFeedback.selectionChanged();
+                }
+            } catch (e) {}
+        },
+        
+        setupHaptics() {
+            // Enable iOS WebKit :active pseudo-class on all touched elements
+            document.addEventListener('touchstart', () => {}, { passive: true });
+
+            document.addEventListener('click', (e) => {
+                // Ignore clicks on elements that have their own strong vibration logic
+                const ignoreHaptic = e.target.closest('.no-haptic, .srs-btn');
+                if (ignoreHaptic) return;
+                
+                // Add light haptic feedback to all clickable elements
+                const isClickable = e.target.closest('button, a, .tab-btn, .action-btn, .clickable, input[type="radio"], input[type="checkbox"], select, .letter-card, .word-card, .odd-btn, .puzzle-chip, .custom-dropdown');
+                if (isClickable) {
+                    this.haptic('light');
+                }
+            });
+        },
+        
+        setupAlerts() {
+            const originalAlert = window.alert;
+            window.alert = function(msg) {
+                // By-passing Telegram's native showAlert because it seems to freeze or fail silently on some clients
+                originalAlert(msg);
+            };
+        },
+        
+        showConfirm(message, callback) {
+            if (tg && tg.showConfirm) {
+                tg.showConfirm(message, callback);
+            } else {
+                const res = confirm(message);
+                if (callback) callback(res);
+            }
+        },
+
+        showBackButton(onClickCallback) {
+            if (!tg?.BackButton) return;
+            try {
+                tg.BackButton.show();
+                if (typeof onClickCallback === 'function') {
+                    tg.BackButton.onClick(onClickCallback);
+                }
+            } catch (e) {}
+        },
+
+        hideBackButton() {
+            if (!tg?.BackButton) return;
+            try {
+                tg.BackButton.hide();
+            } catch (e) {}
+        },
+
+        getUser() {
+            return tg?.initDataUnsafe?.user || null;
+        }
+    };
+
+    window.TelegramApp = TelegramApp;
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => TelegramApp.init());
+    } else {
+        TelegramApp.init();
+    }
+})();
