@@ -87,8 +87,8 @@
                     this.updateBackButton?.();
                     return;
                 }
-                
-                // 4. Grammar list view (in Practice tab)
+
+                // 4. Grammar List View (in Practice tab)
                 const grammarView = document.getElementById('practice-grammar-view');
                 if (grammarView && !grammarView.classList.contains('hidden')) {
                     if (typeof window.hideGrammarList === 'function') {
@@ -144,12 +144,10 @@
                 const modal = document.getElementById('word-modal');
                 const srsView = document.getElementById('practice-modal');
                 const courseUnitView = document.getElementById('course-unit-view');
-                const grammarView = document.getElementById('practice-grammar-view');
                 
                 if (modal) observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
                 if (srsView) observer.observe(srsView, { attributes: true, attributeFilter: ['class'] });
                 if (courseUnitView) observer.observe(courseUnitView, { attributes: true, attributeFilter: ['class'] });
-                if (grammarView) observer.observe(grammarView, { attributes: true, attributeFilter: ['class'] });
                 
                 updateBackButtonState();
             };
@@ -253,14 +251,158 @@
 
         getUser() {
             return tg?.initDataUnsafe?.user || null;
+        },
+
+        getCloudItem(key) {
+            return new Promise((resolve) => {
+                if (!tg?.CloudStorage?.getItem) {
+                    return resolve(null);
+                }
+                try {
+                    tg.CloudStorage.getItem(key, (err, val) => {
+                        if (err) {
+                            console.warn('[Telegram CloudStorage] getItem error for ' + key, err);
+                            resolve(null);
+                        } else {
+                            resolve(val || null);
+                        }
+                    });
+                } catch (e) {
+                    console.warn('[Telegram CloudStorage] getItem exception:', e);
+                    resolve(null);
+                }
+            });
+        },
+
+        setCloudItem(key, value) {
+            return new Promise((resolve) => {
+                if (!tg?.CloudStorage?.setItem) {
+                    return resolve(false);
+                }
+                try {
+                    // Telegram CloudStorage value limit is 4096 characters per key
+                    if (typeof value === 'string' && value.length > 4096) {
+                        console.warn('[Telegram CloudStorage] Value exceeds 4096 char limit (' + value.length + ' chars)');
+                    }
+                    tg.CloudStorage.setItem(key, value, (err, success) => {
+                        if (err) {
+                            console.warn('[Telegram CloudStorage] setItem error for ' + key, err);
+                            resolve(false);
+                        } else {
+                            resolve(Boolean(success));
+                        }
+                    });
+                } catch (e) {
+                    console.warn('[Telegram CloudStorage] setItem exception:', e);
+                    resolve(false);
+                }
+            });
+        },
+
+        openTelegramLink(url) {
+            if (!url) return;
+            try {
+                if (tg && typeof tg.openTelegramLink === 'function' && url.includes('t.me/')) {
+                    tg.openTelegramLink(url);
+                } else if (tg && typeof tg.openLink === 'function' && !url.includes('t.me/')) {
+                    tg.openLink(url);
+                } else {
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                }
+            } catch (e) {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
+        },
+
+        shareUrl(text, url = 'https://t.me/LezgiMez') {
+            const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text || '')}`;
+            this.openTelegramLink(fullUrl);
+        },
+
+        shareDuel(score, total) {
+            const text = `⚔️ Я набрал ${score} очков в Дуэли слов LezgiMez! Сможешь превзойти мой результат? 🏆`;
+            this.shareUrl(text, 'https://t.me/LezgiMez');
+        },
+
+        shareLeaderboard(rank, words) {
+            const text = `🏆 Я занимаю ${rank}-е место в таблице лидеров LezgiMez (${words} выученных слов)! Присоединяйся к изучению лезгинского языка!`;
+            this.shareUrl(text, 'https://t.me/LezgiMez');
+        },
+
+        openBotReminders() {
+            this.openTelegramLink('https://t.me/LezgiMez?start=reminder');
+        },
+
+        openSupportChat(context = '') {
+            const link = context ? `https://t.me/LezgiMez` : `https://t.me/LezgiMez`;
+            this.openTelegramLink(link);
+        },
+
+        renderProfileCard() {
+            const avatarEl = document.getElementById('tg-user-avatar');
+            const nameEl = document.getElementById('tg-user-name');
+            const badgeEl = document.getElementById('tg-user-badge');
+            const subEl = document.getElementById('tg-user-sub');
+            const statusEl = document.getElementById('tg-sync-status');
+            const streakEl = document.getElementById('tg-user-streak');
+
+            const streakCount = window.PROGRESS?.streak?.current || 1;
+            if (streakEl) {
+                streakEl.textContent = `${streakCount} ${streakCount === 1 ? 'день' : (streakCount >= 2 && streakCount <= 4 ? 'дня' : 'дней')}`;
+            }
+
+            if (!nameEl) return;
+
+            const user = this.getUser();
+            if (user) {
+                const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Пользователь Telegram';
+                nameEl.textContent = fullName;
+                if (subEl) {
+                    subEl.textContent = user.username ? `@${user.username}` : `ID: ${user.id}`;
+                }
+                if (badgeEl) {
+                    badgeEl.textContent = 'Telegram';
+                    badgeEl.className = 'px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 rounded-full';
+                }
+                if (statusEl) {
+                    statusEl.textContent = 'Прогресс привязан к профилю';
+                }
+                if (avatarEl) {
+                    if (user.photo_url) {
+                        avatarEl.innerHTML = `<img src="${user.photo_url}" alt="${fullName}" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-user\\'></i>'">`;
+                    } else {
+                        const initial = (user.first_name || user.username || 'T').charAt(0).toUpperCase();
+                        avatarEl.innerHTML = `<span>${initial}</span>`;
+                    }
+                }
+            } else {
+                nameEl.textContent = 'Локальный профиль';
+                if (subEl) {
+                    subEl.textContent = 'В этом браузере';
+                }
+                if (badgeEl) {
+                    badgeEl.textContent = 'Web';
+                    badgeEl.className = 'px-2 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-600 rounded-full';
+                }
+                if (statusEl) {
+                    statusEl.textContent = 'Для привязки откройте в Telegram';
+                }
+                if (avatarEl) {
+                    avatarEl.innerHTML = '<i class="fa-solid fa-user text-emerald-600"></i>';
+                }
+            }
         }
     };
 
     window.TelegramApp = TelegramApp;
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => TelegramApp.init());
+        document.addEventListener('DOMContentLoaded', () => {
+            TelegramApp.init();
+            TelegramApp.renderProfileCard();
+        });
     } else {
         TelegramApp.init();
+        TelegramApp.renderProfileCard();
     }
 })();

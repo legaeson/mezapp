@@ -1099,139 +1099,52 @@
             </div>
         </div>
 
-        <!-- TAB 3: ПРАКТИКА -->
+        <!-- TAB 3: ПРАКТИКА (ГРАММАТИКА) -->
         <div id="screen-practice" class="app-screen px-5 pt-6 pb-20">
             <!-- Main Practice View -->
-            <div id="practice-main-view">
-                <div class="mb-6">
-                    <h1 class="text-5xl font-bold tracking-tighter text-emerald-900">Практика</h1>
-                    <p class="text-sm text-slate-500 mt-1">Выберите режим и тренируйте память</p>
+            <div id="practice-main-view" class="md:max-w-5xl md:mx-auto">
+                <div class="mb-5 flex justify-between items-end">
+                    <div>
+                        <h1 class="text-4xl font-bold tracking-tighter text-slate-900">Практика</h1>
+                        <p class="text-sm text-slate-500 mt-1" id="practice-streak-days">1 день</p>
+                    </div>
+                    <button id="streak-share-btn" type="button" class="w-10 h-10 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-lg active:scale-95 transition-transform" title="Поделиться">
+                        <i class="fa-solid fa-fire"></i>
+                    </button>
                 </div>
 
-                <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
-                    <!-- Course Mode (Hidden per user request) -->
-                    <div id="prac-mode-course"
-                        class="hidden bg-white border border-slate-100 rounded-3xl p-5 gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
-                        <div class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
-                            <i class="fa-solid fa-graduation-cap text-emerald-600 text-2xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="font-bold text-slate-800">Курс</div>
-                            <div class="text-sm text-slate-500">Пошаговое обучение</div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
-                    </div>
-
-                    <!-- Grammar Mode -->
-                    <div id="prac-mode-grammar"
-                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
-                        <div
-                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
-                            <i class="fa-solid fa-book-open text-emerald-600 text-2xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="font-bold text-slate-800">Грамматика</div>
-                            <div class="text-sm text-slate-500">Грамматический справочник и тесты</div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
-                    </div>
-
-                    <div class="h-px bg-slate-100 my-2 md:hidden"></div>
-
-                    <!-- SRS Repetition (Smart Mode) -->
-                    <div id="prac-mode-srs"
-                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
-                        <div
-                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
-                            <i class="fa-solid fa-clock-rotate-left text-emerald-600 text-2xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="font-bold text-slate-800">Повторение</div>
-                            <div class="text-sm text-slate-500">Слова, которые пора закрепить</div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
-                    </div>
-
-                    <!-- Flashcards -->
-                    <div id="prac-mode-flashcards"
-                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
-                        <div
-                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
-                            <i class="fa-solid fa-sync text-emerald-600 text-2xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="font-bold text-slate-800">Карточки</div>
-                            <div class="text-sm text-slate-500">Переворачивайте и запоминайте</div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
-                    </div>
-
-                    <!-- Quiz -->
-                    <div id="prac-mode-quiz"
-                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
-                        <div
-                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
-                            <i class="fa-solid fa-question-circle text-emerald-600 text-2xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="font-bold text-slate-800">Тест</div>
-                            <div class="text-sm text-slate-500">Вопросы с выбором ответа</div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
-                    </div>
-
-                    <!-- Pairs -->
-                    <div id="prac-mode-pairs"
-                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
-                        <div
-                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
-                            <i class="fa-solid fa-puzzle-piece text-emerald-600 text-2xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="font-bold text-slate-800">Пары</div>
-                            <div class="text-sm text-slate-500">Соедините слово и перевод</div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
-                    </div>
-
-                    <!-- Odd Word -->
-                    <div id="prac-mode-odd"
-                        class="bg-white border border-slate-100 rounded-3xl p-5 flex gap-4 items-center cursor-pointer transition-all shadow-sm hover:shadow-md">
-                        <div
-                            class="w-12 h-12 bg-emerald-100 rounded-2xl flex-shrink-0 flex items-center justify-center">
-                            <i class="fa-solid fa-layer-group text-emerald-600 text-2xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="font-bold text-slate-800">Лишнее слово</div>
-                            <div class="text-sm text-slate-500">Найдите слово, не подходящее по теме</div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-emerald-300"></i>
-                    </div>
-                </div>
-
-                <div class="mt-8 bg-white border border-slate-100 rounded-3xl p-5 shadow-sm">
-                    <div class="text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-widest">Категория слов
-                    </div>
-                    <div id="practice-category-wrapper" class="custom-dropdown relative w-full">
-                        <button id="practice-category-trigger"
-                            class="dropdown-trigger w-full flex items-center justify-between px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-semibold transition-all">
-                            <span class="dropdown-value text-emerald-700">Все слова</span>
-                            <i class="fa-solid fa-chevron-down text-emerald-400 text-xs transition-transform"></i>
-                        </button>
-                        <div id="practice-category-panel"
-                            class="dropdown-panel hidden absolute left-0 right-0 z-[70] bottom-full mb-2 w-full bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden max-h-[280px]">
-                            <div class="scroll-area max-h-[280px] overflow-y-auto pt-0 pb-0">
-                                <!-- options populated by JS -->
+                <div class="space-y-4">
+                    <div id="prac-mode-flashcards" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">Учить слова (Карточки)</h3>
+                                <p class="text-sm text-slate-500 mt-0.5">В разработке - новые функции</p>
                             </div>
                         </div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </div>
+
+                    <div id="prac-mode-grammar" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">Грамматика</h3>
+                                <p class="text-sm text-slate-500 mt-0.5">Правила, падежи и времена</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
                     </div>
                 </div>
             </div>
 
             <!-- Grammar Units View -->
             <div id="practice-grammar-view" class="hidden">
-                <button id="grammar-back-btn"
-                    class="hidden md:flex items-center gap-2 text-emerald-600 font-bold mb-6 active:scale-95 transition-transform">
+                <button id="grammar-back-btn" class="hidden md:flex items-center gap-2 text-emerald-600 font-bold mb-6 active:scale-95 transition-transform">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>К режимам практики</span>
                 </button>
@@ -1277,6 +1190,33 @@
                 </div>
 
                 <div class="space-y-3">
+
+                    <!-- Telegram Profile Card -->
+                    <div id="telegram-profile-card" class="bg-white border border-slate-100 rounded-3xl p-5 text-base shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div id="tg-user-avatar" class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold overflow-hidden flex-shrink-0">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <h2 id="tg-user-name" class="font-bold text-slate-800 text-base truncate">Профиль Telegram</h2>
+                                    <span id="tg-user-badge" class="px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 rounded-full">TG</span>
+                                </div>
+                                <p id="tg-user-sub" class="text-xs text-slate-400 truncate mt-0.5">Синхронизация прогресса</p>
+                                <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 animate-pulse"></span>
+                                        <span id="tg-sync-status" class="text-[11px] font-medium text-emerald-600">Привязан</span>
+                                    </div>
+                                    <span class="text-slate-300">•</span>
+                                    <div class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/50">
+                                        <span class="text-xs">🔥</span>
+                                        <span id="tg-user-streak">1 день</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
                     <!-- About card -->
@@ -1347,23 +1287,6 @@
                         </div>
                     </div>
 
-                    <!-- Notifications Settings -->
-                    <div id="notif-card"
-                        class="bg-white border border-slate-100 rounded-3xl p-5 text-base cursor-pointer hover:shadow-md active:scale-[0.98] transition-all duration-200">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-x-3">
-                                <i id="notif-bell-icon"
-                                    class="fa-solid fa-bell w-5 text-center transition-colors duration-200"></i>
-                                <span class="font-semibold">Напоминания</span>
-                            </div>
-                            <div class="text-slate-300">
-                                <i class="fa-solid fa-chevron-right text-xs"></i>
-                            </div>
-                        </div>
-                        <p id="notif-status-text"
-                            class="text-xs text-slate-400 mt-2 uppercase tracking-wider font-medium"></p>
-                    </div>
-
                     <!-- Telegram Stars Donation Card -->
                     <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
                         <div class="font-semibold mb-2 flex items-center gap-x-2">
@@ -1412,64 +1335,6 @@
                             </div>
                             <span id="words-count" class="font-semibold"></span>
                         </div>
-                        <div id="update-check-row"
-                            class="flex justify-between items-center py-1 border-t mt-3 pt-3 border-slate-100 cursor-pointer hover:text-emerald-600 transition-colors group">
-                            <div class="flex items-center gap-x-3">
-                                <i id="update-check-icon"
-                                    class="fa-solid fa-sync w-5 text-emerald-600 text-center transition-transform group-hover:rotate-180 duration-500"></i>
-                                <span>Проверить обновления</span>
-                            </div>
-                            <div class="flex items-center gap-x-2">
-                                <span id="update-status" class="text-xs text-slate-400 font-medium"></span>
-                                <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
-                        <div class="font-semibold mb-3 flex items-center gap-x-2">
-                            <i class="fa-solid fa-share-nodes text-emerald-600"></i>
-                            <span>Соцсети</span>
-                        </div>
-                        <div class="space-y-2">
-                            <a href="https://t.me/lezgimez" target="_blank" rel="noopener noreferrer"
-                                class="flex justify-between items-center py-2 px-3 rounded-2xl bg-slate-50 active:bg-slate-100">
-                                <div class="flex items-center gap-x-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="w-5 h-5"
-                                        fill="#0ea5e9">
-                                        <path
-                                            d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm121.8 169.9l-40.7 191.8c-3 13.6-11.1 16.9-22.4 10.5l-62-45.7-29.9 28.8c-3.3 3.3-6.1 6.1-12.5 6.1l4.4-63.1 114.9-103.8c5-4.4-1.1-6.9-7.7-2.5l-142 89.4-61.2-19.1c-13.3-4.2-13.6-13.3 2.8-19.7l239.1-92.2c11.1-4 20.8 2.7 17.2 19.5z" />
-                                    </svg>
-                                    <span>Telegram</span>
-                                </div>
-                                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400"></i>
-                            </a>
-
-                        </div>
-                    </div>
-
-
-
-                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
-                        <div class="font-semibold mb-3 flex items-center gap-x-2">
-                            <i class="fa-solid fa-cloud-arrow-up text-emerald-600"></i>
-                            <span>Управление прогрессом</span>
-                        </div>
-                        <p class="text-slate-600 text-sm mb-4">Сохраните файл с вашими достижениями, чтобы перенести их
-                            на
-                            другое устройство.</p>
-                        <div class="flex gap-3">
-                            <button id="export-btn"
-                                class="flex-1 py-3 border border-emerald-100 bg-emerald-50 text-emerald-700 rounded-2xl font-medium active:bg-emerald-100 flex items-center justify-center gap-2 transition-colors">
-                                <i class="fa-solid fa-download text-xs"></i> Экспорт
-                            </button>
-                            <label id="import-label"
-                                class="flex-1 py-3 border border-slate-100 bg-slate-50 text-slate-700 rounded-2xl font-medium active:bg-slate-100 flex items-center justify-center gap-2 cursor-pointer transition-colors">
-                                <i class="fa-solid fa-upload text-xs"></i> Импорт
-                                <input id="import-input" type="file" class="hidden" accept=".json">
-                            </label>
-                        </div>
                     </div>
 
                     <!-- Theme toggle card -->
@@ -1484,22 +1349,6 @@
                                 <i class="fa-solid fa-chevron-right text-xs"></i>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
-                        <div class="font-semibold mb-2 flex items-center gap-x-2">
-                            <i class="fa-solid fa-comment-dots text-emerald-600"></i>
-                            <span>Обратная связь</span>
-                        </div>
-                        <p class="text-slate-600 text-sm mb-3">Нашли ошибку или хотите предложить улучшение? Напишите нам на почту.</p>
-                        <a href="mailto:me@sup.com"
-                            class="flex justify-between items-center py-2 px-3 rounded-2xl bg-emerald-50 active:bg-emerald-100 w-full transition-colors border border-emerald-100/50">
-                            <div class="flex items-center gap-x-3">
-                                <i class="fa-solid fa-envelope text-emerald-600 text-xl"></i>
-                                <span class="font-medium text-emerald-800">me@sup.com</span>
-                            </div>
-                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-emerald-400"></i>
-                        </a>
                     </div>
 
                     <button id="add-to-home-btn"
@@ -1598,6 +1447,187 @@
         </div>
     </div>
 
+    <!-- Leaderboard Modal -->
+    <div id="leaderboard-modal"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        role="dialog" aria-modal="true">
+        <div class="bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in">
+            <!-- Header -->
+            <div class="p-5 pb-3 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-lg">Таблица лидеров</h2>
+                        <p class="text-xs text-slate-400">Лучшие ученики сообщества</p>
+                    </div>
+                </div>
+                <button id="leaderboard-close-btn" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <!-- Tabs -->
+            <div class="px-5 pt-3 flex gap-2">
+                <button id="leaderboard-tab-words" class="flex-1 py-2 text-xs font-bold rounded-xl bg-emerald-600 text-white transition-colors">
+                    По словам
+                </button>
+                <button id="leaderboard-tab-streak" class="flex-1 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 transition-colors">
+                    По дням подряд 🔥
+                </button>
+            </div>
+            <!-- List -->
+            <div id="leaderboard-list" class="flex-1 overflow-y-auto p-5 space-y-2.5 max-h-[50vh]">
+                <!-- Populated by JS -->
+            </div>
+            <!-- Footer / User Rank & Share -->
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0" id="leaderboard-my-rank">#1</div>
+                    <div class="min-w-0">
+                        <div class="text-xs font-bold text-slate-800 truncate" id="leaderboard-my-name">Ваше место</div>
+                        <div class="text-[11px] text-slate-400" id="leaderboard-my-score">0 слов</div>
+                    </div>
+                </div>
+                <button id="leaderboard-share-btn" class="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-2 active:scale-95 transition-all flex-shrink-0">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Поделиться</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Word Duel Modal -->
+    <div id="duel-modal"
+        class="hidden fixed inset-0 bg-white md:bg-black/70 md:backdrop-blur z-[120] flex flex-col md:items-center md:justify-center p-0 md:p-6"
+        role="dialog" aria-modal="true">
+        <div class="bg-white w-full max-w-xl flex-1 md:flex-initial md:rounded-3xl flex flex-col overflow-hidden shadow-2xl md:max-h-[85vh]">
+            <!-- Arena Header -->
+            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">⚔️</span>
+                    <span class="font-bold text-slate-800 text-base">Дуэль слов</span>
+                    <span id="duel-round-badge" class="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full font-semibold">Раунд 1/5</span>
+                </div>
+                <button id="duel-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                    <i class="fa-solid fa-times text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Score Bar: You vs Rival -->
+            <div class="px-5 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                <!-- Player -->
+                <div class="flex items-center gap-2">
+                    <div id="duel-player-avatar" class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">Вы</div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-800" id="duel-player-name">Вы</div>
+                        <div class="text-xs text-emerald-600 font-extrabold" id="duel-player-score">0 очков</div>
+                    </div>
+                </div>
+
+                <!-- Timer -->
+                <div class="flex flex-col items-center">
+                    <div id="duel-timer" class="w-10 h-10 rounded-full border-4 border-emerald-500 flex items-center justify-center font-mono font-bold text-emerald-700 text-sm">10</div>
+                </div>
+
+                <!-- Rival -->
+                <div class="flex items-center gap-2 flex-row-reverse text-right">
+                    <div id="duel-rival-avatar" class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold text-xs">С</div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-800" id="duel-rival-name">Соперник</div>
+                        <div class="text-xs text-orange-600 font-extrabold" id="duel-rival-score">0 очков</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Area -->
+            <div id="duel-arena-content" class="flex-1 p-6 flex flex-col justify-between overflow-y-auto">
+                <div class="text-center py-4">
+                    <span class="text-xs uppercase tracking-wider font-bold text-slate-400 mb-1 block">Как переводится слово:</span>
+                    <h2 id="duel-word" class="text-3xl font-extrabold text-slate-800 mb-2">Загрузка...</h2>
+                    <div id="duel-feedback" class="h-6 text-sm font-bold text-emerald-600 transition-opacity"></div>
+                </div>
+
+                <!-- Options -->
+                <div id="duel-options" class="grid grid-cols-1 gap-2.5 mb-4">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Victory / Result Screen (hidden by default) -->
+            <div id="duel-result-content" class="hidden flex-1 p-6 flex flex-col items-center justify-center text-center">
+                <div id="duel-result-icon" class="text-6xl mb-4 animate-bounce">🏆</div>
+                <h3 id="duel-result-title" class="text-2xl font-black text-slate-800 mb-1">Победа!</h3>
+                <p id="duel-result-desc" class="text-sm text-slate-500 mb-6">Вы набрали больше очков, чем соперник</p>
+
+                <div class="bg-slate-50 rounded-2xl p-4 w-full max-w-xs mb-6 border border-slate-100 flex justify-around">
+                    <div>
+                        <div class="text-xs text-slate-400">Ваш счёт</div>
+                        <div id="duel-final-player" class="text-xl font-bold text-emerald-600">0</div>
+                    </div>
+                    <div class="w-px bg-slate-200"></div>
+                    <div>
+                        <div class="text-xs text-slate-400">Соперник</div>
+                        <div id="duel-final-rival" class="text-xl font-bold text-orange-500">0</div>
+                    </div>
+                </div>
+
+                <div class="w-full max-w-xs space-y-2">
+                    <button id="duel-share-btn" class="w-full py-3.5 bg-emerald-600 active:bg-emerald-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 transition-all">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        <span>Поделиться победой</span>
+                    </button>
+                    <button id="duel-challenge-btn" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl flex items-center justify-center gap-2 transition-all">
+                        <i class="fa-brands fa-telegram"></i>
+                        <span>Вызвать друга в Telegram</span>
+                    </button>
+                    <button id="duel-retry-btn" class="w-full py-3 bg-slate-100 active:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all">
+                        Сыграть ещё раз
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback / Proposal Modal -->
+    <div id="feedback-modal"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        role="dialog" aria-modal="true">
+        <div class="bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl animate-in">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div>
+                        <h2 id="feedback-modal-title" class="font-bold text-slate-800 text-base">Предложить слово / идею</h2>
+                        <p class="text-xs text-slate-400">Мы рассматриваем каждое сообщение</p>
+                    </div>
+                </div>
+                <button id="feedback-close-btn" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-slate-600 mb-1 block">Тема или слово:</label>
+                    <input id="feedback-input-topic" type="text" placeholder="Например: Новое слово или ошибка в переводе"
+                        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-600 mb-1 block">Ваше сообщение или перевод:</label>
+                    <textarea id="feedback-input-text" rows="3" placeholder="Опишите подробнее..."
+                        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500"></textarea>
+                </div>
+                <button id="feedback-send-btn" type="button"
+                    class="w-full py-3.5 bg-emerald-600 active:bg-emerald-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                    <span>Отправить в Telegram</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Offline indicator -->
     <div id="offline-banner"
         class="hidden fixed top-14 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs px-4 py-1.5 rounded-2xl shadow flex items-center gap-x-2 z-[60]">
@@ -1605,14 +1635,14 @@
         <span>Работаем оффлайн</span>
     </div>
     <div id="custom-app-alert" class="hidden"></div>
-    <script src="./js/utils.js?v=3"></script>
-    <script src="./js/state.js?v=3"></script>
-    <script src="./js/telegram.js?v=4"></script>
-    <script src="./js/ui.js?v=29"></script>
-    <script src="./js/srs.js?v=25"></script>
-    <script src="./js/course.js?v=3"></script>
-    <script src="./js/messenger.js?v=3"></script>
-    <script src="./js/app.js?v=3"></script>
+    <script src="./js/utils.js?v=4"></script>
+    <script src="./js/state.js?v=4"></script>
+    <script src="./js/telegram.js?v=5"></script>
+    <script src="./js/ui.js?v=30"></script>
+    <script src="./js/srs.js?v=26"></script>
+    <script src="./js/course.js?v=4"></script>
+    <script src="./js/messenger.js?v=4"></script>
+    <script src="./js/app.js?v=4"></script>
 </body>
 
 </html>

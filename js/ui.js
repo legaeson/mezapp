@@ -231,15 +231,17 @@
         }
 
         function buildCategoryOptions() {
-            let cats = [...new Set(WORDS.map(w => w.cat))];
-            cats.sort((a, b) => (NICE_CATEGORY_NAMES[a] || a).localeCompare(NICE_CATEGORY_NAMES[b] || b, 'ru'));
-            cats.unshift('all');
+            const cats = ['all', ...new Set(WORDS.map(w => w.cat))].sort((a, b) => {
+                if (a === 'all') return -1;
+                if (b === 'all') return 1;
+                return a.localeCompare(b);
+            });
 
-            const vocabPanel = document.getElementById('category-filter-panel').querySelector('.scroll-area') || document.getElementById('category-filter-panel');
-            const pracPanel = document.getElementById('practice-category-panel').querySelector('.scroll-area') || document.getElementById('practice-category-panel');
+            const vocabPanel = document.getElementById('category-filter-panel')?.querySelector('.scroll-area');
+            const pracPanel = document.getElementById('practice-category-panel')?.querySelector('.scroll-area');
 
-            vocabPanel.innerHTML = '';
-            pracPanel.innerHTML = '';
+            if (vocabPanel) vocabPanel.innerHTML = '';
+            if (pracPanel) pracPanel.innerHTML = '';
 
             const createOption = (val, display, type) => {
                 const div = document.createElement('div');
@@ -271,38 +273,43 @@
             };
 
             // Vocab options
-            vocabPanel.appendChild(createOption('favorites', 'Избранное', 'vocab'));
-            cats.forEach(cat => {
-                const name = cat === 'all' ? 'Все' : (NICE_CATEGORY_NAMES[cat] || cat);
-                vocabPanel.appendChild(createOption(cat, name, 'vocab'));
-            });
-            if (vocabPanel.firstElementChild) {
-                vocabPanel.firstElementChild.style.borderTopLeftRadius = '1.5rem';
-                vocabPanel.firstElementChild.style.borderTopRightRadius = '1.5rem';
-            }
-            if (vocabPanel.lastElementChild) {
-                vocabPanel.lastElementChild.style.borderBottomLeftRadius = '1.5rem';
-                vocabPanel.lastElementChild.style.borderBottomRightRadius = '1.5rem';
+            if (vocabPanel) {
+                vocabPanel.appendChild(createOption('favorites', 'Избранное', 'vocab'));
+                cats.forEach(cat => {
+                    const name = cat === 'all' ? 'Все' : (NICE_CATEGORY_NAMES[cat] || cat);
+                    vocabPanel.appendChild(createOption(cat, name, 'vocab'));
+                });
+                if (vocabPanel.firstElementChild) {
+                    vocabPanel.firstElementChild.style.borderTopLeftRadius = '1.5rem';
+                    vocabPanel.firstElementChild.style.borderTopRightRadius = '1.5rem';
+                }
+                if (vocabPanel.lastElementChild) {
+                    vocabPanel.lastElementChild.style.borderBottomLeftRadius = '1.5rem';
+                    vocabPanel.lastElementChild.style.borderBottomRightRadius = '1.5rem';
+                }
             }
 
             // Practice options
-            cats.forEach(cat => {
-                const name = cat === 'all' ? 'Все слова' : (NICE_CATEGORY_NAMES[cat] || cat);
-                pracPanel.appendChild(createOption(cat, name, 'practice'));
-            });
-            if (pracPanel.firstElementChild) {
-                pracPanel.firstElementChild.style.borderTopLeftRadius = '1.5rem';
-                pracPanel.firstElementChild.style.borderTopRightRadius = '1.5rem';
-            }
-            if (pracPanel.lastElementChild) {
-                pracPanel.lastElementChild.style.borderBottomLeftRadius = '1.5rem';
-                pracPanel.lastElementChild.style.borderBottomRightRadius = '1.5rem';
+            if (pracPanel) {
+                cats.forEach(cat => {
+                    const name = cat === 'all' ? 'Все слова' : (NICE_CATEGORY_NAMES[cat] || cat);
+                    pracPanel.appendChild(createOption(cat, name, 'practice'));
+                });
+                if (pracPanel.firstElementChild) {
+                    pracPanel.firstElementChild.style.borderTopLeftRadius = '1.5rem';
+                    pracPanel.firstElementChild.style.borderTopRightRadius = '1.5rem';
+                }
+                if (pracPanel.lastElementChild) {
+                    pracPanel.lastElementChild.style.borderBottomLeftRadius = '1.5rem';
+                    pracPanel.lastElementChild.style.borderBottomRightRadius = '1.5rem';
+                }
             }
         }
 
         function refreshCategoryCounters() {
             const updatePanel = (panelId, getCount) => {
                 const panel = document.getElementById(panelId);
+                if (!panel) return;
                 panel.querySelectorAll('.dropdown-option').forEach(opt => {
                     const val = opt.dataset.value;
                     const count = getCount(val);
@@ -325,6 +332,7 @@
         function syncSelectedCategoryUI() {
             const sync = (panelId, currentVal) => {
                 const panel = document.getElementById(panelId);
+                if (!panel) return;
                 panel.querySelectorAll('.dropdown-option').forEach(opt => {
                     opt.classList.toggle('active', opt.dataset.value === currentVal);
                 });
@@ -335,7 +343,8 @@
 
         function setVocabularyCategory(val, display) {
             currentFilter.category = val;
-            document.querySelector('#category-filter-wrapper .dropdown-value').textContent = display;
+            const valEl = document.querySelector('#category-filter-wrapper .dropdown-value');
+            if (valEl) valEl.textContent = display;
             closeDropdown('category-filter-wrapper');
             syncSelectedCategoryUI();
             renderWords();
@@ -344,7 +353,8 @@
         function setPracticeCategory(val, display) {
             practiceCategory = val;
             const fullDisplay = val === 'all' ? `${display} (${WORDS.length})` : `${display} (${WORDS.filter(w => w.cat === val).length})`;
-            document.querySelector('#practice-category-wrapper .dropdown-value').textContent = fullDisplay;
+            const valEl = document.querySelector('#practice-category-wrapper .dropdown-value');
+            if (valEl) valEl.textContent = fullDisplay;
             closeDropdown('practice-category-wrapper');
             syncSelectedCategoryUI();
             updatePracticeAvailability();
@@ -1206,8 +1216,9 @@
                 }
                 nextScreen.classList.add('active');
                 if (tab === 'vocabulary') renderWords(!firstVisit);
-                if (tab === 'practice') hideGrammarList();
+                if (tab === 'practice') renderGrammar();
                 if (tab === 'course') { showCourseMainView(); renderCourseScreen(); }
+                if (tab === 'more') { window.TelegramApp?.renderProfileCard?.(); updateStatsUI(); }
                 document.querySelector('main')?.scrollTo({ top: 0, behavior: 'auto' });
             }
 
@@ -1251,15 +1262,29 @@
         }
 
         function showGrammarList() {
-            document.getElementById('practice-main-view').classList.add('hidden');
-            document.getElementById('practice-grammar-view').classList.remove('hidden');
+            const mv = document.getElementById('practice-main-view');
+            const gv = document.getElementById('practice-grammar-view');
+            
+            if (mv) mv.classList.add('hidden');
+            if (gv) gv.classList.remove('hidden');
+            
+            if (typeof window.TelegramApp?.updateBackButton === 'function') {
+                window.TelegramApp.updateBackButton();
+            }
             renderGrammar();
             document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function hideGrammarList() {
-            document.getElementById('practice-main-view').classList.remove('hidden');
-            document.getElementById('practice-grammar-view').classList.add('hidden');
+            const mv = document.getElementById('practice-main-view');
+            const gv = document.getElementById('practice-grammar-view');
+            
+            if (gv) gv.classList.add('hidden');
+            if (mv) mv.classList.remove('hidden');
+            
+            if (typeof window.TelegramApp?.updateBackButton === 'function') {
+                window.TelegramApp.updateBackButton();
+            }
         }
 
         function grammarLevelLabel(level) {
@@ -2100,9 +2125,193 @@
             });
         }
 
+        function updatePracticeStreakUI() {
+            const streakCount = window.PROGRESS?.streak?.current || 1;
+            const daysEl = document.getElementById('practice-streak-days');
+            const tgStreakEl = document.getElementById('tg-user-streak');
+            const suffix = streakCount === 1 ? 'день' : (streakCount >= 2 && streakCount <= 4 ? 'дня' : 'дней');
+            const text = `${streakCount} ${suffix}`;
+            if (daysEl) daysEl.textContent = text;
+            if (tgStreakEl) tgStreakEl.textContent = text;
+        }
+
+        let currentLeaderboardTab = 'words';
+        function openLeaderboardModal() {
+            const modal = document.getElementById('leaderboard-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            renderLeaderboard(currentLeaderboardTab);
+        }
+
+        function closeLeaderboardModal() {
+            const modal = document.getElementById('leaderboard-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function renderLeaderboard(tab = 'words') {
+            currentLeaderboardTab = tab;
+            const listEl = document.getElementById('leaderboard-list');
+            const btnWords = document.getElementById('leaderboard-tab-words');
+            const btnStreak = document.getElementById('leaderboard-tab-streak');
+            const myRankEl = document.getElementById('leaderboard-my-rank');
+            const myNameEl = document.getElementById('leaderboard-my-name');
+            const myScoreEl = document.getElementById('leaderboard-my-score');
+
+            if (!listEl) return;
+
+            if (btnWords && btnStreak) {
+                if (tab === 'words') {
+                    btnWords.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-emerald-600 text-white transition-colors';
+                    btnStreak.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 transition-colors';
+                } else {
+                    btnWords.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 transition-colors';
+                    btnStreak.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-amber-500 text-white transition-colors';
+                }
+            }
+
+            const { baseList, currentUserItem } = typeof getLeaderboardData === 'function' ? getLeaderboardData() : { baseList: [], currentUserItem: {} };
+            const fullList = [...baseList, currentUserItem];
+
+            if (tab === 'words') {
+                fullList.sort((a, b) => b.words - a.words || b.score - a.score);
+            } else {
+                fullList.sort((a, b) => b.streak - a.streak || b.words - a.words);
+            }
+
+            listEl.innerHTML = '';
+            let myRank = 1;
+
+            fullList.forEach((item, index) => {
+                const rank = index + 1;
+                if (item.isMe) myRank = rank;
+
+                let medal = `#${rank}`;
+                let medalBg = 'bg-slate-100 text-slate-600';
+                if (rank === 1) { medal = '🥇'; medalBg = 'bg-amber-100 text-amber-800 text-sm'; }
+                else if (rank === 2) { medal = '🥈'; medalBg = 'bg-slate-200 text-slate-800 text-sm'; }
+                else if (rank === 3) { medal = '🥉'; medalBg = 'bg-amber-100 text-amber-900 text-sm'; }
+
+                const isMe = item.isMe;
+                const card = document.createElement('div');
+                card.className = `flex items-center justify-between p-3 rounded-2xl border transition-all ${
+                    isMe 
+                        ? 'bg-emerald-50/80 border-emerald-300 shadow-sm' 
+                        : 'bg-white border-slate-100 hover:border-slate-200'
+                }`;
+
+                const left = document.createElement('div');
+                left.className = 'flex items-center gap-3 min-w-0';
+
+                const rankBadge = document.createElement('div');
+                rankBadge.className = `w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 ${medalBg}`;
+                rankBadge.textContent = medal;
+
+                const avatar = document.createElement('div');
+                avatar.className = 'w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs flex-shrink-0 overflow-hidden';
+                if (item.photo) {
+                    avatar.innerHTML = `<img src="${item.photo}" class="w-full h-full object-cover">`;
+                } else {
+                    avatar.textContent = item.avatar || (item.name ? item.name.charAt(0) : 'U');
+                }
+
+                const nameWrap = document.createElement('div');
+                nameWrap.className = 'min-w-0';
+                const nameRow = document.createElement('div');
+                nameRow.className = 'flex items-center gap-1.5';
+                const name = document.createElement('div');
+                name.className = `text-xs font-bold truncate ${isMe ? 'text-emerald-900' : 'text-slate-800'}`;
+                name.textContent = isMe ? `${item.name} (Вы)` : item.name;
+                nameRow.appendChild(name);
+
+                const sub = document.createElement('div');
+                sub.className = 'text-[11px] text-slate-400 truncate';
+                sub.textContent = item.username || '';
+
+                nameWrap.append(nameRow, sub);
+                left.append(rankBadge, avatar, nameWrap);
+
+                const right = document.createElement('div');
+                right.className = 'text-right flex-shrink-0';
+                if (tab === 'words') {
+                    const score = document.createElement('div');
+                    score.className = 'text-xs font-bold text-slate-800';
+                    score.textContent = `${item.words} слов`;
+                    const subText = document.createElement('div');
+                    subText.className = 'text-[10px] text-slate-400';
+                    subText.textContent = `🔥 ${item.streak} дн`;
+                    right.append(score, subText);
+                } else {
+                    const score = document.createElement('div');
+                    score.className = 'text-xs font-bold text-amber-600 flex items-center gap-1 justify-end';
+                    score.innerHTML = `<span>🔥</span><span>${item.streak} дн</span>`;
+                    const subText = document.createElement('div');
+                    subText.className = 'text-[10px] text-slate-400';
+                    subText.textContent = `${item.words} слов`;
+                    right.append(score, subText);
+                }
+
+                card.append(left, right);
+                listEl.appendChild(card);
+            });
+
+            if (myRankEl) myRankEl.textContent = `#${myRank}`;
+            if (myNameEl) myNameEl.textContent = currentUserItem.name ? `${currentUserItem.name} (Вы)` : 'Вы';
+            if (myScoreEl) {
+                myScoreEl.textContent = tab === 'words' 
+                    ? `${currentUserItem.words} слов` 
+                    : `🔥 ${currentUserItem.streak} дн подряд`;
+            }
+        }
+
+        function openFeedbackModal(defaultTopic = '') {
+            const modal = document.getElementById('feedback-modal');
+            const topicInput = document.getElementById('feedback-input-topic');
+            const textInput = document.getElementById('feedback-input-text');
+            if (!modal) return;
+            if (topicInput) topicInput.value = defaultTopic;
+            if (textInput) textInput.value = '';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeFeedbackModal() {
+            const modal = document.getElementById('feedback-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function sendFeedbackMessage() {
+            const topic = document.getElementById('feedback-input-topic')?.value?.trim() || 'Предложение';
+            const text = document.getElementById('feedback-input-text')?.value?.trim() || '';
+
+            if (!text && !topic) {
+                showCustomAlert('Заполните форму', 'Пожалуйста, напишите ваше предложение или вопрос.', true);
+                return;
+            }
+
+            closeFeedbackModal();
+            if (window.TelegramApp?.openSupportChat) {
+                window.TelegramApp.openSupportChat(topic);
+            } else {
+                window.open('https://t.me/LezgiMez', '_blank');
+            }
+            showCustomAlert('Спасибо за отклик!', 'Ваше сообщение помогает делать LezgiMez лучше.');
+        }
+
         window.initiateDonation = initiateDonation;
         window.processStarsInvoice = processStarsInvoice;
         window.showCustomAlert = showCustomAlert;
+        window.updatePracticeStreakUI = updatePracticeStreakUI;
+        window.openLeaderboardModal = openLeaderboardModal;
+        window.closeLeaderboardModal = closeLeaderboardModal;
+        window.renderLeaderboard = renderLeaderboard;
+        window.openFeedbackModal = openFeedbackModal;
+        window.closeFeedbackModal = closeFeedbackModal;
+        window.sendFeedbackMessage = sendFeedbackMessage;
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', bindDonationButtons, { once: true });
