@@ -35,10 +35,9 @@ if ($amount < 1 || $amount > 10000) {
 }
 
 $token = getenv('TELEGRAM_BOT_TOKEN');
-if (empty($token) && file_exists(__DIR__ . '/secrets.php')) {
+if (file_exists(__DIR__ . '/secrets.php')) {
     include __DIR__ . '/secrets.php';
-}
-if (empty($token) && file_exists(__DIR__ . '/../secrets.php')) {
+} elseif (file_exists(__DIR__ . '/../secrets.php')) {
     include __DIR__ . '/../secrets.php';
 }
 
@@ -48,7 +47,10 @@ if (empty($token)) {
     exit;
 }
 
-$url = "https://api.telegram.org/bot" . trim($token) . "/createInvoiceLink";
+$proxy = getenv('TELEGRAM_PROXY') ?: ($telegramProxy ?? ($proxy ?? ''));
+$baseApiUrl = getenv('TELEGRAM_API_URL') ?: ($telegramApiUrl ?? 'https://api.telegram.org');
+
+$url = rtrim($baseApiUrl, '/') . "/bot" . trim($token) . "/createInvoiceLink";
 $data = [
     'title' => 'Поддержка проекта LezgiMez',
     'description' => "Добровольное пожертвование $amount ⭐️ на развитие LezgiMez",
@@ -71,7 +73,13 @@ if (function_exists('curl_init')) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $requestBody);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
+    if (!empty($proxy)) {
+        curl_setopt($ch, CURLOPT_PROXY, $proxy);
+    }
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     if ($response === false) {
@@ -79,15 +87,18 @@ if (function_exists('curl_init')) {
     }
     curl_close($ch);
 } else {
-    $context = stream_context_create([
-        'http' => [
-            'method' => 'POST',
-            'header' => "Content-Type: application/json\r\n",
-            'content' => $requestBody,
-            'timeout' => 10,
-            'ignore_errors' => true
-        ]
-    ]);
+    $httpOptions = [
+        'method' => 'POST',
+        'header' => "Content-Type: application/json\r\n",
+        'content' => $requestBody,
+        'timeout' => 15,
+        'ignore_errors' => true
+    ];
+    if (!empty($proxy) && (strpos($proxy, 'http://') === 0 || strpos($proxy, 'tcp://') === 0)) {
+        $httpOptions['proxy'] = str_replace(['http://', 'https://'], 'tcp://', $proxy);
+        $httpOptions['request_fulluri'] = true;
+    }
+    $context = stream_context_create(['http' => $httpOptions]);
     $response = @file_get_contents($url, false, $context);
     if (isset($http_response_header[0]) && preg_match('/\s(\d{3})\s/', $http_response_header[0], $matches)) {
         $httpCode = intval($matches[1]);

@@ -44,8 +44,13 @@
             (WORDS || []).forEach(word => {
                 const lz = normalizeLezgiSearch(word.lz);
                 const ru = normalizeLezgiSearch(word.ru);
-                const ex = normalizeLezgiSearch(word.ex);
+                const ex = normalizeLezgiSearch(word.ex || '');
                 const tags = (word.tags || []).map(t => normalizeLezgiSearch(t));
+
+                const mazin = word.mazin ? normalizeLezgiSearch(word.mazin) : '';
+                const mazinLat = word.mazin_lat ? normalizeLezgiSearch(word.mazin_lat) : '';
+                const mazinAcad = word.mazin_academic ? normalizeLezgiSearch(word.mazin_academic) : '';
+                const mazinAcadLat = word.mazin_academic_lat ? normalizeLezgiSearch(word.mazin_academic_lat) : '';
 
                 word._search = {
                     lz, ru, ex, tags,
@@ -54,7 +59,20 @@
                     lzClean: cleanString(lz),
                     lzPartsClean: splitParts(lz).map(cleanString),
                     exClean: cleanString(ex),
-                    tagsClean: tags.map(cleanString)
+                    tagsClean: tags.map(cleanString),
+                    // Dialect fields
+                    mazin,
+                    mazinClean: cleanString(mazin),
+                    mazinParts: splitParts(mazin),
+                    mazinPartsClean: splitParts(mazin).map(cleanString),
+                    mazinLat,
+                    mazinLatParts: splitParts(mazinLat),
+                    mazinAcad,
+                    mazinAcadClean: cleanString(mazinAcad),
+                    mazinAcadParts: splitParts(mazinAcad),
+                    mazinAcadPartsClean: splitParts(mazinAcad).map(cleanString),
+                    mazinAcadLat,
+                    mazinAcadLatParts: splitParts(mazinAcadLat)
                 };
             });
         }
@@ -82,8 +100,14 @@
                 const hasRuMatch = item.ru.includes(q);
                 const hasTagsMatch = item.tags.some((tag, idx) => tag.includes(q) || item.tagsClean[idx].includes(qClean));
                 const hasExMatch = item.exClean.includes(qClean);
+                const hasMazinMatch = (
+                    (item.mazin && item.mazinClean.includes(qClean)) ||
+                    (item.mazinLat && item.mazinLat.includes(q)) ||
+                    (item.mazinAcad && item.mazinAcadClean.includes(qClean)) ||
+                    (item.mazinAcadLat && item.mazinAcadLat.includes(q))
+                );
 
-                if (!hasLzMatch && !hasRuMatch && !hasTagsMatch && !hasExMatch) continue;
+                if (!hasLzMatch && !hasRuMatch && !hasTagsMatch && !hasExMatch && !hasMazinMatch) continue;
 
                 let score = 0;
                 let usedPalochkaFallback = false;
@@ -183,6 +207,54 @@
                     }
                 }
 
+                // 7. Dialect match
+                if (hasMazinMatch) {
+                    if (item.mazin === q || item.mazinAcad === q || item.mazinLat === q || item.mazinAcadLat === q) {
+                        score += 9000;
+                    } else if (item.mazinClean === qClean || item.mazinAcadClean === qClean) {
+                        score += 7500;
+                        usedPalochkaFallback = true;
+                    } else if ((item.mazin && item.mazin.startsWith(q)) || (item.mazinAcad && item.mazinAcad.startsWith(q)) || (item.mazinLat && item.mazinLat.startsWith(q))) {
+                        score += 3000;
+                    } else if ((item.mazinClean && item.mazinClean.startsWith(qClean)) || (item.mazinAcadClean && item.mazinAcadClean.startsWith(qClean))) {
+                        score += 2000;
+                        usedPalochkaFallback = true;
+                    } else if ((item.mazin && item.mazin.includes(q)) || (item.mazinAcad && item.mazinAcad.includes(q)) || (item.mazinLat && item.mazinLat.includes(q))) {
+                        score += 1000;
+                    } else if ((item.mazinClean && item.mazinClean.includes(qClean)) || (item.mazinAcadClean && item.mazinAcadClean.includes(qClean))) {
+                        score += 800;
+                        usedPalochkaFallback = true;
+                    }
+
+                    // Parts match for multi-word dialect entries
+                    const allMazinParts = [...(item.mazinParts || []), ...(item.mazinAcadParts || []), ...(item.mazinLatParts || [])];
+                    const allMazinPartsClean = [...(item.mazinPartsClean || []), ...(item.mazinAcadPartsClean || [])];
+
+                    for (let j = 0; j < allMazinParts.length; j++) {
+                        const part = allMazinParts[j];
+                        if (part === q) {
+                            score += 4000;
+                        } else if (part.startsWith(q)) {
+                            score += 2000 + (q.length / part.length * 300);
+                        } else if (part.includes(q)) {
+                            score += 800 + (q.length / part.length * 50);
+                        }
+                    }
+                    for (let j = 0; j < allMazinPartsClean.length; j++) {
+                        const cleanPart = allMazinPartsClean[j];
+                        if (cleanPart === qClean) {
+                            score += 3000;
+                            usedPalochkaFallback = true;
+                        } else if (cleanPart.startsWith(qClean)) {
+                            score += 1500 + (qClean.length / cleanPart.length * 200);
+                            usedPalochkaFallback = true;
+                        } else if (cleanPart.includes(qClean)) {
+                            score += 600 + (qClean.length / cleanPart.length * 40);
+                            usedPalochkaFallback = true;
+                        }
+                    }
+                }
+
                 if (score > 0) {
                     scoredItems.push({ word, score, index: i });
                     if (usedPalochkaFallback) {
@@ -205,7 +277,7 @@
             // Generate search hints
             let hint = '';
             if (qClean === q && matchedWithoutPalochka) {
-                hint = 'Показаны результаты с нормализацией кӀ/к1/кI и похожих символов';
+                hint = 'Показаны результаты с нормализацией кӀ/кӀ/кӀ и похожих символов';
             }
 
             return { results, hint };
@@ -448,16 +520,16 @@
             { "letter": "Гь гь", "ipa": "/h/" }, { "letter": "Д д", "ipa": "/d/" },
             { "letter": "Е е", "ipa": "/e/ ~ /je/" }, { "letter": "Ж ж", "ipa": "/ʒ/" }, { "letter": "З з", "ipa": "/z/" },
             { "letter": "И и", "ipa": "/i/" }, { "letter": "Й й", "ipa": "/j/" }, { "letter": "К к", "ipa": "/kʰ/ ~ /k/" },
-            { "letter": "Къ къ", "ipa": "/q/" }, { "letter": "Кь кь", "ipa": "/q'/" }, { "letter": "КI кI", "ipa": "/k'/" },
+            { "letter": "Къ къ", "ipa": "/q/" }, { "letter": "Кь кь", "ipa": "/q'/" }, { "letter": "КӀ кӀ", "ipa": "/k'/" },
             { "letter": "Л л", "ipa": "/l/" }, { "letter": "М м", "ipa": "/m/" },
-            { "letter": "Н н", "ipa": "/n/" }, { "letter": "П п", "ipa": "/pʰ/ ~ /p/" }, { "letter": "ПI пI", "ipa": "/p'/" },
+            { "letter": "Н н", "ipa": "/n/" }, { "letter": "П п", "ipa": "/pʰ/ ~ /p/" }, { "letter": "ПӀ пӀ", "ipa": "/p'/" },
             { "letter": "Р р", "ipa": "/r/" }, { "letter": "С с", "ipa": "/s/" },
-            { "letter": "Т т", "ipa": "/tʰ/ ~ /t/" }, { "letter": "ТI тI", "ipa": "/t'/" },
+            { "letter": "Т т", "ipa": "/tʰ/ ~ /t/" }, { "letter": "ТӀ тӀ", "ipa": "/t'/" },
             { "letter": "У у", "ipa": "/u/" }, { "letter": "Уь уь", "ipa": "/y/" },
             { "letter": "Ф ф", "ipa": "/f/" }, { "letter": "Х х", "ipa": "/χ/" },
             { "letter": "Хъ хъ", "ipa": "/qʰ/" }, { "letter": "Хь хь", "ipa": "/x/" },
-            { "letter": "Ц ц", "ipa": "/tsʰ/ ~ /ts/" }, { "letter": "ЦI цI", "ipa": "/ts'/" },
-            { "letter": "Ч ч", "ipa": "/tʃʰ/ ~ /tʃ/" }, { "letter": "ЧI чI", "ipa": "/tʃ'/" },
+            { "letter": "Ц ц", "ipa": "/tsʰ/ ~ /ts/" }, { "letter": "ЦӀ цӀ", "ipa": "/ts'/" },
+            { "letter": "Ч ч", "ipa": "/tʃʰ/ ~ /tʃ/" }, { "letter": "ЧӀ чӀ", "ipa": "/tʃ'/" },
             { "letter": "Ш ш", "ipa": "/ʃ/" }, { "letter": "Э э", "ipa": "/e/" }, { "letter": "Ю ю", "ipa": "/ju/ ~ /y/" }, { "letter": "Я я", "ipa": "/ja/ ~ /æ/" }
         ];
 
@@ -513,9 +585,9 @@
             const main = item.letter.split(' ')[0];
             const soundFile = main.toLowerCase().replace(/i/g, '1');
 
-            // Все графемы алфавита (первая часть, например "К", "Къ", "Кь", "КI")
+            // Все графемы алфавита (первая часть, например "К", "Къ", "Кь", "КӀ")
             const allGraphemes = ALPHABET.map(l => l.letter.split(' ')[0]);
-            // Графемы, которые начинаются так же, но длиннее (например для "К" → "Къ", "Кь", "КI")
+            // Графемы, которые начинаются так же, но длиннее (например для "К" → "Къ", "Кь", "КӀ")
             const longerGraphemes = allGraphemes.filter(g =>
                 g.toLowerCase().startsWith(main.toLowerCase()) && g.length > main.length
             );
@@ -524,7 +596,7 @@
             const examples = WORDS.filter(w => {
                 const lz = w.lz.toLowerCase();
                 if (!lz.startsWith(main.toLowerCase())) return false;
-                // Исключаем слова, начинающиеся с составной графемы (Къ, Кь, КI и т.д.)
+                // Исключаем слова, начинающиеся с составной графемы (Къ, Кь, КӀ и т.д.)
                 return !longerGraphemes.some(gg => lz.startsWith(gg.toLowerCase()));
             }).slice(0, 5);
 
@@ -698,12 +770,6 @@
                 b.textContent = 'Ваш личный список.';
                 contextBanner.append(b, ' Повторяйте эти слова регулярно. Прогресс сохраняется на устройстве.');
                 contextBanner.style.display = '';
-            } else if (currentFilter.category === 'all' && !hasSearch) {
-                const b = document.createElement('strong');
-                b.textContent = 'Весь словарь.';
-                contextBanner.append(b, ' Листайте список, используйте поиск или фильтр по темам.');
-                contextBanner.className += ' md:hidden';
-                contextBanner.style.display = '';
             } else if (currentFilter.category !== 'all' && !hasSearch) {
                 const wrapper = document.getElementById('category-filter-wrapper');
                 const catName = wrapper.querySelector('.dropdown-value').textContent;
@@ -746,13 +812,28 @@
             pageWords.forEach(word => {
                 const isFav = PROGRESS.favorites.includes(word.id);
                 const card = document.createElement('div');
-                card.className = 'word-card bg-white border border-slate-100 rounded-3xl p-4 flex items-start gap-4 relative';
+                card.className = 'word-card bg-white border border-slate-100 rounded-3xl p-4 flex items-start gap-4 relative cursor-pointer hover:shadow-md transition';
+                card.addEventListener('click', () => showWordModal(word.id));
+
+                const lzVariants = (word.lz || '').split(/[\/,]/).map(s => s.trim()).filter(Boolean);
+                const primaryLz = lzVariants[0] || word.lz;
 
                 const content = document.createElement('div');
                 content.className = 'flex-1 min-w-0';
                 const lzWrap = document.createElement('div');
-                lzWrap.className = 'lezgin-text text-emerald-950 font-bold mb-1';
-                lzWrap.textContent = word.lz;
+                lzWrap.className = 'lezgin-text text-emerald-950 font-bold mb-1 flex items-center gap-2 flex-wrap';
+                
+                const lzMain = document.createElement('span');
+                lzMain.textContent = primaryLz;
+                lzWrap.appendChild(lzMain);
+
+                if (lzVariants.length > 1) {
+                    const badge = document.createElement('span');
+                    badge.className = 'text-[11px] px-2 py-0.5 bg-emerald-100/70 text-emerald-800 rounded-full font-semibold';
+                    badge.textContent = `+${lzVariants.length - 1}`;
+                    badge.title = 'Есть другие варианты';
+                    lzWrap.appendChild(badge);
+                }
 
                 const metaWrap = document.createElement('div');
                 metaWrap.className = 'flex items-center gap-2 mt-1.5 flex-wrap';
@@ -766,9 +847,11 @@
 
                 const right = document.createElement('div');
                 right.className = 'text-right flex-shrink-0 flex flex-col items-end gap-2 max-w-[45%]';
+                const ruVariants = (word.ru || '').split(/[\/,]/).map(s => s.trim()).filter(Boolean);
+                const primaryRu = ruVariants[0] || word.ru;
                 const ru = document.createElement('div');
                 ru.className = 'text-sm px-3 py-1 bg-emerald-50 text-emerald-700 rounded-2xl font-medium block whitespace-normal text-right';
-                ru.textContent = word.ru;
+                ru.textContent = primaryRu;
 
                 const bottom = document.createElement('div');
                 bottom.className = 'flex items-center gap-2';
@@ -800,8 +883,55 @@
             renderLoadMore(filtered.length);
             if (!skipAnimation && !append) staggerCards(grid);
         }
+        let vocabObserver = null;
+        let isVocabLoading = false;
+
+        function initVocabInfiniteScroll() {
+            const pagination = document.getElementById('pagination');
+            const scrollContainer = document.querySelector('#screen-vocabulary .overflow-y-auto');
+            if (!pagination || !scrollContainer) return;
+
+            if (vocabObserver) {
+                vocabObserver.disconnect();
+            }
+
+            if (typeof IntersectionObserver !== 'undefined') {
+                vocabObserver = new IntersectionObserver((entries) => {
+                    const entry = entries[0];
+                    if (entry && entry.isIntersecting && !isVocabLoading) {
+                        const currentTotal = parseInt(document.getElementById('results-count')?.textContent || '0', 10);
+                        if (loadedCount < currentTotal) {
+                            isVocabLoading = true;
+                            renderWords(true, true);
+                            setTimeout(() => { isVocabLoading = false; }, 250);
+                        }
+                    }
+                }, {
+                    root: scrollContainer,
+                    rootMargin: '250px 0px 250px 0px',
+                    threshold: 0.05
+                });
+                vocabObserver.observe(pagination);
+            }
+
+            if (!scrollContainer._hasInfiniteScroll) {
+                scrollContainer._hasInfiniteScroll = true;
+                scrollContainer.addEventListener('scroll', () => {
+                    if (isVocabLoading) return;
+                    const currentTotal = parseInt(document.getElementById('results-count')?.textContent || '0', 10);
+                    if (loadedCount >= currentTotal) return;
+                    if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 350) {
+                        isVocabLoading = true;
+                        renderWords(true, true);
+                        setTimeout(() => { isVocabLoading = false; }, 250);
+                    }
+                }, { passive: true });
+            }
+        }
+
         function renderLoadMore(total) {
             const container = document.getElementById('pagination');
+            if (!container) return;
             container.innerHTML = '';
             log(`[renderLoadMore] Checking if button needed. Loaded: ${loadedCount}, Total: ${total}`);
             if (loadedCount >= total) {
@@ -809,14 +939,21 @@
                 done.className = 'text-sm text-slate-400 font-medium py-3 text-center';
                 done.textContent = `Все слова загружены (${total})`;
                 container.appendChild(done);
+                if (vocabObserver) vocabObserver.disconnect();
                 return;
             }
             const nextBatch = Math.min(loadedCount + PAGE_SIZE, total);
             const btn = document.createElement('button');
-            btn.className = 'px-6 py-3 text-sm font-semibold rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 active:bg-emerald-100 w-full';
-            btn.textContent = `Загрузить ещё (${loadedCount + 1}–${nextBatch} из ${total})`;
-            btn.onclick = () => renderWords(false, true);
+            btn.className = 'px-6 py-3 text-sm font-semibold rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 active:bg-emerald-100 w-full flex items-center justify-center gap-2';
+            btn.innerHTML = `Загрузить ещё (${loadedCount + 1}–${nextBatch} из ${total})`;
+            btn.onclick = () => {
+                isVocabLoading = true;
+                renderWords(true, true);
+                setTimeout(() => { isVocabLoading = false; }, 250);
+            };
             container.appendChild(btn);
+
+            initVocabInfiniteScroll();
         }
 
         function showWordModal(wordId) {
@@ -838,67 +975,256 @@
             body.className = 'px-6 pb-5 flex flex-col flex-1 min-h-0 overflow-y-auto';
             body.style.paddingTop = 'calc(var(--tg-safe-area-inset-top, 0px) + 2.5rem)';
 
+            const lzVariants = (word.lz || '').split(/[\/,]/).map(s => s.trim()).filter(Boolean);
+            const primaryLz = lzVariants[0] || word.lz;
+            const primaryTr = word.lz_lat || (typeof transliterateLezgin === 'function' ? transliterateLezgin(primaryLz) : '');
+
+            const ruVariants = (word.ru || '').split(/[\/,]/).map(s => s.trim()).filter(Boolean);
+            const primaryRu = (ruVariants.length === lzVariants.length) ? ruVariants[0] : word.ru;
+
             const header = document.createElement('div');
-            header.className = 'flex justify-between items-start';
+            header.className = 'flex justify-between items-start gap-4';
 
             const left = document.createElement('div');
-            const catRow = document.createElement('div');
-            catRow.className = 'flex items-center gap-2';
-            const catSpan = document.createElement('div');
-            catSpan.className = 'uppercase tracking-[1.5px] text-emerald-600 text-sm font-bold';
+            left.className = 'flex-1 min-w-0';
+
+            // Category label
+            const catSpan = document.createElement('span');
+            catSpan.className = 'block text-xs sm:text-sm font-bold uppercase tracking-widest text-emerald-600 mb-2 leading-none';
             catSpan.textContent = word.cat;
-            catRow.append(catSpan);
-            
-            const h1Row = document.createElement('div');
-            h1Row.className = 'flex items-center gap-3 mt-1';
-            const h1 = document.createElement('div');
-            h1.className = 'text-[42px] leading-none font-bold text-emerald-900 lezgin-text';
-            h1.textContent = word.lz;
-            h1Row.append(h1);
-            
-            left.append(catRow, h1Row);
+            left.append(catSpan);
+
+            // Word + transliteration on same line, aligned by center
+            const wordRow = document.createElement('div');
+            wordRow.className = 'flex items-center gap-3 flex-wrap mt-1';
+
+            const lzWord = document.createElement('span');
+            lzWord.className = 'text-3xl sm:text-4xl font-extrabold text-slate-900 lezgin-text tracking-tight';
+            lzWord.textContent = primaryLz;
+            wordRow.append(lzWord);
+
+            if (primaryTr) {
+                const trEl = document.createElement('span');
+                trEl.className = 'text-lg sm:text-xl font-medium text-slate-400';
+                trEl.textContent = `— ${primaryTr}`;
+                wordRow.append(trEl);
+            }
+            left.append(wordRow);
 
             const right = document.createElement('div');
-            right.className = 'flex items-center gap-3';
-            const fav = document.createElement('button');
-            fav.className = 'text-2xl transition-transform active:scale-125';
-            fav.innerHTML = `<i class="fa-${isFav ? 'solid' : 'regular'} fa-star ${isFav ? 'text-amber-400' : 'text-slate-300'}"></i>`;
-            fav.addEventListener('click', () => { toggleFavorite(word.id); showWordModal(word.id); });
+            right.className = 'flex items-center gap-4 flex-shrink-0';
             const close = document.createElement('button');
             close.id = 'modal-close-btn';
-            close.className = 'hidden md:flex text-slate-300 active:text-slate-400 items-center justify-center';
-            close.innerHTML = '<i class="fa-solid fa-times text-3xl"></i>';
+            close.className = 'flex text-slate-400 hover:text-slate-600 active:text-slate-800 items-center justify-center text-2xl transition-colors p-1';
+            close.innerHTML = '<i class="fa-solid fa-times"></i>';
             close.addEventListener('click', closeModal);
-            right.append(fav, close);
+            right.append(close);
             header.append(left, right);
 
+            // Translation
             const info = document.createElement('div');
-            info.className = 'mt-4';
+            info.className = 'mt-4 pt-4 border-t border-slate-100/80';
             const ru = document.createElement('div');
-            ru.className = 'text-3xl font-semibold';
-            ru.textContent = word.ru;
+            ru.className = 'text-2xl sm:text-3xl font-semibold text-slate-700 mt-1';
+            ru.textContent = primaryRu;
             info.appendChild(ru);
             if (SHOW_VOCABULARY_IPA && word.ipa) {
                 const ipa = document.createElement('div');
-                ipa.className = 'mt-1 ipa-text';
+                ipa.className = 'mt-2 ipa-text text-base text-slate-400';
                 ipa.textContent = word.ipa;
                 info.appendChild(ipa);
             }
 
+            // Variants/synonyms
+            if (lzVariants.length > 1) {
+                const variantsSection = document.createElement('div');
+                variantsSection.className = 'mt-6';
+                
+                const varTitle = document.createElement('div');
+                varTitle.className = 'text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-widest mb-3';
+                varTitle.textContent = 'Синонимы';
+                variantsSection.appendChild(varTitle);
+
+                const varList = document.createElement('div');
+                varList.className = 'flex flex-col gap-2';
+
+                lzVariants.slice(1).forEach((v, idx) => {
+                    const vTranslit = typeof transliterateLezgin === 'function' ? transliterateLezgin(v) : '';
+                    const vRu = (ruVariants.length === lzVariants.length) ? ruVariants[idx + 1] : word.ru;
+                    const isSameAsPrimary = (vRu === word.ru || vRu === primaryRu);
+
+                    const vItem = document.createElement('div');
+                    vItem.className = 'flex items-center justify-between gap-4 px-4 py-3 bg-slate-50 rounded-2xl';
+                    if (isSameAsPrimary) {
+                        vItem.className = 'flex items-center justify-start gap-4 px-4 py-3 bg-slate-50 rounded-2xl';
+                    }
+                    
+                    const vLeft = document.createElement('div');
+                    vLeft.className = 'flex items-center gap-2.5 min-w-0 flex-wrap';
+                    
+                    const vLz = document.createElement('span');
+                    vLz.className = 'font-bold text-slate-800 lezgin-text text-xl sm:text-2xl';
+                    vLz.textContent = v;
+                    vLeft.appendChild(vLz);
+
+                    if (vTranslit) {
+                        const vTr = document.createElement('span');
+                        vTr.className = 'text-sm sm:text-base font-medium text-slate-400';
+                        vTr.textContent = `— ${vTranslit}`;
+                        vLeft.appendChild(vTr);
+                    }
+                    
+                    if (!isSameAsPrimary) {
+                        const vRuEl = document.createElement('span');
+                        vRuEl.className = 'text-sm sm:text-base font-medium text-slate-500 flex-shrink-0';
+                        vRuEl.textContent = vRu;
+                        vItem.append(vLeft, vRuEl);
+                    } else {
+                        vItem.append(vLeft);
+                    }
+                    
+                    varList.appendChild(vItem);
+                });
+                
+                variantsSection.appendChild(varList);
+                info.appendChild(variantsSection);
+            }
+
             body.append(header, info);
+
+            if (word.mazin && word.mazin !== 'В слове') {
+                const dialectSection = document.createElement('div');
+                dialectSection.className = 'mt-6 pt-4 border-t border-slate-100/80';
+                
+                const dialectTitle = document.createElement('div');
+                dialectTitle.className = 'text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-widest mb-3';
+                dialectTitle.textContent = 'Мазинский диалект (Маза)';
+                dialectSection.appendChild(dialectTitle);
+
+                const dialectCard = document.createElement('div');
+                dialectCard.className = 'flex flex-col gap-2 px-4 py-3.5 bg-emerald-50/30 border border-emerald-100/30 rounded-2xl';
+
+                // Row for standard mazin word + transcription
+                const mazinRow = document.createElement('div');
+                mazinRow.className = 'flex items-center gap-2.5 flex-wrap';
+                
+                const mazinWord = document.createElement('span');
+                mazinWord.className = 'font-bold text-emerald-950 lezgin-text text-xl sm:text-2xl';
+                mazinWord.textContent = word.mazin;
+                mazinRow.appendChild(mazinWord);
+
+                if (word.mazin_lat) {
+                    const mazinTr = document.createElement('span');
+                    mazinTr.className = 'text-sm sm:text-base font-medium text-emerald-600/80';
+                    mazinTr.textContent = `— [${word.mazin_lat}]`;
+                    mazinRow.appendChild(mazinTr);
+                }
+                dialectCard.appendChild(mazinRow);
+
+                // If academic is different, show it
+                if (word.mazin_academic && word.mazin_academic !== word.mazin) {
+                    const acadRow = document.createElement('div');
+                    acadRow.className = 'text-xs sm:text-sm text-slate-500 mt-1.5 flex items-center gap-1.5 flex-wrap';
+                    
+                    const label = document.createElement('span');
+                    label.className = 'font-semibold text-slate-400';
+                    label.textContent = 'Академ. запись:';
+                    
+                    const val = document.createElement('span');
+                    val.className = 'font-bold text-slate-700 lezgin-text';
+                    val.textContent = word.mazin_academic;
+                    
+                    acadRow.appendChild(label);
+                    acadRow.appendChild(val);
+                    
+                    if (word.mazin_academic_lat) {
+                        const latVal = document.createElement('span');
+                        latVal.className = 'text-slate-400';
+                        latVal.textContent = `[${word.mazin_academic_lat}]`;
+                        acadRow.appendChild(latVal);
+                    }
+                    dialectCard.appendChild(acadRow);
+                }
+
+                // Translation of the dialect word if it differs from primary translation
+                const primaryRu = (word.ru || '').split(/[\/,]/)[0].trim().toLowerCase();
+                const mazinRu = (word.mazin_ru || '').trim().toLowerCase();
+                if (word.mazin_ru && mazinRu !== primaryRu && !primaryRu.includes(mazinRu) && !mazinRu.includes(primaryRu)) {
+                    const transRow = document.createElement('div');
+                    transRow.className = 'text-sm sm:text-base text-slate-600 font-medium mt-1.5 border-t border-emerald-100/20 pt-1.5';
+                    
+                    const label = document.createElement('span');
+                    label.className = 'text-slate-400 font-normal mr-1.5';
+                    label.textContent = 'Перевод диалекта:';
+                    
+                    const val = document.createElement('span');
+                    val.textContent = word.mazin_ru;
+                    
+                    transRow.appendChild(label);
+                    transRow.appendChild(val);
+                    dialectCard.appendChild(transRow);
+                }
+
+                dialectSection.appendChild(dialectCard);
+                body.appendChild(dialectSection);
+            }
+
             if (word.ex) {
-                const ex = document.createElement('div');
-                ex.className = 'mt-6 bg-emerald-50/40 border-l-4 border-emerald-400 rounded-r-2xl p-4 font-medium text-slate-800 text-base leading-relaxed';
-                ex.textContent = word.ex;
-                body.appendChild(ex);
+                const exSection = document.createElement('div');
+                exSection.className = 'mt-6 pt-4 border-t border-slate-100/80';
+
+                const exHeader = document.createElement('div');
+                exHeader.className = 'text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-widest mb-3';
+                exHeader.textContent = 'Пример / Пословица';
+                exSection.appendChild(exHeader);
+
+                const exList = document.createElement('div');
+                exList.className = 'flex flex-col gap-4';
+
+                const items = word.ex.split('//').map(s => s.trim()).filter(Boolean);
+                items.forEach(itemStr => {
+                    const parts = itemStr.split('|').map(s => s.trim()).filter(Boolean);
+                    const lzText = parts[0] || '';
+                    const ruText = parts[1] || '';
+
+                    const card = document.createElement('div');
+                    card.className = 'flex flex-col gap-1';
+
+                    const lzEl = document.createElement('div');
+                    lzEl.className = 'font-bold text-slate-800 text-lg sm:text-xl leading-snug lezgin-text';
+                    lzEl.textContent = lzText;
+                    card.appendChild(lzEl);
+
+                    if (ruText) {
+                        const ruEl = document.createElement('div');
+                        ruEl.className = 'text-base sm:text-lg text-slate-500 font-normal leading-relaxed';
+                        ruEl.textContent = ruText;
+                        card.appendChild(ruEl);
+                    }
+
+                    exList.appendChild(card);
+                });
+
+                exSection.appendChild(exList);
+                body.appendChild(exSection);
             }
 
             const footer = document.createElement('div');
-            footer.className = 'px-6 pb-6 flex gap-3';
+            footer.className = 'px-6 pb-6 flex gap-3 mt-auto pt-4';
             const add = document.createElement('button');
-            add.className = 'flex-1 py-3.5 bg-emerald-50 active:bg-emerald-100/80 text-emerald-800 font-bold rounded-3xl flex items-center justify-center gap-x-2 text-sm border border-emerald-100/50 transition-colors shadow-sm';
-            add.innerHTML = '<i class="fa-solid fa-plus text-emerald-600"></i><span>В практику</span>';
-            add.addEventListener('click', () => { addToPractice(word.id); closeModal(); });
+            
+            if (isFav) {
+                add.className = 'flex-1 py-3.5 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold rounded-3xl flex items-center justify-center gap-x-2 text-sm sm:text-base border border-amber-100 transition-colors shadow-sm';
+                add.innerHTML = '<i class="fa-solid fa-star text-amber-500"></i><span>В избранном</span>';
+            } else {
+                add.className = 'flex-1 py-3.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-3xl flex items-center justify-center gap-x-2 text-sm sm:text-base border border-emerald-100/50 transition-colors shadow-sm';
+                add.innerHTML = '<i class="fa-regular fa-star text-emerald-600"></i><span>В избранное</span>';
+            }
+            
+            add.addEventListener('click', () => { 
+                toggleFavorite(word.id); 
+                showWordModal(word.id); 
+            });
 
             const reportBtn = document.createElement('button');
             reportBtn.className = 'py-3.5 px-5 bg-rose-50 active:bg-rose-100 text-rose-600 font-bold rounded-3xl flex items-center justify-center gap-x-2 text-sm border border-rose-100/50 transition-colors shadow-sm';
@@ -1060,7 +1386,7 @@
                     if (!sent) {
                         throw new Error('All endpoints failed');
                     }
-                    showReportSuccess(word);
+                    showWordModal(word.id);
                 } catch (err) {
                     warn('[Report] failed', err);
                     sendBtn.disabled = false;
@@ -1074,34 +1400,6 @@
 
             footer.append(cancelBtn, sendBtn);
             content.append(wrap, footer);
-        }
-
-        function showReportSuccess(word) {
-            const content = document.getElementById('modal-content');
-            content.innerHTML = '';
-
-            const wrap = document.createElement('div');
-            wrap.className = 'px-6 pt-10 pb-8 text-center';
-
-            const iconWrap = document.createElement('div');
-            iconWrap.className = 'mx-auto w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-5';
-            iconWrap.innerHTML = '<i class="fa-solid fa-check text-emerald-600 text-4xl"></i>';
-
-            const h3 = document.createElement('h3');
-            h3.className = 'font-bold text-2xl mb-2 text-slate-800';
-            h3.textContent = 'Спасибо!';
-
-            const p = document.createElement('p');
-            p.className = 'text-sm text-slate-500 mb-8 px-4 leading-relaxed';
-            p.textContent = 'Отчет об ошибке успешно отправлен. Мы исправим это в ближайшем обновлении.';
-
-            const okBtn = document.createElement('button');
-            okBtn.className = 'w-full py-3.5 bg-slate-100 active:bg-slate-200 font-bold rounded-3xl text-sm transition-colors text-slate-700';
-            okBtn.textContent = 'Вернуться к слову';
-            okBtn.addEventListener('click', () => showWordModal(word.id));
-
-            wrap.append(iconWrap, h3, p, okBtn);
-            content.append(wrap);
         }
 
         function isElementVisible(element) {
@@ -1948,25 +2246,39 @@
 
         // Practice
         // =============== ТЁМНАЯ ТЕМА ===============
+        function getAutoTheme() {
+            if (window.Telegram?.WebApp) {
+                const tg = window.Telegram.WebApp;
+                if (tg.colorScheme === 'dark' || (tg.themeParams?.bg_color && window.TelegramApp?.isDarkHex?.(tg.themeParams.bg_color))) {
+                    return 'dark';
+                }
+                if (tg.colorScheme === 'light' || (tg.themeParams?.bg_color && !window.TelegramApp?.isDarkHex?.(tg.themeParams.bg_color))) {
+                    return 'light';
+                }
+            }
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                return 'dark';
+            }
+            return 'light';
+        }
+
         function applyTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             updateThemeUI();
         }
 
         function initTheme() {
-            const saved = localStorage.getItem('lezgi_theme');
-            if (saved) {
-                applyTheme(saved);
-            } else {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-                applyTheme(prefersDark.matches ? 'dark' : 'light');
-            }
+            localStorage.removeItem('lezgi_theme');
+            applyTheme(getAutoTheme());
 
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (!localStorage.getItem('lezgi_theme')) {
-                    applyTheme(e.matches ? 'dark' : 'light');
-                }
-            });
+            if (window.matchMedia) {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    const tg = window.Telegram?.WebApp;
+                    if (!tg?.colorScheme) {
+                        applyTheme(e.matches ? 'dark' : 'light');
+                    }
+                });
+            }
         }
 
         function toggleTheme() {
@@ -1974,7 +2286,6 @@
             const isDark = html.getAttribute('data-theme') === 'dark';
             const newTheme = isDark ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('lezgi_theme', newTheme);
             updateThemeUI();
         }
 

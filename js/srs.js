@@ -116,99 +116,350 @@
             }
 
             const w = practiceState.queue[0];
+            const hasNextCard = practiceState.queue.length > 1;
             const total = practiceState.words.length;
             const learned = practiceState.learnedInSession.size;
             const progress = Math.round((learned / total) * 100);
 
-            const header = document.createElement('div');
-            header.className = 'app-header relative flex items-center justify-center px-16 py-4 border-b border-slate-100 bg-white shrink-0 z-10 w-full sticky top-0';
-            const hTitle = document.createElement('div');
-            hTitle.className = 'font-bold text-slate-800 text-lg text-center w-full truncate';
-            hTitle.textContent = `Карточки ${learned}/${total}`;
-            const close = document.createElement('button');
-            close.id = 'srs-close-btn';
-            close.className = 'hidden md:flex absolute right-5 top-1/2 -translate-y-1/2 w-8 h-8 items-center justify-center bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-500 rounded-full transition-all';
-            close.innerHTML = '<i class="fa-solid fa-times"></i>';
-            close.addEventListener('click', endPractice);
-            header.append(hTitle, close);
-
-            const body = document.createElement('div');
-            body.className = 'p-6 flex flex-col items-center';
-
-            const flip = document.createElement('div');
-            flip.className = 'flip-card w-full max-w-[300px]';
-            flip.id = 'flip-card';
-            const inner = document.createElement('div');
-            inner.className = 'flip-card-inner bg-white border border-emerald-100 rounded-3xl';
-
-            const front = document.createElement('div');
-            front.className = 'flip-card-front flex flex-col justify-center items-center p-8 text-center';
-            const fTop = document.createElement('div');
-            fTop.className = 'text-emerald-600 text-sm tracking-widest mb-4';
-            fTop.textContent = 'ЛЕЗГИНСКИЙ';
-            const fWord = document.createElement('div');
-            fWord.className = 'text-5xl font-bold text-emerald-900 lezgin-text';
-            fWord.textContent = w.lz;
-            front.append(fTop, fWord);
-            if (SHOW_PRACTICE_IPA && w.ipa) {
-                const ipa = document.createElement('div');
-                ipa.className = 'mt-2 text-emerald-700 opacity-70 text-base ipa-text';
-                ipa.textContent = w.ipa;
-                front.appendChild(ipa);
+            const badgeHtml = w.cat ? `<span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full uppercase tracking-wider">${w.cat}</span>` : `<span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full uppercase tracking-wider">Слово</span>`;
+            const tr = w.lz_lat || (typeof transliterateLezgin === 'function' ? transliterateLezgin(w.lz) : '');
+            let metaHtml = '';
+            if (SHOW_PRACTICE_IPA && w.ipa && tr) {
+                metaHtml = `<p class="flashcard-text-sub font-medium text-slate-400 mt-2">${tr} <span class="opacity-50 mx-1">•</span> <span class="ipa-text">[${w.ipa}]</span></p>`;
+            } else if (SHOW_PRACTICE_IPA && w.ipa) {
+                metaHtml = `<p class="flashcard-text-sub font-medium text-slate-400 ipa-text mt-2">[${w.ipa}]</p>`;
+            } else if (tr) {
+                metaHtml = `<p class="flashcard-text-sub font-medium text-slate-400 mt-2">${tr}</p>`;
             }
-
-            const back = document.createElement('div');
-            back.className = 'flip-card-back flex flex-col justify-center items-center p-8 bg-emerald-50 text-center rounded-3xl border border-emerald-100';
-            const bTop = document.createElement('div');
-            bTop.className = 'text-emerald-600 text-sm tracking-widest mb-4';
-            bTop.textContent = 'ПЕРЕВОД';
-            const bWord = document.createElement('div');
-            bWord.className = 'text-4xl font-semibold text-emerald-900';
-            bWord.textContent = w.ru;
-            back.append(bTop, bWord);
-            if (w.ex) {
-                const ex = document.createElement('div');
-                ex.className = 'mt-4 text-base text-slate-600 italic';
-                ex.textContent = w.ex;
-                back.appendChild(ex);
-            }
-
-            inner.append(front, back);
-            flip.appendChild(inner);
-            flip.addEventListener('click', () => flip.classList.toggle('flipped'));
-
-            const actions = document.createElement('div');
-            actions.className = 'flex gap-2 mt-8 w-full max-w-[300px]';
-
-            const createBtn = (cls, icon, txt, mode) => {
-                const b = document.createElement('button');
-                b.className = `flex-1 py-4 font-bold rounded-2xl text-xs uppercase tracking-wider flex flex-col items-center justify-center gap-1 transition-all ${cls}`;
-                b.innerHTML = `<i class="fa-solid ${icon} text-xl"></i><span>${txt}</span>`;
-                b.addEventListener('click', () => markCard(mode));
-                return b;
+            const formatExampleHTML = (exStr) => {
+                if (!exStr) return '';
+                return exStr.split('//').map(s => s.trim()).filter(Boolean).map(item => {
+                    const parts = item.split('|').map(s => s.trim()).filter(Boolean);
+                    const lz = parts[0] || '';
+                    const ru = parts[1] || '';
+                    return ru ? `<b>${lz}</b> <span class="text-slate-400 font-normal">— ${ru}</span>` : `<b>${lz}</b>`;
+                }).join('<br>');
             };
+            const exHtml = w.ex ? `<div class="mt-3 text-xs sm:text-sm font-medium text-slate-700 leading-relaxed break-words bg-emerald-50/40 p-2.5 rounded-xl border border-emerald-100/40 text-left">${formatExampleHTML(w.ex)}</div>` : '';
 
-            actions.append(
-                createBtn('border-2 border-red-100 text-red-600', 'fa-times', 'Не знаю', 'wrong'),
-                createBtn('border-2 border-amber-100 text-amber-600', 'fa-rotate-right', 'Повторить', 'hard'),
-                createBtn('bg-emerald-600 text-white', 'fa-check', 'Изучено', 'easy')
-            );
+            content.innerHTML = `
+<div class="flex flex-col h-full w-full max-w-md practice-card-container mx-auto px-5 py-4 justify-between font-sans relative overflow-hidden" style="height: 100%;">
+  <!-- Верхняя панель и прогресс -->
+  <div class="space-y-2.5 pt-1 shrink-0">
+    <div class="flex items-center justify-between">
+      <button id="srs-close-btn" class="hidden md:flex w-9 h-9 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm transition hover:bg-slate-100 active:scale-95">✕</button>
+      <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Лезгинский язык</span>
+      <span class="text-sm font-bold text-slate-700">${learned} / ${total}</span>
+    </div>
+    <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+      <div class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: ${progress}%"></div>
+    </div>
+  </div>
 
-            const progWrap = document.createElement('div');
-            progWrap.className = 'w-full max-w-[300px] mt-8 text-center';
-            const progBg = document.createElement('div');
-            progBg.className = 'h-1 bg-emerald-100 rounded-full overflow-hidden';
-            const progBar = document.createElement('div');
-            progBar.className = 'h-1 bg-emerald-600 transition-all';
-            progBar.style.width = `${progress}%`;
-            progBg.appendChild(progBar);
-            const queueInfo = document.createElement('div');
-            queueInfo.className = 'text-xs text-slate-400 mt-2 font-medium';
-            queueInfo.textContent = `Слов в очереди: ${practiceState.queue.length}`;
-            progWrap.append(progBg, queueInfo);
+  <!-- Карточка слова -->
+  <div class="relative w-full flex items-center justify-center flex-1 min-h-0 py-4">
+    <div id="flip-card" class="flip-card swipe-card-wrapper w-full h-full relative z-10">
+      
+      <!-- Штампы свайпа -->
+      <div id="swipe-badge-easy" class="swipe-badge swipe-badge-easy">
+        <i class="fa-solid fa-check text-base"></i><span>Помню</span>
+      </div>
+      <div id="swipe-badge-wrong" class="swipe-badge swipe-badge-wrong">
+        <i class="fa-solid fa-xmark text-base"></i><span>Не помню</span>
+      </div>
+      <div id="swipe-badge-hard" class="swipe-badge swipe-badge-hard">
+        <i class="fa-solid fa-bolt text-xs"></i><span>Сложно</span>
+      </div>
 
-            body.append(flip, actions, progWrap);
-            content.append(header, body);
+      <div class="flip-card-inner relative w-full h-full transition-transform duration-500 transform-style-preserve-3d rounded-3xl">
+
+        <!-- Front: grid с 3 зонами одинаковой высоты -->
+        <div class="flip-card-front absolute inset-0 w-full h-full backface-hidden bg-white rounded-3xl border border-slate-100 relative"
+             style="display: grid; grid-template-rows: 79px 1fr 44px; padding: 0 1.5rem;">
+          <!-- Зона 1: бейдж категории (слева) и кнопка жалобы (справа) -->
+          <div class="flex items-center justify-between pt-4">
+            ${badgeHtml}
+            <button class="srs-report-btn z-30" title="Сообщить об ошибке">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </button>
+          </div>
+          <!-- Зона 2: слово по центру -->
+          <div class="flex flex-col items-center justify-center text-center pointer-events-none select-none">
+            <h1 class="flashcard-text-main font-extrabold text-slate-900 tracking-tight lezgin-text break-words leading-tight">${w.lz}</h1>
+            ${metaHtml ? `<div class="mt-1.5">${metaHtml}</div>` : ''}
+          </div>
+          <!-- Зона 3: подсказка внизу -->
+          <div class="flex items-center justify-center pb-3">
+            <span class="text-xs text-slate-400 pointer-events-none select-none">Нажмите для перевода</span>
+          </div>
+        </div>
+
+        <!-- Back: та же сетка -->
+        <div class="flip-card-back absolute inset-0 w-full h-full backface-hidden bg-emerald-50 rounded-3xl border border-emerald-100 relative"
+             style="display: grid; grid-template-rows: 79px 1fr 44px; padding: 0 1.5rem;">
+          <!-- Зона 1: бейдж "Перевод" (слева) и кнопка жалобы (справа) -->
+          <div class="flex items-center justify-between pt-4">
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full uppercase tracking-wider">Перевод</span>
+            <button class="srs-report-btn z-30" title="Сообщить об ошибке">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </button>
+          </div>
+          <!-- Зона 2: перевод строго в том же месте что и слово -->
+          <div class="flex flex-col items-center justify-center text-center pointer-events-none select-none">
+            <h1 class="flashcard-text-main font-extrabold text-emerald-900 tracking-tight break-words leading-tight">${w.ru}</h1>
+          </div>
+          <!-- Зона 3: подсказка внизу -->
+          <div class="flex items-center justify-center pb-3">
+            <span class="text-xs text-slate-400/70 pointer-events-none select-none">Нажмите для оригинала</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Кнопки управления -->
+  <div class="flex flex-col gap-2.5 pb-2 shrink-0 w-full">
+    <button id="btn-wrong" class="btn-srs-wrong w-full flex flex-col items-center justify-center py-3.5 px-4 rounded-2xl active:scale-95 transition-all cursor-pointer">
+      <span class="btn-srs-title text-base font-bold text-rose-600 leading-tight">Не помню</span>
+      <span class="btn-srs-sub text-[11px] text-rose-500/80 font-medium leading-tight mt-0.5">&lt; 1 мин</span>
+    </button>
+    <button id="btn-hard" class="btn-srs-hard w-full flex flex-col items-center justify-center py-3.5 px-4 rounded-2xl active:scale-95 transition-all cursor-pointer">
+      <span class="btn-srs-title text-base font-bold text-amber-600 leading-tight">Сложно</span>
+      <span class="btn-srs-sub text-[11px] text-amber-600/80 font-medium leading-tight mt-0.5">10 мин</span>
+    </button>
+    <button id="btn-easy" class="btn-srs-easy w-full flex flex-col items-center justify-center py-3.5 px-4 rounded-2xl active:scale-95 transition-all cursor-pointer">
+      <span class="btn-srs-title text-base font-bold text-emerald-600 leading-tight">Помню</span>
+      <span class="btn-srs-sub text-[11px] text-emerald-600/80 font-medium leading-tight mt-0.5">4 дня</span>
+    </button>
+  </div>
+</div>
+`;
+
+            const cardEl = document.getElementById('flip-card');
+            const badgeEasy = document.getElementById('swipe-badge-easy');
+            const badgeWrong = document.getElementById('swipe-badge-wrong');
+            const badgeHard = document.getElementById('swipe-badge-hard');
+            const btnWrong = document.getElementById('btn-wrong');
+            const btnHard = document.getElementById('btn-hard');
+            const btnEasy = document.getElementById('btn-easy');
+
+            let isPointerDown = false;
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let startT = 0;
+            let currentX = 0;
+            let currentY = 0;
+            let isLocked = false;
+
+            function animateAndMark(status) {
+                if (isLocked) return;
+                isLocked = true;
+
+                if (cardEl) {
+                    cardEl.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease';
+
+                    if (status === 'easy') {
+                        if (badgeEasy) { badgeEasy.style.transition = 'opacity 0.15s ease'; badgeEasy.style.opacity = '1'; }
+                        cardEl.style.transform = `translate3d(${Math.max(window.innerWidth, 500)}px, -20px, 0) rotate(22deg)`;
+                        cardEl.style.opacity = '0';
+                    } else if (status === 'wrong') {
+                        if (badgeWrong) { badgeWrong.style.transition = 'opacity 0.15s ease'; badgeWrong.style.opacity = '1'; }
+                        cardEl.style.transform = `translate3d(-${Math.max(window.innerWidth, 500)}px, -20px, 0) rotate(-22deg)`;
+                        cardEl.style.opacity = '0';
+                    } else if (status === 'hard') {
+                        if (badgeHard) { badgeHard.style.transition = 'opacity 0.15s ease'; badgeHard.style.opacity = '1'; }
+                        cardEl.style.transform = `translate3d(0, ${Math.max(window.innerHeight, 600)}px, 0) rotate(4deg)`;
+                        cardEl.style.opacity = '0';
+                    }
+                }
+
+                setTimeout(() => {
+                    markCard(status);
+                }, 260);
+            }
+
+            function onPointerDown(e) {
+                if (isLocked) return;
+                if (e.target.closest('.srs-report-btn')) return;
+
+                isPointerDown = true;
+                isDragging = false;
+                startX = e.clientX;
+                startY = e.clientY;
+                currentX = startX;
+                currentY = startY;
+                startT = Date.now();
+
+                try {
+                    cardEl.setPointerCapture?.(e.pointerId);
+                } catch (_) {}
+                cardEl.style.transition = 'none';
+            }
+
+            function onPointerMove(e) {
+                if (!isPointerDown || isLocked) return;
+
+                currentX = e.clientX;
+                currentY = e.clientY;
+                const dx = currentX - startX;
+                const dy = currentY - startY;
+                const dist = Math.hypot(dx, dy);
+
+                if (!isDragging && dist > 7) {
+                    isDragging = true;
+                }
+
+                if (isDragging) {
+                    const rot = Math.max(-25, Math.min(25, (dx / 320) * 18));
+                    cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) rotate(${rot}deg)`;
+
+                    const absDx = Math.abs(dx);
+                    const absDy = Math.abs(dy);
+
+                    if (dx > 15 && absDx >= absDy * 0.75) {
+                        const op = Math.min(1, (dx - 15) / 65);
+                        if (badgeEasy) badgeEasy.style.opacity = op;
+                        if (badgeWrong) badgeWrong.style.opacity = 0;
+                        if (badgeHard) badgeHard.style.opacity = 0;
+                        if (btnEasy) btnEasy.style.transform = `scale(${1 + op * 0.06})`;
+                        if (btnWrong) btnWrong.style.transform = 'scale(1)';
+                        if (btnHard) btnHard.style.transform = 'scale(1)';
+                    } else if (dx < -15 && absDx >= absDy * 0.75) {
+                        const op = Math.min(1, (-dx - 15) / 65);
+                        if (badgeWrong) badgeWrong.style.opacity = op;
+                        if (badgeEasy) badgeEasy.style.opacity = 0;
+                        if (badgeHard) badgeHard.style.opacity = 0;
+                        if (btnWrong) btnWrong.style.transform = `scale(${1 + op * 0.06})`;
+                        if (btnEasy) btnEasy.style.transform = 'scale(1)';
+                        if (btnHard) btnHard.style.transform = 'scale(1)';
+                    } else if (absDy > 20 && absDy > absDx) {
+                        const op = Math.min(1, (absDy - 20) / 65);
+                        if (badgeHard) badgeHard.style.opacity = op;
+                        if (badgeEasy) badgeEasy.style.opacity = 0;
+                        if (badgeWrong) badgeWrong.style.opacity = 0;
+                        if (btnHard) btnHard.style.transform = `scale(${1 + op * 0.06})`;
+                        if (btnEasy) btnEasy.style.transform = 'scale(1)';
+                        if (btnWrong) btnWrong.style.transform = 'scale(1)';
+                    } else {
+                        if (badgeEasy) badgeEasy.style.opacity = 0;
+                        if (badgeWrong) badgeWrong.style.opacity = 0;
+                        if (badgeHard) badgeHard.style.opacity = 0;
+                        if (btnEasy) btnEasy.style.transform = 'scale(1)';
+                        if (btnWrong) btnWrong.style.transform = 'scale(1)';
+                        if (btnHard) btnHard.style.transform = 'scale(1)';
+                    }
+                }
+            }
+
+            function onPointerUp(e) {
+                if (!isPointerDown) return;
+                isPointerDown = false;
+
+                try {
+                    cardEl.releasePointerCapture?.(e.pointerId);
+                } catch (_) {}
+
+                if (!isDragging) {
+                    cardEl.classList.toggle('flipped');
+                    return;
+                }
+
+                const dx = currentX - startX;
+                const dy = currentY - startY;
+                const dt = Math.max(1, Date.now() - startT);
+                const vx = dx / dt;
+                const vy = dy / dt;
+                const absDx = Math.abs(dx);
+                const absDy = Math.abs(dy);
+
+                const horizontalSwipe = absDx > 75 || Math.abs(vx) > 0.45;
+                const verticalSwipe = absDy > 75 || Math.abs(vy) > 0.45;
+
+                if (horizontalSwipe && absDx >= absDy * 0.75) {
+                    if (dx > 0) {
+                        animateAndMark('easy');
+                    } else {
+                        animateAndMark('wrong');
+                    }
+                } else if (verticalSwipe && absDy > absDx) {
+                    animateAndMark('hard');
+                } else {
+                    cardEl.style.transition = 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease';
+                    cardEl.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
+                    if (badgeEasy) { badgeEasy.style.transition = 'opacity 0.2s ease'; badgeEasy.style.opacity = 0; }
+                    if (badgeWrong) { badgeWrong.style.transition = 'opacity 0.2s ease'; badgeWrong.style.opacity = 0; }
+                    if (badgeHard) { badgeHard.style.transition = 'opacity 0.2s ease'; badgeHard.style.opacity = 0; }
+                    if (btnEasy) btnEasy.style.transform = 'scale(1)';
+                    if (btnWrong) btnWrong.style.transform = 'scale(1)';
+                    if (btnHard) btnHard.style.transform = 'scale(1)';
+                }
+            }
+
+            cardEl.addEventListener('pointerdown', onPointerDown);
+            cardEl.addEventListener('pointermove', onPointerMove);
+            cardEl.addEventListener('pointerup', onPointerUp);
+            cardEl.addEventListener('pointercancel', onPointerUp);
+
+            document.getElementById('srs-close-btn').addEventListener('click', endPractice);
+            btnWrong.addEventListener('click', () => animateAndMark('wrong'));
+            btnHard.addEventListener('click', () => animateAndMark('hard'));
+            btnEasy.addEventListener('click', () => animateAndMark('easy'));
+
+            const reportBtns = document.querySelectorAll('.srs-report-btn');
+            reportBtns.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    if (btn.dataset.sending === '1' || btn.dataset.sent === '1') return;
+
+                    reportBtns.forEach(b => {
+                        b.dataset.sending = '1';
+                        b.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i>';
+                        b.classList.add('opacity-70');
+                    });
+
+                    const token = '8212202313:AAE7Azne1pt3XILue40TFU7SDee3BDada4M';
+                    const chatId = '8639105365';
+                    
+                    const msgText = `🚨 <b>Жалоба на слово в карточке:</b>\n\n` +
+                        `🔹 <b>Слово:</b> ${w.lz || '-'}\n` +
+                        `🔹 <b>Перевод:</b> ${w.ru || '-'}\n` +
+                        (w.ipa ? `🔹 <b>IPA:</b> [${w.ipa}]\n` : '') +
+                        (w.cat ? `🔹 <b>Категория:</b> ${w.cat}\n` : '') +
+                        (w.id ? `🔹 <b>ID:</b> <code>${w.id}</code>\n` : '') +
+                        (w.ex ? `🔹 <b>Пример:</b> <i>${w.ex}</i>\n` : '');
+
+                    try {
+                        const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                chat_id: chatId,
+                                text: msgText,
+                                parse_mode: 'HTML'
+                            })
+                        });
+                        const data = await res.json();
+                        if (data && data.ok) {
+                            reportBtns.forEach(b => {
+                                b.dataset.sent = '1';
+                                b.className = 'srs-report-btn srs-report-sent z-30';
+                                b.innerHTML = '<i class="fa-solid fa-check"></i>';
+                            });
+                        } else {
+                            throw new Error(data?.description || 'Telegram API error');
+                        }
+                    } catch (err) {
+                        console.error('[SRS Report Error]', err);
+                        reportBtns.forEach(b => {
+                            b.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                            b.classList.remove('opacity-70');
+                            delete b.dataset.sending;
+                        });
+                        alert('Не удалось отправить жалобу. Проверьте соединение.');
+                    }
+                });
+            });
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -222,11 +473,11 @@
                     return;
                 }
                 const isFlashcard = document.getElementById('flip-card');
-                if (isFlashcard) {
+                if (isFlashcard && !isLocked) {
                     if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); document.getElementById('flip-card')?.classList.toggle('flipped'); }
-                    if (e.key === '1') markCard('wrong');
-                    if (e.key === '2') markCard('hard');
-                    if (e.key === '3') markCard('easy');
+                    if (e.key === '1' || e.key === 'ArrowLeft') animateAndMark('wrong');
+                    if (e.key === '2' || e.key === 'ArrowDown' || e.key === 'ArrowUp') animateAndMark('hard');
+                    if (e.key === '3' || e.key === 'ArrowRight') animateAndMark('easy');
                 }
             };
             document.addEventListener('keydown', flashcardKeydownHandler);
@@ -441,6 +692,9 @@
             PROGRESS.stats.quizzes++;
             PROGRESS.stats.scoreSum += pct;
             saveProgress();
+            if (typeof checkAndUpdateStreak === 'function') {
+                checkAndUpdateStreak(true);
+            }
 
             const resWrap = document.createElement('div');
             resWrap.className = 'app-header px-8 pt-10 pb-8 text-center flex flex-col items-center justify-center animate-fade-in';
@@ -866,4 +1120,587 @@
             };
             showFlashcard();
         }
-
+
+        let duelState = {
+            mode: 'bot', // 'friend_create' | 'friend_play' | 'pass_play' | 'bot'
+            rounds: 15,
+            currentRound: 0,
+            currentTurn: 1, // for pass_play: 1 or 2
+            playerLives: 3,
+            playerCorrect: 0,
+            playerMistakes: 0,
+            rivalLives: 3,
+            rivalCorrect: 0,
+            rivalMistakes: 0,
+            words: [],
+            wordIds: [],
+            timer: 12,
+            timerInterval: null,
+            rivalTimeout: null,
+            answered: false,
+            rivalName: 'Соперник',
+            rivalAvatar: 'С',
+            challengeData: null
+        };
+
+        let pendingChallenge = null;
+
+        const RIVAL_NAMES = [
+            { name: 'Руслан Р.', avatar: 'Р' },
+            { name: 'Фатима К.', avatar: 'Ф' },
+            { name: 'Мурад А.', avatar: 'М' },
+            { name: 'Амина С.', avatar: 'А' },
+            { name: 'Камиль Г.', avatar: 'К' },
+            { name: 'Заира И.', avatar: 'З' },
+            { name: 'Имран Б.', avatar: 'И' }
+        ];
+
+        function renderLivesHearts(lives) {
+            const count = Math.max(0, Math.min(3, lives));
+            let s = '';
+            for (let i = 0; i < 3; i++) {
+                s += i < count ? '❤️' : '🤍';
+            }
+            return s;
+        }
+
+        function openDuelMenuModal() {
+            const modal = document.getElementById('duel-menu-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDuelMenuModal() {
+            const modal = document.getElementById('duel-menu-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function showIncomingDuelModal(challenge) {
+            if (!challenge) return;
+            pendingChallenge = challenge;
+            const modal = document.getElementById('duel-incoming-modal');
+            const nameEl = document.getElementById('duel-incoming-name');
+            const statsEl = document.getElementById('duel-incoming-stats');
+            const livesEl = document.getElementById('duel-incoming-lives');
+            const avatarEl = document.getElementById('duel-incoming-avatar');
+
+            if (nameEl) nameEl.textContent = challenge.name || 'Друг';
+            const wordWord = challenge.correct === 1 ? 'верное слово' : (challenge.correct >= 2 && challenge.correct <= 4 ? 'верных слова' : 'верных слов');
+            const mistakeWord = challenge.mistakes === 1 ? 'ошибка' : (challenge.mistakes >= 2 && challenge.mistakes <= 4 ? 'ошибки' : 'ошибок');
+            if (statsEl) statsEl.textContent = `${challenge.correct} ${wordWord} • ${challenge.mistakes} ${mistakeWord}`;
+            if (livesEl) livesEl.textContent = `${renderLivesHearts(challenge.livesLeft)} (${challenge.livesLeft} из 3 жизней)`;
+            if (avatarEl) {
+                if (challenge.photo) {
+                    avatarEl.innerHTML = `<img src="${challenge.photo}" class="w-full h-full object-cover rounded-2xl">`;
+                } else {
+                    avatarEl.textContent = (challenge.name || 'Д').charAt(0).toUpperCase();
+                }
+            }
+
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeIncomingDuelModal() {
+            const modal = document.getElementById('duel-incoming-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function updateDuelLivesUI() {
+            const playerLivesEl = document.getElementById('duel-player-lives');
+            const playerScoreEl = document.getElementById('duel-player-score');
+            const rivalLivesEl = document.getElementById('duel-rival-lives');
+            const rivalScoreEl = document.getElementById('duel-rival-score');
+
+            if (playerLivesEl) playerLivesEl.textContent = renderLivesHearts(duelState.playerLives);
+            if (playerScoreEl) playerScoreEl.textContent = `${duelState.playerCorrect} верно`;
+            if (rivalLivesEl) rivalLivesEl.textContent = renderLivesHearts(duelState.rivalLives);
+            if (rivalScoreEl) rivalScoreEl.textContent = `${duelState.rivalCorrect} верно`;
+        }
+
+        function startDuelGame(mode = 'bot', challenge = null) {
+            if (!WORDS || WORDS.length < 5) {
+                alert('Недостаточно слов в базе для дуэли.');
+                return;
+            }
+
+            closeDuelMenuModal();
+            closeIncomingDuelModal();
+
+            const modal = document.getElementById('duel-modal');
+            const arena = document.getElementById('duel-arena-content');
+            const result = document.getElementById('duel-result-content');
+            if (!modal) return;
+
+            let pool = [];
+            if (challenge && Array.isArray(challenge.wordIds) && challenge.wordIds.length > 0) {
+                const map = {};
+                WORDS.forEach(w => map[w.id] = w);
+                pool = challenge.wordIds.map(id => map[id]).filter(Boolean);
+                if (pool.length < 5) {
+                    pool = shuffle([...WORDS]).slice(0, 15);
+                }
+            } else {
+                pool = shuffle([...WORDS]).slice(0, 15);
+            }
+
+            const user = window.TelegramApp?.getUser?.();
+            const playerName = user ? ([user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Вы') : 'Вы';
+            const playerAvatar = (playerName || 'В').charAt(0).toUpperCase();
+
+            let rivalName = 'Соперник';
+            let rivalAvatar = 'С';
+            let rivalPhoto = '';
+
+            if (mode === 'friend_play' && challenge) {
+                rivalName = challenge.name || 'Друг';
+                rivalAvatar = (challenge.name || 'Д').charAt(0).toUpperCase();
+                rivalPhoto = challenge.photo || '';
+            } else if (mode === 'friend_create') {
+                rivalName = 'Будущий соперник';
+                rivalAvatar = '👤';
+            } else if (mode === 'pass_play') {
+                rivalName = 'Игрок 2';
+                rivalAvatar = '2';
+            } else {
+                const rival = RIVAL_NAMES[Math.floor(Math.random() * RIVAL_NAMES.length)];
+                rivalName = rival.name;
+                rivalAvatar = rival.avatar;
+            }
+
+            duelState = {
+                mode: mode,
+                rounds: pool.length,
+                currentRound: 0,
+                currentTurn: 1,
+                playerLives: 3,
+                playerCorrect: 0,
+                playerMistakes: 0,
+                rivalLives: 3,
+                rivalCorrect: (mode === 'friend_play' && challenge) ? challenge.correct : 0,
+                rivalMistakes: (mode === 'friend_play' && challenge) ? challenge.mistakes : 0,
+                words: pool,
+                wordIds: pool.map(w => w.id),
+                timer: 12,
+                timerInterval: null,
+                rivalTimeout: null,
+                answered: false,
+                rivalName: rivalName,
+                rivalAvatar: rivalAvatar,
+                challengeData: challenge
+            };
+
+            const playerNameEl = document.getElementById('duel-player-name');
+            const playerAvatarEl = document.getElementById('duel-player-avatar');
+            const rivalNameEl = document.getElementById('duel-rival-name');
+            const rivalAvatarEl = document.getElementById('duel-rival-avatar');
+            const headerTitle = document.getElementById('duel-header-title');
+
+            if (mode === 'pass_play') {
+                if (playerNameEl) playerNameEl.textContent = 'Игрок 1';
+                if (playerAvatarEl) playerAvatarEl.textContent = '1';
+                if (rivalNameEl) rivalNameEl.textContent = 'Игрок 2';
+                if (rivalAvatarEl) rivalAvatarEl.textContent = '2';
+                if (headerTitle) headerTitle.textContent = 'Дуэль на 1 экране';
+            } else {
+                if (playerNameEl) playerNameEl.textContent = playerName;
+                if (playerAvatarEl) {
+                    if (user?.photo_url) {
+                        playerAvatarEl.innerHTML = `<img src="${user.photo_url}" class="w-full h-full object-cover rounded-2xl">`;
+                    } else {
+                        playerAvatarEl.textContent = playerAvatar;
+                    }
+                }
+                if (rivalNameEl) rivalNameEl.textContent = rivalName;
+                if (rivalAvatarEl) {
+                    if (rivalPhoto) {
+                        rivalAvatarEl.innerHTML = `<img src="${rivalPhoto}" class="w-full h-full object-cover rounded-2xl">`;
+                    } else {
+                        rivalAvatarEl.textContent = rivalAvatar;
+                    }
+                }
+                if (headerTitle) headerTitle.textContent = mode === 'friend_play' ? `Дуэль против ${rivalName}` : 'Дуэль слов';
+            }
+
+            updateDuelLivesUI();
+
+            if (arena) arena.classList.remove('hidden');
+            if (result) result.classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            nextDuelRound();
+        }
+
+        function closeDuelModal() {
+            clearInterval(duelState.timerInterval);
+            clearTimeout(duelState.rivalTimeout);
+            const modal = document.getElementById('duel-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function nextDuelRound() {
+            clearInterval(duelState.timerInterval);
+            clearTimeout(duelState.rivalTimeout);
+
+            // Game over condition: when a player runs out of 3 lives or words end
+            if (duelState.mode === 'pass_play') {
+                if (duelState.playerLives <= 0 || duelState.rivalLives <= 0 || duelState.currentRound >= duelState.words.length) {
+                    endDuelGame();
+                    return;
+                }
+            } else if (duelState.mode === 'friend_create') {
+                if (duelState.playerLives <= 0 || duelState.currentRound >= duelState.words.length) {
+                    endDuelGame();
+                    return;
+                }
+            } else {
+                if (duelState.playerLives <= 0 || duelState.rivalLives <= 0 || duelState.currentRound >= duelState.words.length) {
+                    endDuelGame();
+                    return;
+                }
+            }
+
+            duelState.answered = false;
+            duelState.timer = 12;
+
+            const roundBadge = document.getElementById('duel-round-badge');
+            const timerEl = document.getElementById('duel-timer');
+            const wordEl = document.getElementById('duel-word');
+            const feedbackEl = document.getElementById('duel-feedback');
+            const optionsEl = document.getElementById('duel-options');
+            const turnIndicator = document.getElementById('duel-turn-indicator');
+
+            if (roundBadge) roundBadge.textContent = `Раунд ${duelState.currentRound + 1}`;
+            if (turnIndicator) {
+                if (duelState.mode === 'pass_play') {
+                    turnIndicator.innerHTML = `Ход: <span class="${duelState.currentTurn === 1 ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'}">Игрок ${duelState.currentTurn}</span> — как переводится:`;
+                } else {
+                    turnIndicator.textContent = 'Как переводится слово:';
+                }
+            }
+
+            if (timerEl) {
+                timerEl.textContent = '12';
+                timerEl.className = 'w-10 h-10 rounded-full border-4 border-emerald-500 flex items-center justify-center font-mono font-bold text-emerald-700 text-sm';
+            }
+            if (feedbackEl) {
+                feedbackEl.textContent = '';
+                feedbackEl.className = 'h-6 text-sm font-bold text-emerald-600 transition-opacity';
+            }
+
+            const currentWord = duelState.words[duelState.currentRound];
+            if (wordEl) wordEl.textContent = currentWord.lz;
+
+            const others = WORDS.filter(w => w.id !== currentWord.id && w.ru !== currentWord.ru);
+            const wrongChoices = shuffle(others).slice(0, 3);
+            const choices = shuffle([currentWord, ...wrongChoices]);
+
+            if (optionsEl) {
+                optionsEl.innerHTML = '';
+                choices.forEach(c => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'duel-opt-btn w-full p-4 text-left font-semibold text-sm bg-slate-50 border border-slate-200 hover:border-emerald-500 rounded-2xl active:scale-[0.99] transition-all flex items-center justify-between text-slate-800';
+                    btn.innerHTML = `<span>${c.ru}</span><i class="fa-regular fa-circle text-slate-300 text-base"></i>`;
+                    btn.dataset.id = c.id;
+                    btn.addEventListener('click', () => handleDuelAnswer(c.id, currentWord.id, btn));
+                    optionsEl.appendChild(btn);
+                });
+            }
+
+            updateDuelLivesUI();
+
+            // In smart bot mode, simulate bot answer
+            if (duelState.mode === 'bot') {
+                const rivalDelay = 3500 + Math.random() * 4500;
+                duelState.rivalTimeout = setTimeout(() => {
+                    if (duelState.rivalLives <= 0) return;
+                    const rivalCorrect = Math.random() > 0.30;
+                    if (rivalCorrect) {
+                        duelState.rivalCorrect++;
+                    } else {
+                        duelState.rivalMistakes++;
+                        duelState.rivalLives--;
+                    }
+                    updateDuelLivesUI();
+                }, rivalDelay);
+            }
+
+            // Timer countdown
+            duelState.timerInterval = setInterval(() => {
+                duelState.timer--;
+                if (timerEl) {
+                    timerEl.textContent = String(Math.max(0, duelState.timer));
+                    if (duelState.timer <= 3) {
+                        timerEl.className = 'w-10 h-10 rounded-full border-4 border-rose-500 flex items-center justify-center font-mono font-bold text-rose-600 text-sm animate-pulse';
+                    }
+                }
+
+                if (duelState.timer <= 0) {
+                    clearInterval(duelState.timerInterval);
+                    if (!duelState.answered) {
+                        handleDuelTimeout(currentWord.id);
+                    }
+                }
+            }, 1000);
+        }
+
+        function handleDuelAnswer(selectedId, correctId, clickedBtn) {
+            if (duelState.answered) return;
+            duelState.answered = true;
+            clearInterval(duelState.timerInterval);
+
+            const allBtns = document.querySelectorAll('.duel-opt-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const feedbackEl = document.getElementById('duel-feedback');
+            const isPlayer1 = duelState.mode !== 'pass_play' || duelState.currentTurn === 1;
+
+            if (selectedId === correctId) {
+                vibrateSuccess();
+                if (isPlayer1) {
+                    duelState.playerCorrect++;
+                } else {
+                    duelState.rivalCorrect++;
+                }
+
+                clickedBtn.classList.add('!border-emerald-500', '!bg-emerald-50', '!text-emerald-900');
+                clickedBtn.querySelector('i').className = 'fa-solid fa-check-circle text-emerald-600 text-lg';
+
+                if (feedbackEl) {
+                    feedbackEl.textContent = 'Верно! Отлично! ⚡️';
+                    feedbackEl.className = 'h-6 text-sm font-bold text-emerald-600';
+                }
+
+                reviewSrsCard(correctId, SRS_RATING.Good);
+                if (!PROGRESS.learned.includes(correctId)) {
+                    PROGRESS.learned.push(correctId);
+                    saveProgress();
+                }
+            } else {
+                vibrateError();
+                if (isPlayer1) {
+                    duelState.playerLives--;
+                    duelState.playerMistakes++;
+                } else {
+                    duelState.rivalLives--;
+                    duelState.rivalMistakes++;
+                }
+
+                clickedBtn.classList.add('!border-rose-400', '!bg-rose-50', '!text-rose-900');
+                clickedBtn.querySelector('i').className = 'fa-solid fa-times-circle text-rose-500 text-lg';
+
+                allBtns.forEach(b => {
+                    if (b.dataset.id === correctId) {
+                        b.classList.add('!border-emerald-500', '!bg-emerald-50', '!text-emerald-900');
+                        b.querySelector('i').className = 'fa-solid fa-check-circle text-emerald-600 text-lg';
+                    }
+                });
+
+                const livesLeft = isPlayer1 ? duelState.playerLives : duelState.rivalLives;
+                if (feedbackEl) {
+                    feedbackEl.textContent = `Ошибка! Минус жизнь (${Math.max(0, livesLeft)}/3) 💔`;
+                    feedbackEl.className = 'h-6 text-sm font-bold text-rose-500';
+                }
+                reviewSrsCard(correctId, SRS_RATING.Hard);
+            }
+
+            updateDuelLivesUI();
+
+            setTimeout(() => {
+                if (duelState.mode === 'pass_play') {
+                    duelState.currentTurn = duelState.currentTurn === 1 ? 2 : 1;
+                }
+                duelState.currentRound++;
+                nextDuelRound();
+            }, 1200);
+        }
+
+        function handleDuelTimeout(correctId) {
+            duelState.answered = true;
+            vibrateError();
+
+            const isPlayer1 = duelState.mode !== 'pass_play' || duelState.currentTurn === 1;
+            if (isPlayer1) {
+                duelState.playerLives--;
+                duelState.playerMistakes++;
+            } else {
+                duelState.rivalLives--;
+                duelState.rivalMistakes++;
+            }
+
+            const allBtns = document.querySelectorAll('.duel-opt-btn');
+            allBtns.forEach(b => {
+                b.disabled = true;
+                if (b.dataset.id === correctId) {
+                    b.classList.add('!border-emerald-500', '!bg-emerald-50', '!text-emerald-900');
+                    b.querySelector('i').className = 'fa-solid fa-check-circle text-emerald-600 text-lg';
+                }
+            });
+
+            const livesLeft = isPlayer1 ? duelState.playerLives : duelState.rivalLives;
+            const feedbackEl = document.getElementById('duel-feedback');
+            if (feedbackEl) {
+                feedbackEl.textContent = `Время вышло! Минус жизнь (${Math.max(0, livesLeft)}/3) 💔`;
+                feedbackEl.className = 'h-6 text-sm font-bold text-rose-500';
+            }
+
+            updateDuelLivesUI();
+
+            setTimeout(() => {
+                if (duelState.mode === 'pass_play') {
+                    duelState.currentTurn = duelState.currentTurn === 1 ? 2 : 1;
+                }
+                duelState.currentRound++;
+                nextDuelRound();
+            }, 1200);
+        }
+
+        function endDuelGame() {
+            clearInterval(duelState.timerInterval);
+            clearTimeout(duelState.rivalTimeout);
+
+            if (typeof checkAndUpdateStreak === 'function') {
+                checkAndUpdateStreak(true);
+            }
+
+            const user = window.TelegramApp?.getUser?.();
+            const myName = user ? ([user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Я') : 'Я';
+            const myPhoto = user?.photo_url || '';
+
+            // Record duel challenge payload for sharing
+            window.lastDuelResult = {
+                mode: duelState.mode,
+                name: myName,
+                photo: myPhoto,
+                correct: duelState.playerCorrect,
+                mistakes: duelState.playerMistakes,
+                livesLeft: Math.max(0, duelState.playerLives),
+                rivalName: duelState.rivalName,
+                rivalCorrect: duelState.rivalCorrect,
+                rivalMistakes: duelState.rivalMistakes,
+                rivalLivesLeft: Math.max(0, duelState.rivalLives),
+                wordIds: duelState.wordIds
+            };
+
+            const arena = document.getElementById('duel-arena-content');
+            const result = document.getElementById('duel-result-content');
+            const iconEl = document.getElementById('duel-result-icon');
+            const titleEl = document.getElementById('duel-result-title');
+            const descEl = document.getElementById('duel-result-desc');
+            const finalCorrectEl = document.getElementById('duel-final-correct');
+            const finalMistakesEl = document.getElementById('duel-final-mistakes');
+            const finalLivesEl = document.getElementById('duel-final-lives');
+
+            const challengeBtn = document.getElementById('duel-challenge-btn');
+            const replyBtn = document.getElementById('duel-reply-friend-btn');
+
+            if (arena) arena.classList.add('hidden');
+            if (result) result.classList.remove('hidden');
+
+            const correctWordStr = duelState.playerCorrect === 1 ? 'слово' : (duelState.playerCorrect >= 2 && duelState.playerCorrect <= 4 ? 'слова' : 'слов');
+            if (finalCorrectEl) finalCorrectEl.textContent = `${duelState.playerCorrect} ${correctWordStr}`;
+            if (finalMistakesEl) finalMistakesEl.textContent = `${duelState.playerMistakes} / 3`;
+            if (finalLivesEl) finalLivesEl.textContent = renderLivesHearts(duelState.playerLives);
+
+            if (duelState.mode === 'friend_create') {
+                if (challengeBtn) challengeBtn.classList.remove('hidden');
+                if (replyBtn) replyBtn.classList.add('hidden');
+
+                if (duelState.playerLives <= 0) {
+                    if (iconEl) iconEl.textContent = '💥';
+                    if (titleEl) titleEl.textContent = 'Вызов сформирован!';
+                    if (descEl) descEl.textContent = `Вы ответили на ${duelState.playerCorrect} ${correctWordStr} (3 ошибки). Отправьте вызов другу, чтобы узнать, сможет ли он лучше!`;
+                } else {
+                    vibrateComplete();
+                    if (iconEl) iconEl.textContent = '⚔️';
+                    if (titleEl) titleEl.textContent = 'Отличный раунд!';
+                    if (descEl) descEl.textContent = `Правильно: ${duelState.playerCorrect} ${correctWordStr} (${duelState.playerMistakes} ошибок). Отправьте ссылку другу!`;
+                }
+            } else if (duelState.mode === 'friend_play') {
+                if (challengeBtn) challengeBtn.classList.add('hidden');
+                if (replyBtn) replyBtn.classList.remove('hidden');
+
+                const friendWon = duelState.playerMistakes > duelState.rivalMistakes || (duelState.playerMistakes === duelState.rivalMistakes && duelState.playerCorrect < duelState.rivalCorrect);
+                const iWon = duelState.playerMistakes < duelState.rivalMistakes || (duelState.playerMistakes === duelState.rivalMistakes && duelState.playerCorrect > duelState.rivalCorrect);
+
+                if (iWon) {
+                    vibrateComplete();
+                    if (iconEl) iconEl.textContent = '🏆';
+                    if (titleEl) titleEl.textContent = `Вы победили ${duelState.rivalName}!`;
+                    if (descEl) descEl.textContent = `Ваш результат: ${duelState.playerCorrect} слов (${duelState.playerMistakes} ошибок). Друг: ${duelState.rivalCorrect} слов (${duelState.rivalMistakes} ошибок)!`;
+                    for (let i = 0; i < 25; i++) createCelebrationParticle();
+                } else if (friendWon) {
+                    if (iconEl) iconEl.textContent = '🛡️';
+                    if (titleEl) titleEl.textContent = `${duelState.rivalName} победил!`;
+                    if (descEl) descEl.textContent = `Друг допустил ${duelState.rivalMistakes} ошибок, а вы — ${duelState.playerMistakes}. Попробуйте отыграться!`;
+                } else {
+                    if (iconEl) iconEl.textContent = '🤝';
+                    if (titleEl) titleEl.textContent = 'Боевая ничья!';
+                    if (descEl) descEl.textContent = `Вы и ${duelState.rivalName} набрали равный результат (${duelState.playerCorrect} слов, ${duelState.playerMistakes} ошибок)!`;
+                }
+            } else if (duelState.mode === 'pass_play') {
+                if (challengeBtn) challengeBtn.classList.remove('hidden');
+                if (replyBtn) replyBtn.classList.add('hidden');
+
+                if (duelState.playerLives <= 0 && duelState.rivalLives > 0) {
+                    if (iconEl) iconEl.textContent = '🏆';
+                    if (titleEl) titleEl.textContent = 'Победил Игрок 2!';
+                    if (descEl) descEl.textContent = `Игрок 1 потратил все 3 жизни. Игрок 2 победил!`;
+                } else if (duelState.rivalLives <= 0 && duelState.playerLives > 0) {
+                    if (iconEl) iconEl.textContent = '🏆';
+                    if (titleEl) titleEl.textContent = 'Победил Игрок 1!';
+                    if (descEl) descEl.textContent = `Игрок 2 потратил все 3 жизни. Игрок 1 победил!`;
+                } else {
+                    const winner = duelState.playerMistakes < duelState.rivalMistakes ? 'Игрок 1' : 'Игрок 2';
+                    if (iconEl) iconEl.textContent = '🏆';
+                    if (titleEl) titleEl.textContent = `Победил ${winner}!`;
+                    if (descEl) descEl.textContent = `Игрок 1: ${duelState.playerMistakes} ошибок • Игрок 2: ${duelState.rivalMistakes} ошибок`;
+                }
+            } else {
+                // Bot mode
+                if (challengeBtn) challengeBtn.classList.remove('hidden');
+                if (replyBtn) replyBtn.classList.add('hidden');
+
+                if (duelState.playerLives <= 0) {
+                    if (iconEl) iconEl.textContent = '💥';
+                    if (titleEl) titleEl.textContent = 'Жизни закончились!';
+                    if (descEl) descEl.textContent = `Вы допустили 3 ошибки. Правильно переведено ${duelState.playerCorrect} ${correctWordStr}.`;
+                } else if (duelState.rivalLives <= 0) {
+                    vibrateComplete();
+                    if (iconEl) iconEl.textContent = '🏆';
+                    if (titleEl) titleEl.textContent = 'Победа в дуэли!';
+                    if (descEl) descEl.textContent = `Соперник ${duelState.rivalName} допустил 3 ошибки и выбыл! Вы ответили верно на ${duelState.playerCorrect} ${correctWordStr}!`;
+                    for (let i = 0; i < 25; i++) createCelebrationParticle();
+                } else if (duelState.playerMistakes < duelState.rivalMistakes || duelState.playerCorrect > duelState.rivalCorrect) {
+                    vibrateComplete();
+                    if (iconEl) iconEl.textContent = '🏆';
+                    if (titleEl) titleEl.textContent = 'Победа!';
+                    if (descEl) descEl.textContent = `Вы допустили меньше ошибок, чем ${duelState.rivalName} (${duelState.playerMistakes} против ${duelState.rivalMistakes})!`;
+                    for (let i = 0; i < 25; i++) createCelebrationParticle();
+                } else {
+                    if (iconEl) iconEl.textContent = '🛡️';
+                    if (titleEl) titleEl.textContent = 'В следующий раз повезёт!';
+                    if (descEl) descEl.textContent = `Соперник ${duelState.rivalName} оказался точнее. Попробуйте отыграться!`;
+                }
+            }
+        }
+
+        window.openDuelMenuModal = openDuelMenuModal;
+        window.closeDuelMenuModal = closeDuelMenuModal;
+        window.showIncomingDuelModal = showIncomingDuelModal;
+        window.closeIncomingDuelModal = closeIncomingDuelModal;
+        window.startDuelGame = startDuelGame;
+        window.closeDuelModal = closeDuelModal;
+        window.pendingChallenge = () => pendingChallenge;
+

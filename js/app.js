@@ -169,9 +169,20 @@
         }
 
         async function loadJsonAsset(url, label) {
-            const res = await fetch(url, { cache: 'no-cache' });
-            if (!res.ok) throw new Error(`${label}: HTTP ${res.status}`);
-            return res.json();
+            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+            const timer = controller ? setTimeout(() => controller.abort(), 4000) : null;
+            try {
+                const res = await fetch(url, { 
+                    cache: 'no-cache',
+                    signal: controller ? controller.signal : undefined
+                });
+                if (timer) clearTimeout(timer);
+                if (!res.ok) throw new Error(`${label}: HTTP ${res.status}`);
+                return await res.json();
+            } catch (err) {
+                if (timer) clearTimeout(timer);
+                throw err;
+            }
         }
 
         async function loadWords() {
@@ -202,8 +213,46 @@
             const loader = document.getElementById('app-loader');
             document.body.classList.remove('loading');
             if (!loader) return;
+            loader.style.pointerEvents = 'none';
             loader.classList.add('fade-out');
-            setTimeout(() => loader.remove(), 550);
+            setTimeout(() => {
+                try {
+                    loader.style.display = 'none';
+                    loader.remove();
+                } catch (e) {}
+            }, 350);
+        }
+
+        function preloadAudioInBackground() {
+            if (!Array.isArray(ALPHABET_AUDIO_FILES) || ALPHABET_AUDIO_FILES.length === 0) return;
+            // Preload 2 files concurrently in the background so it never saturates the network
+            let index = 0;
+            const queueNext = () => {
+                if (index >= ALPHABET_AUDIO_FILES.length) return;
+                const letter = ALPHABET_AUDIO_FILES[index++];
+                const soundFile = letter.toLowerCase();
+                const audioPath = `audio/alphabet/${soundFile}.mp3`;
+                const versionedUrl = getVersionedAudioUrl(audioPath);
+                if (PRELOADED_AUDIO[versionedUrl]) {
+                    queueNext();
+                    return;
+                }
+                fetch(versionedUrl)
+                    .then(res => res.ok ? res.blob() : null)
+                    .then(blob => {
+                        if (blob) PRELOADED_AUDIO[versionedUrl] = URL.createObjectURL(blob);
+                    })
+                    .catch(() => {})
+                    .finally(() => {
+                        setTimeout(queueNext, 100);
+                    });
+            };
+
+            // Start 2 background download workers
+            setTimeout(() => {
+                queueNext();
+                queueNext();
+            }, 1000);
         }
 
         async function startPreloading() {
@@ -218,8 +267,7 @@
             const assets = [
                 { type: 'json', key: 'words', url: 'words.json', label: 'База слов' },
                 { type: 'json', key: 'grammar', url: 'grammar.json', label: 'Грамматика' },
-                { type: 'json', key: 'course', url: 'course.json', label: 'Курс' },
-                { type: 'audio', key: 'audio', url: 'audio/alphabet/', label: 'Озвучка алфавита' }
+                { type: 'json', key: 'course', url: 'course.json', label: 'Курс' }
             ];
 
             const total = assets.length;
@@ -236,10 +284,13 @@
 
             const loadAsset = async (asset) => {
                 if (preloadedFinished) return;
+                const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                const timeoutId = controller ? setTimeout(() => controller.abort(), 3500) : null;
                 try {
                     if (asset.key === 'words') {
                         if (loaderStep1) loaderStep1.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-500 mr-3 text-base"></i>Загрузка слов...';
-                        const res = await fetch(asset.url);
+                        const res = await fetch(asset.url, { signal: controller ? controller.signal : undefined });
+                        if (timeoutId) clearTimeout(timeoutId);
                         if (!res.ok) throw new Error('HTTP ' + res.status);
                         WORDS = await res.json();
                         if (loaderStep1) loaderStep1.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-3 text-base"></i>Словарь и перевод загружены';
@@ -247,121 +298,121 @@
                         if (loadingEl) loadingEl.style.display = 'none';
                     } else if (asset.key === 'grammar') {
                         if (loaderStep2) loaderStep2.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-500 mr-3 text-base"></i>Загрузка грамматики...';
-                        const res = await fetch(asset.url);
+                        const res = await fetch(asset.url, { signal: controller ? controller.signal : undefined });
+                        if (timeoutId) clearTimeout(timeoutId);
                         if (!res.ok) throw new Error('HTTP ' + res.status);
                         GRAMMAR = await res.json();
                         if (loaderStep2) loaderStep2.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-3 text-base"></i>Грамматический справочник загружен';
                     } else if (asset.key === 'course') {
-                        const res = await fetch(asset.url);
+                        const res = await fetch(asset.url, { signal: controller ? controller.signal : undefined });
+                        if (timeoutId) clearTimeout(timeoutId);
                         if (!res.ok) throw new Error('HTTP ' + res.status);
                         const courseData = await res.json();
                         COURSE = courseData.modules || [];
                         log(`[LezgiMez] Loaded ${COURSE.length} course modules`);
-                    } else if (asset.key === 'audio') {
-                        if (loaderStep3) loaderStep3.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-500 mr-3 text-base"></i>Загрузка озвучки...';
-                        await Promise.all(ALPHABET_AUDIO_FILES.map(async (letter) => {
-                            const soundFile = letter.toLowerCase();
-                            const audioPath = `audio/alphabet/${soundFile}.mp3`;
-                            const versionedUrl = getVersionedAudioUrl(audioPath);
-                            try {
-                                const res = await fetch(versionedUrl);
-                                if (!res.ok) throw new Error('HTTP ' + res.status);
-                                const blob = await res.blob();
-                                PRELOADED_AUDIO[versionedUrl] = URL.createObjectURL(blob);
-                            } catch (err) {
-                                warn(`[Preloader] Failed to preload audio: ${audioPath}`, err);
-                            }
-                        }));
-                        if (loaderStep3) loaderStep3.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-3 text-base"></i>Озвучка готова к работе';
                     }
                 } catch (e) {
+                    if (timeoutId) clearTimeout(timeoutId);
                     warn(`[Preloader] Failed to load asset: ${asset.url}`, e);
                     if (asset.key === 'words') {
-                        if (loaderStep1) loaderStep1.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-500 mr-3 text-base"></i>Словарь не загрузился';
+                        if (loaderStep1) loaderStep1.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500 mr-3 text-base"></i>Словарь (локальный режим)';
                     } else if (asset.key === 'grammar') {
-                        if (loaderStep2) loaderStep2.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500 mr-3 text-base"></i>Грамматика временно недоступна';
-                    } else if (asset.key === 'audio') {
-                        if (loaderStep3) loaderStep3.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500 mr-3 text-base"></i>Озвучка недоступна офлайн';
+                        if (loaderStep2) loaderStep2.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500 mr-3 text-base"></i>Грамматика (локальный режим)';
                     }
                 } finally {
                     updateProgress();
                 }
             };
 
-            // Set up UI indicators at startup
-            if (loaderStep3) loaderStep3.innerHTML = '<i class="fa-regular fa-circle mr-3 text-slate-300"></i>Озвучка алфавита';
-
-            // Execution queue
-            const queue = [...assets];
-            const activePromises = [];
-            const concurrency = 3;
-
-            const next = async () => {
-                if (queue.length === 0 || preloadedFinished) return;
-                const asset = queue.shift();
-                await loadAsset(asset);
-                return next();
-            };
+            if (loaderStep3) loaderStep3.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-3 text-base"></i>Озвучка готова';
 
             const enterApp = () => {
                 if (preloadedFinished) return;
                 preloadedFinished = true;
 
-                // Handle missing words/grammar gracefully (e.g. if skipped early or failed)
-                if (!WORDS || WORDS.length === 0) {
-                    showFatalLoadError('Не удалось загрузить словарь. Проверьте подключение или очистите кэш приложения.');
+                try {
+                    if (!WORDS || !Array.isArray(WORDS) || WORDS.length === 0) {
+                        // Attempt fallback to cached/embedded WORDS if available
+                        if (typeof window.EMBEDDED_WORDS !== 'undefined' && Array.isArray(window.EMBEDDED_WORDS)) {
+                            WORDS = window.EMBEDDED_WORDS;
+                        }
+                    }
+
+                    if (!WORDS || WORDS.length === 0) {
+                        showFatalLoadError('Не удалось загрузить словарь. Проверьте подключение или очистите кэш приложения.');
+                    } else {
+                        if (!Array.isArray(GRAMMAR)) GRAMMAR = [];
+                        if (!Array.isArray(COURSE)) COURSE = [];
+
+                        try { rebuildSearchIndex(); } catch (e) { warn(e); }
+                        try { buildCategoryOptions(); } catch (e) { warn(e); }
+                        try { refreshCategoryCounters(); } catch (e) { warn(e); }
+                        try { syncSelectedCategoryUI(); } catch (e) { warn(e); }
+                        try { updatePracticeAvailability(); } catch (e) { warn(e); }
+                        try { updateVocabStats(); } catch (e) { warn(e); }
+                        try { renderAlphabet(); } catch (e) { warn(e); }
+                        try { renderWords(); } catch (e) { warn(e); }
+                        try { initSearchBehavior(); } catch (e) { warn(e); }
+                        try { updateStatsUI(); } catch (e) { warn(e); }
+                        try { loadCourseProgress(); } catch (e) { warn(e); }
+                        try { renderCourseScreen(); } catch (e) { warn(e); }
+
+                        const alphabetCountEl = document.getElementById('alphabet-count');
+                        if (alphabetCountEl) alphabetCountEl.textContent = ALPHABET.length;
+
+                        const practiceGrammarView = document.getElementById('practice-grammar-view');
+                        if (practiceGrammarView && !practiceGrammarView.classList.contains('hidden')) {
+                            try { renderGrammar(); } catch (e) { warn(e); }
+                        }
+                    }
+                } catch (err) {
+                    console.error('[LezgiMez] Error entering app:', err);
+                } finally {
                     hideLoader();
-                    return;
+                    preloadAudioInBackground();
                 }
-                if (!Array.isArray(GRAMMAR)) GRAMMAR = [];
-                rebuildSearchIndex();
-
-                // Render everything
-                buildCategoryOptions();
-                refreshCategoryCounters();
-                syncSelectedCategoryUI();
-                updatePracticeAvailability();
-                updateVocabStats();
-                renderAlphabet();
-                renderWords();
-                initSearchBehavior();
-                updateStatsUI();
-                loadCourseProgress();
-                renderCourseScreen();
-
-                const alphabetCountEl = document.getElementById('alphabet-count');
-                if (alphabetCountEl) alphabetCountEl.textContent = ALPHABET.length;
-
-                const practiceGrammarView = document.getElementById('practice-grammar-view');
-                if (practiceGrammarView && !practiceGrammarView.classList.contains('hidden')) {
-                    renderGrammar();
-                }
-
-                hideLoader();
             };
 
+            const startTime = Date.now();
+
+            // Hard safety timeout: Ensure the app ALWAYS opens within 3.2s even if network stalls
+            const safetyTimer = setTimeout(() => {
+                enterApp();
+            }, 3200);
+
             if (skipBtn) {
-                skipBtn.addEventListener('click', enterApp);
+                skipBtn.addEventListener('click', () => {
+                    clearTimeout(safetyTimer);
+                    enterApp();
+                });
             }
 
-            // Start worker queue
-            for (let i = 0; i < Math.min(concurrency, assets.length); i++) {
-                activePromises.push(next());
+            // Run assets preloading in parallel
+            try {
+                await Promise.all(assets.map(asset => loadAsset(asset)));
+            } catch (err) {
+                warn('[Preloader] Batch error:', err);
             }
-            await Promise.all(activePromises);
 
             if (preloadedFinished) return;
 
-            // Finalizing UI
-            if (loaderStep3) loaderStep3.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-3 text-base"></i>Все файлы озвучки кэшированы';
-            if (loaderStatus) loaderStatus.textContent = 'Готово к запуску!';
-            if (loaderProgress) loaderProgress.style.width = '100%';
-            if (loaderPercent) loaderPercent.textContent = '100%';
+            // Гарантируем минимальное время показа сплэш-экрана (~1.8 сек), чтобы анимация подзаголовка успела проиграться
+            const elapsed = Date.now() - startTime;
+            const minDuration = 1800;
+            const remainingDelay = Math.max(200, minDuration - elapsed);
 
-            // Smooth transition into the app
             setTimeout(() => {
-                enterApp();
-            }, 600);
+                if (preloadedFinished) return;
+                clearTimeout(safetyTimer);
+
+                if (loaderStatus) loaderStatus.textContent = 'Готово к запуску!';
+                if (loaderProgress) loaderProgress.style.width = '100%';
+                if (loaderPercent) loaderPercent.textContent = '100%';
+
+                setTimeout(() => {
+                    enterApp();
+                }, 250);
+            }, remainingDelay);
         }
 
 
@@ -408,6 +459,70 @@
             document.getElementById('grammar-back-btn')?.addEventListener('click', hideGrammarList);
             document.getElementById('course-unit-back-btn')?.addEventListener('click', showCourseMainView);
 
+            // Duel Mode Select & Modals
+            document.getElementById('prac-mode-duel')?.addEventListener('click', () => typeof openDuelMenuModal === 'function' ? openDuelMenuModal() : (typeof startDuelGame === 'function' && startDuelGame('friend_create')));
+            document.getElementById('duel-menu-close-btn')?.addEventListener('click', () => typeof closeDuelMenuModal === 'function' && closeDuelMenuModal());
+            document.getElementById('duel-menu-modal')?.addEventListener('click', (e) => {
+                if (e.target.id === 'duel-menu-modal' && typeof closeDuelMenuModal === 'function') closeDuelMenuModal();
+            });
+
+            document.getElementById('duel-btn-telegram-friend')?.addEventListener('click', () => typeof startDuelGame === 'function' && startDuelGame('friend_create'));
+            document.getElementById('duel-btn-pass-play')?.addEventListener('click', () => typeof startDuelGame === 'function' && startDuelGame('pass_play'));
+            document.getElementById('duel-btn-bot')?.addEventListener('click', () => typeof startDuelGame === 'function' && startDuelGame('bot'));
+
+            // Incoming challenge modal buttons
+            document.getElementById('duel-incoming-close-btn')?.addEventListener('click', () => typeof closeIncomingDuelModal === 'function' && closeIncomingDuelModal());
+            document.getElementById('duel-incoming-decline-btn')?.addEventListener('click', () => typeof closeIncomingDuelModal === 'function' && closeIncomingDuelModal());
+            document.getElementById('duel-incoming-accept-btn')?.addEventListener('click', () => {
+                const challenge = typeof window.pendingChallenge === 'function' ? window.pendingChallenge() : null;
+                if (typeof startDuelGame === 'function') startDuelGame('friend_play', challenge);
+            });
+            document.getElementById('duel-incoming-modal')?.addEventListener('click', (e) => {
+                if (e.target.id === 'duel-incoming-modal' && typeof closeIncomingDuelModal === 'function') closeIncomingDuelModal();
+            });
+
+            // Duel arena and result buttons
+            document.getElementById('duel-close-btn')?.addEventListener('click', () => typeof closeDuelModal === 'function' && closeDuelModal());
+            document.getElementById('duel-retry-btn')?.addEventListener('click', () => {
+                const mode = window.lastDuelResult?.mode || 'friend_create';
+                const challenge = mode === 'friend_play' && typeof window.pendingChallenge === 'function' ? window.pendingChallenge() : null;
+                if (typeof startDuelGame === 'function') startDuelGame(mode, challenge);
+            });
+            document.getElementById('duel-challenge-btn')?.addEventListener('click', () => {
+                if (window.lastDuelResult && typeof window.TelegramApp?.shareFriendChallenge === 'function') {
+                    window.TelegramApp.shareFriendChallenge(window.lastDuelResult);
+                } else {
+                    window.TelegramApp?.shareUrl?.('⚔️ Вызываю тебя на «Дуэль слов» в приложении LezgiMez! У каждого по 3 жизни. Попробуй победить меня! 🏆');
+                }
+            });
+            document.getElementById('duel-reply-friend-btn')?.addEventListener('click', () => {
+                const res = window.lastDuelResult;
+                if (res && typeof window.TelegramApp?.shareChallengeReply === 'function') {
+                    const won = res.mistakes < res.rivalMistakes || (res.mistakes === res.rivalMistakes && res.correct >= res.rivalCorrect);
+                    window.TelegramApp.shareChallengeReply(res, res.rivalName, won);
+                }
+            });
+            document.getElementById('duel-share-btn')?.addEventListener('click', () => {
+                const correct = document.getElementById('duel-final-correct')?.textContent || '0';
+                const mistakesRaw = document.getElementById('duel-final-mistakes')?.textContent || '0';
+                const mistakes = mistakesRaw.split('/')[0].trim() || '0';
+                const lives = window.lastDuelResult?.livesLeft ?? 0;
+                window.TelegramApp?.shareDuel?.(correct, mistakes, lives);
+            });
+            document.getElementById('duel-modal')?.addEventListener('click', (e) => {
+                if (e.target.id === 'duel-modal' && typeof closeDuelModal === 'function') closeDuelModal();
+            });
+
+            // Feedback & Reminders buttons
+            document.getElementById('tg-reminders-card')?.addEventListener('click', () => window.TelegramApp?.openBotReminders?.());
+            document.getElementById('open-support-btn')?.addEventListener('click', () => window.TelegramApp?.openSupportChat?.());
+            document.getElementById('open-propose-btn')?.addEventListener('click', () => typeof openFeedbackModal === 'function' && openFeedbackModal('Предложить слово / идею'));
+            document.getElementById('feedback-close-btn')?.addEventListener('click', () => typeof closeFeedbackModal === 'function' && closeFeedbackModal());
+            document.getElementById('feedback-send-btn')?.addEventListener('click', () => typeof sendFeedbackMessage === 'function' && sendFeedbackMessage());
+            document.getElementById('feedback-modal')?.addEventListener('click', (e) => {
+                if (e.target.id === 'feedback-modal' && typeof closeFeedbackModal === 'function') closeFeedbackModal();
+            });
+
             document.getElementById('prac-mode-flashcards')?.addEventListener('click', startFlashcards);
             document.getElementById('prac-mode-quiz')?.addEventListener('click', startQuiz);
             document.getElementById('prac-mode-pairs')?.addEventListener('click', startPairs);
@@ -428,21 +543,18 @@
                 if (a === 'enable') requestNotificationPermission();
                 if (a === 'dismiss') dismissNotifBanner();
             });
-            document.getElementById('notif-card')?.addEventListener('click', toggleNotifications);
-            document.getElementById('update-check-row')?.addEventListener('click', checkForUpdates);
-
-            // Progress management
-            document.getElementById('export-btn')?.addEventListener('click', exportProgress);
-            document.getElementById('import-input')?.addEventListener('change', (e) => importProgress(e.target.files[0]));
+            // Settings & actions
             document.getElementById('add-to-home-btn')?.addEventListener('click', showInstallInstructions);
             document.getElementById('theme-toggle-card')?.addEventListener('click', toggleTheme);
 
             // Initial data load and UI render
             initTheme();
             loadProgress();
+            checkAndUpdateStreak(false);
+            if (typeof updatePracticeStreakUI === 'function') updatePracticeStreakUI();
+            window.TelegramApp?.renderProfileCard?.();
             startPreloading();
 
-            updateNotifUI();
             initKeyboard();
             document.addEventListener('touchstart', () => {}, { passive: true });
             const alphabetCountEl = document.getElementById('alphabet-count');

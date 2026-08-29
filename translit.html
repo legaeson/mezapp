@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="lez">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Лезгинский транслитератор (Латиница)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --primary: #38bdf8;
+      --primary-hover: #0ea5e9;
+      --primary-glow: rgba(56, 189, 248, 0.15);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #0f172a;
+      --input-border: #334155;
+      --font-main: 'Plus Jakarta Sans', 'Noto Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2.5rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 950px;
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    }
+
+    header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    button {
+      font-family: var(--font-main);
+      padding: 0.65rem 1.25rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: var(--primary);
+      color: #0f172a;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.secondary {
+      background: #334155;
+      color: #f1f5f9;
+      box-shadow: none;
+    }
+
+    button.secondary:hover {
+      background: #475569;
+    }
+
+    .editors {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .editors {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .editor-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    textarea {
+      width: 100%;
+      height: 240px;
+      padding: 1rem;
+      border-radius: 12px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: #f8fafc;
+      font-size: 1.05rem;
+      font-family: var(--font-main);
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    textarea[readonly] {
+      background-color: rgba(15, 23, 42, 0.6);
+      color: #38bdf8;
+    }
+
+    .rules-summary {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      font-size: 0.9rem;
+    }
+
+    .rules-summary summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--primary);
+      outline: none;
+    }
+
+    .rules-summary ul {
+      margin-top: 1rem;
+      margin-left: 1.25rem;
+      line-height: 1.7;
+      color: #cbd5e1;
+    }
+
+    .rules-summary code {
+      font-family: var(--font-mono);
+      background: #334155;
+      padding: 0.15rem 0.4rem;
+      border-radius: 5px;
+      color: #f8fafc;
+      font-size: 0.85em;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Лезгинский транслитератор (Латиница)</h1>
+    <p class="desc">Практическая система: <b>гъ → ġ</b>, <b>хь → xh</b>, <b>гӀ → g'</b>, <b>хӀ → x'</b>, <b>ы → ɨ</b>, <b>ч → c</b>, <b>ж → j</b></p>
+  </header>
+
+  <div class="controls">
+    <button type="button" id="copyBtn">Скопировать латиницу</button>
+    <button type="button" class="secondary" id="clearBtn">Очистить</button>
+    <button type="button" class="secondary" id="sampleBtn">Вставить пример</button>
+    <label style="display:inline-flex; align-items:center; gap:8px; margin-left:12px; cursor:pointer; color:var(--text); font-size:0.95rem;">
+      <input type="checkbox" id="mazinCheck"> Мазинский диалект (--mazin)
+    </label>
+  </div>
+
+  <div class="editors">
+    <div class="editor-group">
+      <label for="cyrInput">Кириллица</label>
+      <textarea id="cyrInput" placeholder="Кхьих инал чӀал..."></textarea>
+    </div>
+
+    <div class="editor-group">
+      <label for="latOutput">Латиница</label>
+      <textarea id="latOutput" readonly placeholder="Транслитерация пайда жеда..."></textarea>
+    </div>
+  </div>
+
+  <details class="rules-summary">
+    <summary>Справка по действующим правилам</summary>
+    <ul>
+      <li><b>Увулярные / Диграфы:</b> гъ → <code>ġ</code>, гь → <code>h</code>, гӀ → <code>g'</code>, хь → <code>xh</code>, хъ → <code>qh</code>, хӀ → <code>x'</code>, къ → <code>q</code>, кь → <code>q'</code></li>
+      <li><b>Абруптивы:</b> пӀ → <code>p'</code>, тӀ → <code>t'</code>, кӀ → <code>k'</code>, цӀ → <code>ts'</code>, чӀ → <code>c'</code></li>
+      <li><b>Лабиализация:</b> гъв → <code>ġw</code>, хьв → <code>xhw</code>, хъв → <code>qhw</code>, кӀв → <code>k'w</code>, цӀв → <code>ts'w</code>, чӀв → <code>c'w</code> и т.д.</li>
+      <li><b>Гласные:</b> ы → <code>ɨ</code>, аа → <code>ā</code>, аьаь (--mazin) → <code>ǣ</code>, ъ → <code>'</code>, ь → (удаляется вне диграфов)</li>
+      <li><b>Мазинские кольца:</b> чӀ˚в → <code>c'˚w</code>, чh˚ → <code>ch̊</code>, ж˚в → <code>j̊w</code>, ш˚ → <code>sh̊</code> и т.д.</li>
+    </ul>
+  </details>
+</div>
+
+<script src="js/utils.js"></script>
+<script>
+// UI Логика
+const cyrInput = document.getElementById('cyrInput');
+const latOutput = document.getElementById('latOutput');
+const mazinCheck = document.getElementById('mazinCheck');
+const copyBtn = document.getElementById('copyBtn');
+const clearBtn = document.getElementById('clearBtn');
+const sampleBtn = document.getElementById('sampleBtn');
+
+function handleConvert() {
+  if (typeof transliterateLezgi === 'function') {
+    latOutput.value = transliterateLezgi(cyrInput.value, mazinCheck ? mazinCheck.checked : false);
+  }
+}
+
+cyrInput.addEventListener('input', handleConvert);
+if (mazinCheck) {
+  mazinCheck.addEventListener('change', handleConvert);
+}
+
+copyBtn.addEventListener('click', () => {
+  if (!latOutput.value) return;
+  navigator.clipboard.writeText(latOutput.value).then(() => {
+    const originalText = copyBtn.innerText;
+    copyBtn.innerText = 'Скопировано! ✓';
+    setTimeout(() => copyBtn.innerText = originalText, 1500);
+  });
+});
+
+clearBtn.addEventListener('click', () => {
+  cyrInput.value = '';
+  latOutput.value = '';
+  cyrInput.focus();
+});
+
+sampleBtn.addEventListener('click', () => {
+  cyrInput.value = `Чи чӀал цӀай я! Жув, вац, цав, чан, ша!
+Гъед, хӀуьрмет, гӀвал, кӀвал.
+Мазин пример: аьаь, чӀ˚в, чh˚.
+Ел ава, беден сагърай, къвезвач, хъфизва.`;
+  handleConvert();
+});
+</script>
+
+</body>
+</html>

@@ -2,7 +2,18 @@
 
         function loadCourseProgress() {
             try {
-                const saved = localStorage.getItem('lezgi_course_progress');
+                const key = (typeof getCourseStorageKey === 'function') ? getCourseStorageKey() : 'lezgi_course_progress';
+                let saved = localStorage.getItem(key);
+
+                // Automatic migration for Telegram profile
+                if (!saved && key !== 'lezgi_course_progress') {
+                    const legacy = localStorage.getItem('lezgi_course_progress');
+                    if (legacy) {
+                        saved = legacy;
+                        localStorage.setItem(key, legacy);
+                    }
+                }
+
                 if (saved) {
                     const data = JSON.parse(saved);
                     COURSE_PROGRESS = {
@@ -11,11 +22,48 @@
                         currentUnit: data.currentUnit || null
                     };
                 }
+
+                // Background sync with Telegram CloudStorage
+                if (window.TelegramApp?.getCloudItem) {
+                    window.TelegramApp.getCloudItem('lezgi_course_progress').then((cloudData) => {
+                        if (cloudData) {
+                            try {
+                                const parsed = JSON.parse(cloudData);
+                                if (parsed && typeof parsed === 'object') {
+                                    const cloudCompleted = Array.isArray(parsed.completedUnits) ? parsed.completedUnits.length : 0;
+                                    const localCompleted = COURSE_PROGRESS.completedUnits.length;
+                                    if (cloudCompleted >= localCompleted) {
+                                        COURSE_PROGRESS = {
+                                            completedUnits: Array.isArray(parsed.completedUnits) ? parsed.completedUnits : [],
+                                            scores: (parsed.scores && typeof parsed.scores === 'object') ? parsed.scores : {},
+                                            currentUnit: parsed.currentUnit || null
+                                        };
+                                        localStorage.setItem(key, JSON.stringify(COURSE_PROGRESS));
+                                        localStorage.setItem('lezgi_course_progress', JSON.stringify(COURSE_PROGRESS));
+                                        if (typeof renderCourseScreen === 'function') renderCourseScreen();
+                                    } else {
+                                        window.TelegramApp.setCloudItem('lezgi_course_progress', JSON.stringify(COURSE_PROGRESS));
+                                    }
+                                }
+                            } catch (e) {
+                                warn('[Telegram CloudStorage] Parse course progress error:', e);
+                            }
+                        } else if (COURSE_PROGRESS.completedUnits.length > 0) {
+                            window.TelegramApp.setCloudItem('lezgi_course_progress', JSON.stringify(COURSE_PROGRESS));
+                        }
+                    });
+                }
             } catch (e) { warn('Error loading course progress', e); }
         }
 
         function saveCourseProgress() {
-            localStorage.setItem('lezgi_course_progress', JSON.stringify(COURSE_PROGRESS));
+            const key = (typeof getCourseStorageKey === 'function') ? getCourseStorageKey() : 'lezgi_course_progress';
+            const json = JSON.stringify(COURSE_PROGRESS);
+            localStorage.setItem(key, json);
+            localStorage.setItem('lezgi_course_progress', json);
+            if (window.TelegramApp?.setCloudItem) {
+                window.TelegramApp.setCloudItem('lezgi_course_progress', json);
+            }
         }
 
         function isUnitUnlocked(unitId) {
@@ -425,7 +473,6 @@
                     if (!sent) throw new Error('All endpoints failed');
                     
                     closeModal();
-                    alert('Спасибо! Ваше сообщение отправлено.');
 
                 } catch (err) {
                     warn('[Course Report] failed', err);
@@ -1353,4 +1400,4 @@
             resWrap.append(info, actions);
             content.appendChild(resWrap);
         }
-
+

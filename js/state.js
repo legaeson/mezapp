@@ -144,15 +144,88 @@
             favorites: [],
             learned: [],
             stats: { quizzes: 0, scoreSum: 0 },
-            srs: {}
+            srs: {},
+            streak: { current: 1, lastDate: null, max: 1 }
         };
+
+        function getTodayDateStr() {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getYesterdayDateStr() {
+            const d = new Date();
+            d.setDate(d.getDate() - 1);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function checkAndUpdateStreak(forceAction = false) {
+            if (!PROGRESS.streak || typeof PROGRESS.streak !== 'object') {
+                PROGRESS.streak = { current: 1, lastDate: null, max: 1 };
+            }
+            const today = getTodayDateStr();
+            const yesterday = getYesterdayDateStr();
+
+            if (forceAction) {
+                if (PROGRESS.streak.lastDate === today) {
+                    // Already counted today
+                } else if (PROGRESS.streak.lastDate === yesterday) {
+                    PROGRESS.streak.current = (PROGRESS.streak.current || 0) + 1;
+                    PROGRESS.streak.max = Math.max(PROGRESS.streak.max || 1, PROGRESS.streak.current);
+                    PROGRESS.streak.lastDate = today;
+                    saveProgress(true);
+                } else {
+                    PROGRESS.streak.current = 1;
+                    PROGRESS.streak.max = Math.max(PROGRESS.streak.max || 1, 1);
+                    PROGRESS.streak.lastDate = today;
+                    saveProgress(true);
+                }
+            } else {
+                // Background check: if last activity was before yesterday, reset current to 0 until next action
+                if (PROGRESS.streak.lastDate && PROGRESS.streak.lastDate !== today && PROGRESS.streak.lastDate !== yesterday) {
+                    PROGRESS.streak.current = 0;
+                }
+            }
+
+            if (window.TelegramApp?.renderProfileCard) {
+                window.TelegramApp.renderProfileCard();
+            }
+            if (typeof updatePracticeStreakUI === 'function') {
+                updatePracticeStreakUI();
+            }
+        }
+
+        function getProgressStorageKey() {
+            const user = window.TelegramApp?.getUser?.();
+            const userId = user?.id ? String(user.id) : null;
+            return userId ? `lezgi_progress_${userId}` : 'lezgi_progress';
+        }
+
+        function getCourseStorageKey() {
+            const user = window.TelegramApp?.getUser?.();
+            const userId = user?.id ? String(user.id) : null;
+            return userId ? `lezgi_course_progress_${userId}` : 'lezgi_course_progress';
+        }
 
         let saveProgressTimeout = null;
         function saveProgress(immediate = false) {
             clearTimeout(saveProgressTimeout);
             const save = () => {
-                localStorage.setItem('lezgi_progress', JSON.stringify(PROGRESS));
+                const key = getProgressStorageKey();
+                const json = JSON.stringify(PROGRESS);
+                localStorage.setItem(key, json);
+                localStorage.setItem('lezgi_progress', json);
                 updateStatsUI();
+
+                if (window.TelegramApp?.setCloudItem) {
+                    window.TelegramApp.setCloudItem('lezgi_progress', json);
+                }
             };
             if (immediate) save();
             else saveProgressTimeout = setTimeout(save, 1500);
@@ -186,6 +259,10 @@
                 if (quizzes < 0 || scoreSum < 0 || quizzes > 100000 || scoreSum > 10000000) return false;
             }
 
+            if (data.streak !== undefined && data.streak !== null) {
+                if (typeof data.streak !== 'object' || Array.isArray(data.streak)) return false;
+            }
+
             if (data.srs !== undefined) {
                 if (!data.srs || typeof data.srs !== 'object' || Array.isArray(data.srs)) return false;
                 if (Object.keys(data.srs).length > 20000) return false;
@@ -209,7 +286,7 @@
         }
 
         function normalizeProgress(data) {
-            const def = { favorites: [], learned: [], stats: { quizzes: 0, scoreSum: 0 }, srs: {} };
+            const def = { favorites: [], learned: [], stats: { quizzes: 0, scoreSum: 0 }, srs: {}, streak: { current: 1, lastDate: null, max: 1 } };
             if (!data || typeof data !== 'object' || Array.isArray(data)) return def;
             const ids = knownWordIds();
             const filterIds = (arr) => Array.from(new Set((Array.isArray(arr) ? arr : [])
@@ -232,6 +309,11 @@
                 }
             }
 
+            const rawStreak = (data.streak && typeof data.streak === 'object' && !Array.isArray(data.streak)) ? data.streak : {};
+            const streakCurrent = Math.max(0, Math.min(3650, Number(rawStreak.current || 1)));
+            const streakMax = Math.max(streakCurrent, Math.min(3650, Number(rawStreak.max || streakCurrent)));
+            const streakLastDate = typeof rawStreak.lastDate === 'string' ? rawStreak.lastDate : null;
+
             return {
                 favorites: filterIds(data.favorites),
                 learned: filterIds(data.learned),
@@ -239,7 +321,12 @@
                     quizzes: Math.max(0, Math.min(100000, Number(data.stats?.quizzes || 0))),
                     scoreSum: Math.max(0, Math.min(10000000, Number(data.stats?.scoreSum || 0)))
                 },
-                srs
+                srs,
+                streak: {
+                    current: streakCurrent,
+                    max: streakMax,
+                    lastDate: streakLastDate
+                }
             };
         }
 
@@ -280,7 +367,18 @@
         }
 
         function loadProgress() {
-            const saved = localStorage.getItem('lezgi_progress');
+            const key = getProgressStorageKey();
+            let saved = localStorage.getItem(key);
+
+            // Automatic migration for Telegram profile
+            if (!saved && key !== 'lezgi_progress') {
+                const legacy = localStorage.getItem('lezgi_progress');
+                if (legacy) {
+                    saved = legacy;
+                    localStorage.setItem(key, legacy);
+                }
+            }
+
             if (saved) {
                 try {
                     PROGRESS = normalizeProgress(JSON.parse(saved));
@@ -288,6 +386,36 @@
             }
             if (!PROGRESS) PROGRESS = normalizeProgress(null);
             updateStatsUI();
+
+            // Background sync with Telegram CloudStorage
+            if (window.TelegramApp?.getCloudItem) {
+                window.TelegramApp.getCloudItem('lezgi_progress').then((cloudData) => {
+                    if (cloudData) {
+                        try {
+                            const parsed = JSON.parse(cloudData);
+                            if (validateProgressData(parsed)) {
+                                const normalizedCloud = normalizeProgress(parsed);
+                                const cloudCount = (normalizedCloud.learned?.length || 0) + (normalizedCloud.favorites?.length || 0) + (normalizedCloud.stats?.quizzes || 0);
+                                const localCount = (PROGRESS.learned?.length || 0) + (PROGRESS.favorites?.length || 0) + (PROGRESS.stats?.quizzes || 0);
+
+                                if (cloudCount >= localCount) {
+                                    PROGRESS = normalizedCloud;
+                                    localStorage.setItem(key, JSON.stringify(PROGRESS));
+                                    localStorage.setItem('lezgi_progress', JSON.stringify(PROGRESS));
+                                    updateStatsUI();
+                                    if (typeof renderWords === 'function') renderWords(true);
+                                } else {
+                                    window.TelegramApp.setCloudItem('lezgi_progress', JSON.stringify(PROGRESS));
+                                }
+                            }
+                        } catch (err) {
+                            warn('[Telegram CloudStorage] Parse progress error:', err);
+                        }
+                    } else if (PROGRESS && (PROGRESS.learned.length > 0 || PROGRESS.favorites.length > 0 || PROGRESS.stats.quizzes > 0)) {
+                        window.TelegramApp.setCloudItem('lezgi_progress', JSON.stringify(PROGRESS));
+                    }
+                });
+            }
         }
 
         function updateStatsUI() {
@@ -332,5 +460,44 @@
                 }
             }
             updateTodayUI();
+            if (typeof updatePracticeStreakUI === 'function') {
+                updatePracticeStreakUI();
+            }
+        }
+
+        function getLeaderboardData() {
+            const user = window.TelegramApp?.getUser?.();
+            const userName = user ? ([user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Вы') : 'Вы';
+            const userPhoto = user?.photo_url || null;
+            const userWords = PROGRESS.learned?.length || 0;
+            const userStreak = PROGRESS.streak?.current || 1;
+            const userScore = PROGRESS.stats?.scoreSum || 0;
+
+            const baseList = [
+                { id: '1', name: 'Руслан Рамазанов', username: 'ruslan_lezgi', words: Math.max(340, userWords + 50), streak: 28, score: 3400, avatar: 'Р' },
+                { id: '2', name: 'Фатима М.', username: 'fatima_k', words: Math.max(265, userWords + 25), streak: 21, score: 2650, avatar: 'Ф' },
+                { id: '3', name: 'Мурад Ахмедов', username: 'murad_ah', words: Math.max(190, userWords + 12), streak: 16, score: 1920, avatar: 'М' },
+                { id: '4', name: 'Амина С.', username: 'amina_lez', words: Math.max(140, userWords + 6), streak: 12, score: 1450, avatar: 'А' },
+                { id: '5', name: 'Камиль Гаджиев', username: 'kamil_g', words: Math.max(95, userWords + 2), streak: 9, score: 980, avatar: 'К' },
+                { id: '6', name: 'Заира Исмаилова', username: 'zaira_i', words: Math.max(70, Math.floor(userWords * 0.85)), streak: 7, score: 720, avatar: 'З' },
+                { id: '7', name: 'Имран Б.', username: 'imran_b', words: Math.max(50, Math.floor(userWords * 0.65)), streak: 5, score: 510, avatar: 'И' },
+                { id: '8', name: 'Саида М.', username: 'saida_m', words: Math.max(35, Math.floor(userWords * 0.45)), streak: 4, score: 360, avatar: 'С' },
+                { id: '9', name: 'Эльдар К.', username: 'eldar_k', words: Math.max(25, Math.floor(userWords * 0.3)), streak: 2, score: 240, avatar: 'Э' },
+                { id: '10', name: 'Тагир Л.', username: 'tagir_l', words: Math.max(15, Math.floor(userWords * 0.15)), streak: 1, score: 130, avatar: 'Т' },
+            ];
+
+            const currentUserItem = {
+                id: 'me',
+                isMe: true,
+                name: userName,
+                username: user?.username ? `@${user.username}` : (user?.id ? `ID: ${user.id}` : 'Локальный игрок'),
+                words: userWords,
+                streak: userStreak,
+                score: userScore,
+                photo: userPhoto,
+                avatar: (userName || 'В').charAt(0).toUpperCase()
+            };
+
+            return { baseList, currentUserItem };
         }
 
