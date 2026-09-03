@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.2.22';
+const CACHE_VERSION = '2.2.51';
 const CACHE_NAME = `lezgimez-pwa-v${CACHE_VERSION}`;
 
 const ALPHABET_AUDIO_FILES = [
@@ -12,9 +12,12 @@ const CRITICAL_ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './fonts.css',
   './output.css',
   './js/utils.js',
   './js/state.js',
+  './js/peerjs.min.js',
+  './js/duel-network.js',
   './js/telegram.js',
   './js/srs.js',
   './js/ui.js',

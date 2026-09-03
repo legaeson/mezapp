@@ -262,7 +262,6 @@
             const loaderStep1 = document.getElementById('loader-step-words');
             const loaderStep2 = document.getElementById('loader-step-grammar');
             const loaderStep3 = document.getElementById('loader-step-audio');
-            const skipBtn = document.getElementById('loader-skip-btn');
 
             const assets = [
                 { type: 'json', key: 'words', url: 'words.json', label: 'База слов' },
@@ -375,17 +374,10 @@
 
             const startTime = Date.now();
 
-            // Hard safety timeout: Ensure the app ALWAYS opens within 3.2s even if network stalls
+            // Hard safety timeout: Ensure the app ALWAYS opens within 2.7s even if network stalls
             const safetyTimer = setTimeout(() => {
                 enterApp();
-            }, 3200);
-
-            if (skipBtn) {
-                skipBtn.addEventListener('click', () => {
-                    clearTimeout(safetyTimer);
-                    enterApp();
-                });
-            }
+            }, 2700);
 
             // Run assets preloading in parallel
             try {
@@ -396,10 +388,10 @@
 
             if (preloadedFinished) return;
 
-            // Гарантируем минимальное время показа сплэш-экрана (~1.8 сек), чтобы анимация подзаголовка успела проиграться
+            // Минимальное время показа экрана загрузки (быстрее на 500мс: 1.3 сек)
             const elapsed = Date.now() - startTime;
-            const minDuration = 1800;
-            const remainingDelay = Math.max(200, minDuration - elapsed);
+            const minDuration = 1300;
+            const remainingDelay = Math.max(100, minDuration - elapsed);
 
             setTimeout(() => {
                 if (preloadedFinished) return;
@@ -411,7 +403,7 @@
 
                 setTimeout(() => {
                     enterApp();
-                }, 250);
+                }, 150);
             }, remainingDelay);
         }
 
@@ -466,27 +458,196 @@
                 if (e.target.id === 'duel-menu-modal' && typeof closeDuelMenuModal === 'function') closeDuelMenuModal();
             });
 
-            document.getElementById('duel-btn-telegram-friend')?.addEventListener('click', () => typeof startDuelGame === 'function' && startDuelGame('friend_create'));
+            // 1. Online Random Matchmaking
+            document.getElementById('duel-btn-online-match')?.addEventListener('click', () => {
+                if (typeof openDuelMatchmakingModal === 'function') openDuelMatchmakingModal();
+                window.DuelNetwork?.startMatchmaking(
+                    () => {
+                        const statusEl = document.getElementById('duel-matchmaking-status');
+                        if (statusEl) statusEl.textContent = 'Ищем свободного игрока в сети...';
+                    },
+                    (matchInfo) => {
+                        if (typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal();
+                        if (typeof startDuelGame === 'function') {
+                            startDuelGame('online_live', { opponent: matchInfo.opponent, isHost: matchInfo.role === 'host' });
+                        }
+                    },
+                    (err) => {
+                        console.error('[Duel] Matchmaking error:', err);
+                        if (typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal();
+                        alert('Ошибка поиска. Попробуйте ещё раз.');
+                    }
+                );
+            });
+            document.getElementById('duel-matchmaking-cancel-btn')?.addEventListener('click', () => {
+                if (typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal(true);
+            });
+            document.getElementById('duel-matchmaking-modal')?.addEventListener('click', (e) => {
+                if (e.target.id === 'duel-matchmaking-modal' && typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal(true);
+            });
+
+            // 2. Create room & invite friend
+            document.getElementById('duel-btn-create-room')?.addEventListener('click', () => {
+                window.DuelNetwork?.createRoom(
+                    null,
+                    (roomCode) => {
+                        if (typeof openDuelLobbyModal === 'function') openDuelLobbyModal(roomCode);
+                    },
+                    (joinInfo) => {
+                        if (typeof closeDuelLobbyModal === 'function') closeDuelLobbyModal(false);
+                        if (typeof startDuelGame === 'function') {
+                            startDuelGame('online_live', { opponent: joinInfo.opponent, isHost: true });
+                        }
+                    },
+                    (err) => {
+                        console.error('[Duel] Create room error:', err);
+                        alert('Не удалось создать комнату. Проверьте интернет-соединение.');
+                    }
+                );
+            });
+            document.getElementById('duel-lobby-close-btn')?.addEventListener('click', () => {
+                if (typeof closeDuelLobbyModal === 'function') closeDuelLobbyModal(true);
+            });
+            document.getElementById('duel-lobby-modal')?.addEventListener('click', (e) => {
+                if (e.target.id === 'duel-lobby-modal' && typeof closeDuelLobbyModal === 'function') closeDuelLobbyModal(true);
+            });
+            document.getElementById('duel-lobby-tg-btn')?.addEventListener('click', () => {
+                const code = window.DuelNetwork?.roomCode;
+                if (code) {
+                    window.TelegramApp?.shareRoomInvite?.(code);
+                }
+            });
+            document.getElementById('duel-lobby-copy-btn')?.addEventListener('click', () => {
+                const code = window.DuelNetwork?.roomCode;
+                if (code) {
+                    const link = window.TelegramApp?.createRoomInviteLink?.(code) || (window.location.origin + window.location.pathname + '?room=' + code);
+                    const text = `⚔️ Онлайн-дуэль в LezgiMez!\nКод комнаты: ${code}\nСсылка: ${link}`;
+                    if (navigator.clipboard?.writeText) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            const copyText = document.getElementById('duel-lobby-copy-text');
+                            if (copyText) {
+                                const orig = copyText.textContent;
+                                copyText.textContent = 'Скопировано! ✅';
+                                setTimeout(() => copyText.textContent = orig, 2000);
+                            }
+                        }).catch(() => {});
+                    }
+                }
+            });
+
+            // 3. Join by room code
+            document.getElementById('duel-btn-join-code')?.addEventListener('click', () => {
+                if (typeof openDuelJoinModal === 'function') openDuelJoinModal();
+            });
+            document.getElementById('duel-join-close-btn')?.addEventListener('click', () => {
+                if (typeof closeDuelJoinModal === 'function') closeDuelJoinModal();
+            });
+            document.getElementById('duel-join-modal')?.addEventListener('click', (e) => {
+                if (e.target.id === 'duel-join-modal' && typeof closeDuelJoinModal === 'function') closeDuelJoinModal();
+            });
+            document.getElementById('duel-join-submit-btn')?.addEventListener('click', () => {
+                const input = document.getElementById('duel-join-input');
+                const err = document.getElementById('duel-join-error');
+                const code = (input?.value || '').trim().toUpperCase();
+                if (!code || code.length < 3) {
+                    if (err) {
+                        err.textContent = 'Пожалуйста, введите код комнаты';
+                        err.classList.remove('hidden');
+                    }
+                    return;
+                }
+                if (err) err.classList.add('hidden');
+
+                const submitBtn = document.getElementById('duel-join-submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Подключение...</span>';
+                }
+
+                window.DuelNetwork?.joinRoom(
+                    code,
+                    () => {},
+                    (joinInfo) => {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<i class="fa-solid fa-play text-sm"></i> <span>Присоединиться к дуэли</span>';
+                        }
+                        if (typeof closeDuelJoinModal === 'function') closeDuelJoinModal();
+                        if (typeof startDuelGame === 'function') {
+                            startDuelGame('online_live', { opponent: joinInfo.opponent, isHost: false });
+                        }
+                    },
+                    (error) => {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<i class="fa-solid fa-play text-sm"></i> <span>Присоединиться к дуэли</span>';
+                        }
+                        if (err) {
+                            err.textContent = 'Не удалось найти комнату ' + code + '. Проверьте код.';
+                            err.classList.remove('hidden');
+                        }
+                    }
+                );
+            });
+
+            // 4. Other duel modes
             document.getElementById('duel-btn-pass-play')?.addEventListener('click', () => typeof startDuelGame === 'function' && startDuelGame('pass_play'));
-            document.getElementById('duel-btn-bot')?.addEventListener('click', () => typeof startDuelGame === 'function' && startDuelGame('bot'));
+            const handleStartTimeAttack = () => typeof startDuelGame === 'function' && startDuelGame('time_attack');
+            document.getElementById('duel-btn-time-attack')?.addEventListener('click', handleStartTimeAttack);
+            document.getElementById('duel-btn-bot')?.addEventListener('click', handleStartTimeAttack);
 
             // Incoming challenge modal buttons
             document.getElementById('duel-incoming-close-btn')?.addEventListener('click', () => typeof closeIncomingDuelModal === 'function' && closeIncomingDuelModal());
             document.getElementById('duel-incoming-decline-btn')?.addEventListener('click', () => typeof closeIncomingDuelModal === 'function' && closeIncomingDuelModal());
             document.getElementById('duel-incoming-accept-btn')?.addEventListener('click', () => {
                 const challenge = typeof window.pendingChallenge === 'function' ? window.pendingChallenge() : null;
-                if (typeof startDuelGame === 'function') startDuelGame('friend_play', challenge);
+                if (!challenge) return;
+
+                if (challenge.isLiveRoom && challenge.roomCode) {
+                    if (typeof closeIncomingDuelModal === 'function') closeIncomingDuelModal();
+                    window.DuelNetwork?.joinRoom(
+                        challenge.roomCode,
+                        () => {},
+                        (joinInfo) => {
+                            if (typeof startDuelGame === 'function') {
+                                startDuelGame('online_live', { opponent: joinInfo.opponent, isHost: false });
+                            }
+                        },
+                        (err) => {
+                            alert('Комната недоступна или игра уже началась.');
+                        }
+                    );
+                } else {
+                    if (typeof startDuelGame === 'function') startDuelGame('friend_play', challenge);
+                }
             });
             document.getElementById('duel-incoming-modal')?.addEventListener('click', (e) => {
                 if (e.target.id === 'duel-incoming-modal' && typeof closeIncomingDuelModal === 'function') closeIncomingDuelModal();
             });
 
             // Duel arena and result buttons
-            document.getElementById('duel-close-btn')?.addEventListener('click', () => typeof closeDuelModal === 'function' && closeDuelModal());
+            document.getElementById('duel-close-btn')?.addEventListener('click', () => {
+                if (window.lastDuelResult?.mode === 'online_live') {
+                    window.DuelNetwork?.cleanup();
+                }
+                if (typeof closeDuelModal === 'function') closeDuelModal();
+            });
             document.getElementById('duel-retry-btn')?.addEventListener('click', () => {
-                const mode = window.lastDuelResult?.mode || 'friend_create';
-                const challenge = mode === 'friend_play' && typeof window.pendingChallenge === 'function' ? window.pendingChallenge() : null;
-                if (typeof startDuelGame === 'function') startDuelGame(mode, challenge);
+                const mode = window.lastDuelResult?.mode || 'time_attack';
+                if (mode === 'online_live') {
+                    // Start rematch or offer rematch
+                    const rematchText = document.getElementById('duel-rematch-btn-text');
+                    if (rematchText) rematchText.textContent = 'Ожидание ответа...';
+                    window.DuelNetwork?.offerRematch();
+                } else {
+                    const challenge = mode === 'friend_play' && typeof window.pendingChallenge === 'function' ? window.pendingChallenge() : null;
+                    if (typeof startDuelGame === 'function') startDuelGame(mode, challenge);
+                }
+            });
+            document.getElementById('duel-rematch-btn')?.addEventListener('click', () => {
+                const rematchText = document.getElementById('duel-rematch-btn-text');
+                if (rematchText) rematchText.textContent = 'Ожидание соперника...';
+                window.DuelNetwork?.offerRematch();
             });
             document.getElementById('duel-challenge-btn')?.addEventListener('click', () => {
                 if (window.lastDuelResult && typeof window.TelegramApp?.shareFriendChallenge === 'function') {

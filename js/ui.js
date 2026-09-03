@@ -1,3 +1,13 @@
+        function pluralize(n, one, few, many) {
+            const num = Math.abs(n) % 100;
+            const n1 = num % 10;
+            if (num > 10 && num < 20) return `${n} ${many}`;
+            if (n1 > 1 && n1 < 5) return `${n} ${few}`;
+            if (n1 === 1) return `${n} ${one}`;
+            return `${n} ${many}`;
+        }
+        window.pluralize = pluralize;
+
         function toggleFavorite(wordId, event) {
             if (event) event.stopPropagation();
             const idx = PROGRESS.favorites.indexOf(wordId);
@@ -16,7 +26,7 @@
             
             const favIcons = document.querySelectorAll(`i[data-fav-icon="${wordId}"]`);
             favIcons.forEach(icon => {
-                icon.className = `fa-${isFav ? 'solid' : 'regular'} fa-star ${isFav ? 'text-amber-400' : 'text-slate-200'}`;
+                icon.className = `fa-${isFav ? 'solid' : 'regular'} fa-star ${isFav ? 'text-amber-400' : 'text-slate-400'}`;
             });
             const favBtns = document.querySelectorAll(`button[data-fav-btn="${wordId}"]`);
             favBtns.forEach(btn => {
@@ -318,7 +328,8 @@
             const createOption = (val, display, type) => {
                 const div = document.createElement('div');
                 div.className = `dropdown-option flex justify-between items-center cursor-pointer text-sm p-3 hover:bg-slate-50`;
-                if (val === 'favorites') div.className += ' border-b border-emerald-100 pb-2 mb-1.5';
+                if (val === 'favorites') div.className += ' border-b border-emerald-100/60 dark:border-white/10 pb-2 mb-1';
+                if (val === 'mazin') div.className += ' border-b border-emerald-100/60 dark:border-white/10 pb-2 mb-1.5';
                 div.dataset.value = val;
 
                 const name = document.createElement('span');
@@ -347,6 +358,7 @@
             // Vocab options
             if (vocabPanel) {
                 vocabPanel.appendChild(createOption('favorites', 'Избранное', 'vocab'));
+                vocabPanel.appendChild(createOption('mazin', 'Мазинский говор', 'vocab'));
                 cats.forEach(cat => {
                     const name = cat === 'all' ? 'Все' : (NICE_CATEGORY_NAMES[cat] || cat);
                     vocabPanel.appendChild(createOption(cat, name, 'vocab'));
@@ -391,6 +403,7 @@
 
             updatePanel('category-filter-panel', (val) => {
                 if (val === 'favorites') return PROGRESS.favorites.length;
+                if (val === 'mazin') return WORDS.filter(w => w.mazin && w.mazin !== 'В слове').length;
                 if (val === 'all') return WORDS.length;
                 return WORDS.filter(w => w.cat === val).length;
             });
@@ -419,6 +432,8 @@
             if (valEl) valEl.textContent = display;
             closeDropdown('category-filter-wrapper');
             syncSelectedCategoryUI();
+            const scrollContainer = document.querySelector('#screen-vocabulary .overflow-y-auto');
+            if (scrollContainer) scrollContainer.scrollTop = 0;
             renderWords();
         }
 
@@ -470,7 +485,9 @@
             const countEl = document.getElementById('words-count');
             if (typeof WORDS === 'undefined' || !WORDS || !WORDS.length) return;
             const catCount = [...new Set(WORDS.map(w => w.cat))].length;
-            if (statsEl) statsEl.textContent = `${WORDS.length} слов • ${catCount} категорий`;
+            const wordsStr = pluralize(WORDS.length, 'слово', 'слова', 'слов');
+            const catsStr = pluralize(catCount, 'категория', 'категории', 'категорий');
+            if (statsEl) statsEl.textContent = `${wordsStr} • ${catsStr}`;
             if (countEl) countEl.textContent = WORDS.length.toLocaleString('ru-RU');
         }
 
@@ -548,17 +565,17 @@
             grid.innerHTML = '';
 
             ALPHABET.forEach((item, idx) => {
-                const main = item.letter.split(' ')[0];
+                const upper = item.letter.split(' ')[0];
 
                 const card = document.createElement('div');
-                // Плитки теперь чисто белые, а фон экрана — светло-голубой
-                card.className = `letter-card bg-white border border-slate-100 active:border-emerald-500 rounded-2xl h-24 flex items-center justify-center text-center cursor-pointer transition-all shadow-sm`;
+                card.className = `letter-card bg-white border border-slate-100 active:border-emerald-500 rounded-2xl h-20 flex items-center justify-center text-center cursor-pointer transition-all shadow-sm`;
                 card.setAttribute('role', 'button');
 
+                const isMultiChar = upper.length > 1;
                 const mainEl = document.createElement('div');
-                mainEl.className = 'font-bold text-emerald-900 leading-none';
-                mainEl.style.fontSize = '2.75rem';
-                mainEl.textContent = main;
+                mainEl.className = 'flex items-center justify-center font-bold text-emerald-950 dark:text-emerald-300 leading-none select-none';
+                mainEl.style.fontSize = isMultiChar ? '38px' : '40px';
+                mainEl.textContent = upper;
 
                 card.append(mainEl);
                 card.addEventListener('click', () => {
@@ -583,65 +600,72 @@
             content.innerHTML = '';
 
             const main = item.letter.split(' ')[0];
-            const soundFile = main.toLowerCase().replace(/i/g, '1');
+            const normMain = normalizeLezgiSearch(main);
+            const soundFile = normMain;
 
             // Все графемы алфавита (первая часть, например "К", "Къ", "Кь", "КӀ")
             const allGraphemes = ALPHABET.map(l => l.letter.split(' ')[0]);
             // Графемы, которые начинаются так же, но длиннее (например для "К" → "Къ", "Кь", "КӀ")
-            const longerGraphemes = allGraphemes.filter(g =>
-                g.toLowerCase().startsWith(main.toLowerCase()) && g.length > main.length
-            );
+            const longerGraphemes = allGraphemes.filter(g => {
+                const normG = normalizeLezgiSearch(g);
+                return normG.startsWith(normMain) && normG.length > normMain.length;
+            });
+            const normLonger = longerGraphemes.map(g => normalizeLezgiSearch(g));
 
             // Примеры: слова, начинающиеся ровно на эту графему, а не на составные
             const examples = WORDS.filter(w => {
-                const lz = w.lz.toLowerCase();
-                if (!lz.startsWith(main.toLowerCase())) return false;
+                const normLz = normalizeLezgiSearch(w.lz);
+                if (!normLz.startsWith(normMain)) return false;
                 // Исключаем слова, начинающиеся с составной графемы (Къ, Кь, КӀ и т.д.)
-                return !longerGraphemes.some(gg => lz.startsWith(gg.toLowerCase()));
+                return !normLonger.some(nl => normLz.startsWith(nl));
             }).slice(0, 5);
 
             const body = document.createElement('div');
             body.className = 'px-6 pb-5 flex flex-col flex-1 min-h-0 overflow-y-auto';
-            body.style.paddingTop = 'calc(var(--tg-safe-area-inset-top, 0px) + 2.5rem)';
+
+            const dragHandle = document.createElement('div');
+            dragHandle.className = 'w-10 h-1 bg-slate-200 rounded-full mx-auto my-2 shrink-0 md:hidden';
+            body.append(dragHandle);
 
             const header = document.createElement('div');
             header.className = 'flex justify-between items-start';
 
             const left = document.createElement('div');
             const catSpan = document.createElement('div');
-            catSpan.className = 'uppercase tracking-[1.5px] text-emerald-600 text-sm font-bold';
+            catSpan.className = 'uppercase tracking-[1.5px] text-emerald-600 text-xs font-bold';
             catSpan.textContent = 'АЛФАВИТ';
 
             const h1 = document.createElement('div');
-            h1.className = 'text-[56px] leading-none font-bold text-emerald-900 mt-2 lezgin-text';
+            h1.className = 'text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-1';
             h1.textContent = item.letter;
             left.append(catSpan, h1);
 
             const right = document.createElement('div');
             const close = document.createElement('button');
             close.id = 'modal-close-btn-letter';
-            close.className = 'hidden md:flex text-slate-300 active:text-slate-400 pt-2 items-center justify-center';
-            close.innerHTML = '<i class="fa-solid fa-times text-3xl"></i>';
+            close.className = 'w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 hover:bg-slate-200 active:bg-slate-300 transition-colors cursor-pointer';
+            close.innerHTML = '<i class="fa-solid fa-times text-sm"></i>';
             close.addEventListener('click', closeModal);
             right.append(close);
 
             header.append(left, right);
 
             const info = document.createElement('div');
-            info.className = 'mt-6 flex items-center justify-between bg-emerald-50/50 border border-emerald-100 rounded-3xl p-5';
+            info.className = 'mt-4 flex items-center justify-between bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl p-4';
 
             const ipaWrap = document.createElement('div');
             const ipaLabel = document.createElement('div');
-            ipaLabel.className = 'text-[10.5px] text-slate-500 font-bold uppercase tracking-wider mb-1 flex items-center gap-1';
-            ipaLabel.textContent = 'Межзвуки МФА';
+            ipaLabel.className = 'text-[11px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider mb-0.5 flex items-center gap-1';
+            ipaLabel.textContent = 'Транскрипция (МФА)';
             const ipaText = document.createElement('div');
-            ipaText.className = 'text-2xl font-mono text-emerald-800 font-medium';
-            ipaText.textContent = item.ipa;
+            ipaText.className = 'text-xl font-bold text-slate-800 dark:text-white tracking-wide font-sans';
+            ipaText.textContent = item.ipa.trim();
             ipaWrap.append(ipaLabel, ipaText);
 
             const playBtn = document.createElement('button');
-            playBtn.className = 'w-14 h-14 flex flex-shrink-0 items-center justify-center bg-emerald-500 text-white active:bg-emerald-600 rounded-full text-2xl transition-transform active:scale-95 shadow-sm';
-            playBtn.innerHTML = '<i class="fa-solid fa-volume-up relative -left-0.5"></i>';
+            playBtn.className = 'w-12 h-12 flex flex-shrink-0 items-center justify-center bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-full text-xl transition-transform active:scale-95 shadow-sm cursor-pointer';
+            playBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+            playBtn.setAttribute('title', 'Прослушать букву');
             playBtn.addEventListener('click', () => {
                 speakWord(null, `audio/alphabet/${soundFile}.mp3`);
             });
@@ -651,7 +675,7 @@
                 body.append(header, info);
 
                 const descBox = document.createElement('div');
-                descBox.className = 'mt-4 bg-slate-50 border border-slate-100 text-slate-700 p-4 rounded-3xl text-sm leading-relaxed shadow-sm';
+                descBox.className = 'mt-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 text-slate-700 dark:text-slate-300 p-4 rounded-2xl text-sm leading-relaxed shadow-sm';
                 descBox.innerHTML = '<b>Ы ы</b> используется в лезгинском языке. Буква заимствована из русского. Звук произносится почти так же, как в русском языке.';
                 body.append(descBox);
             } else {
@@ -660,45 +684,50 @@
             }
 
             const exSection = document.createElement('div');
-            exSection.className = 'mt-8 flex-1';
+            exSection.className = 'mt-6 flex-1';
             const exHeader = document.createElement('div');
-            exHeader.className = 'text-sm font-bold text-slate-400 uppercase tracking-wider mb-3';
+            exHeader.className = 'text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5';
             exHeader.textContent = 'Примеры слов';
             exSection.append(exHeader);
 
             if (examples.length > 0) {
                 const exList = document.createElement('div');
-                exList.className = 'flex flex-col gap-2';
+                exList.className = 'flex flex-col gap-1.5 mt-1';
 
                 examples.forEach(w => {
-                    const exCard = document.createElement('div');
-                    exCard.className = 'bg-white border border-slate-100 rounded-2xl p-4 flex justify-between items-center shadow-sm';
+                    const primaryRu = (w.ru || '').split(/[,;]/)[0].trim();
 
-                    const lCol = document.createElement('div');
-                    const lz = document.createElement('div');
-                    lz.className = 'font-bold text-emerald-950 mb-0.5 text-lg';
+                    const exRow = document.createElement('div');
+                    exRow.className = 'flex items-center gap-2.5 py-1.5 text-base flex-wrap leading-none';
+
+                    const lz = document.createElement('span');
+                    lz.className = 'font-bold text-emerald-950 dark:text-emerald-400 text-base leading-none';
 
                     const prefixLen = main.length;
                     const prefixStr = w.lz.substring(0, prefixLen);
                     const restStr = w.lz.substring(prefixLen);
-                    lz.textContent = '';
                     const highlighted = document.createElement('span');
-                    highlighted.className = 'text-emerald-600';
+                    highlighted.className = 'text-emerald-600 dark:text-emerald-500';
                     highlighted.textContent = prefixStr;
                     lz.append(highlighted, document.createTextNode(restStr));
 
-                    const ru = document.createElement('div');
-                    ru.className = 'text-sm text-slate-500';
-                    ru.textContent = w.ru;
-                    lCol.append(lz, ru);
+                    const dash = document.createElement('span');
+                    dash.className = 'text-slate-300 dark:text-slate-600 font-normal select-none text-base leading-none flex items-center';
+                    dash.style.marginLeft = '6px';
+                    dash.style.marginRight = '7px';
+                    dash.textContent = '—';
 
-                    exCard.append(lCol);
-                    exList.append(exCard);
+                    const ru = document.createElement('span');
+                    ru.className = 'text-slate-600 dark:text-slate-300 text-base font-normal leading-none';
+                    ru.textContent = primaryRu;
+
+                    exRow.append(lz, dash, ru);
+                    exList.append(exRow);
                 });
                 exSection.append(exList);
             } else {
                 const noEx = document.createElement('div');
-                noEx.className = 'text-sm text-slate-400 italic text-center py-8 bg-slate-50 rounded-3xl border border-slate-100 border-dashed';
+                noEx.className = 'text-sm text-slate-400 italic text-center py-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5 border-dashed';
                 noEx.textContent = 'На эту букву пока нет примеров в словаре';
                 exSection.append(noEx);
             }
@@ -724,6 +753,8 @@
             if (badge) badge.classList.toggle('hidden', !isDemo);
             if (currentFilter.category === 'favorites') {
                 scopedWords = scopedWords.filter(w => PROGRESS.favorites.includes(w.id));
+            } else if (currentFilter.category === 'mazin') {
+                scopedWords = scopedWords.filter(w => w.mazin && w.mazin !== 'В слове');
             } else if (currentFilter.category !== 'all') {
                 scopedWords = scopedWords.filter(w => w.cat === currentFilter.category);
             }
@@ -744,8 +775,10 @@
             if (countEl) countEl.textContent = filtered.length;
 
             if (!append) {
-                loadedCount = PAGE_SIZE;
                 grid.innerHTML = '';
+                loadedCount = PAGE_SIZE;
+                const scrollContainer = document.querySelector('#screen-vocabulary .overflow-y-auto');
+                if (scrollContainer) scrollContainer.scrollTop = 0;
             }
             const start = append ? loadedCount : 0;
             const pageWords = filtered.slice(start, start + PAGE_SIZE);
@@ -755,30 +788,9 @@
             log(`[renderWords] Current loadedCount: ${loadedCount}, Total filtered words: ${filtered.length}`);
             // loadedCount теперь всегда отражает количество загруженных элементов (20, 40, 60...)
 
-            // Context Banner
+            // Context Banner (Hidden)
             let contextBanner = document.getElementById('vocab-context');
-            if (!contextBanner) {
-                contextBanner = document.createElement('div');
-                contextBanner.id = 'vocab-context';
-                grid.parentNode.insertBefore(contextBanner, grid);
-            }
-            contextBanner.className = 'text-xs sm:text-sm text-slate-600 bg-emerald-50/50 border border-emerald-100 rounded-xl px-3 py-2 mb-3';
-
-            contextBanner.textContent = '';
-            if (currentFilter.category === 'favorites') {
-                const b = document.createElement('strong');
-                b.textContent = 'Ваш личный список.';
-                contextBanner.append(b, ' Повторяйте эти слова регулярно. Прогресс сохраняется на устройстве.');
-                contextBanner.style.display = '';
-            } else if (currentFilter.category !== 'all' && !hasSearch) {
-                const wrapper = document.getElementById('category-filter-wrapper');
-                const catName = wrapper.querySelector('.dropdown-value').textContent;
-                contextBanner.append('Слова по теме ');
-                const b = document.createElement('strong');
-                b.textContent = `«${catName}»`;
-                contextBanner.append(b, '. Учите слова в контексте одной темы для лучшего запоминания.');
-                contextBanner.style.display = '';
-            } else {
+            if (contextBanner) {
                 contextBanner.style.display = 'none';
             }
 
@@ -790,6 +802,14 @@
                         </div>
                         <h3 class="font-semibold text-slate-700 text-lg">Нет избранных слов</h3>
                         <p class="text-sm mt-1 px-6">Нажимайте на звездочку рядом со словом, чтобы добавить его сюда для повторения.</p>
+                    </div>`;
+                } else if (currentFilter.category === 'mazin') {
+                    grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 bg-white border border-slate-100 rounded-3xl mt-2 shadow-sm">
+                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-mountain-sun text-3xl text-slate-300"></i>
+                        </div>
+                        <h3 class="font-semibold text-slate-700 text-lg">Нет слов мазинского говора</h3>
+                        <p class="text-sm mt-1 px-6">Слова с соответствиями в мазинском говоре не найдены.</p>
                     </div>`;
                 } else if (hasSearch) {
                     grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 bg-white border border-slate-100 rounded-3xl mt-2 shadow-sm">
@@ -809,31 +829,38 @@
                 return;
             }
 
-            pageWords.forEach(word => {
-                const isFav = PROGRESS.favorites.includes(word.id);
+            pageWords.forEach((word, idx) => {
                 const card = document.createElement('div');
-                card.className = 'word-card bg-white border border-slate-100 rounded-3xl p-4 flex items-start gap-4 relative cursor-pointer hover:shadow-md transition';
+                card.className = 'word-card bg-white border border-slate-100 rounded-3xl p-4 sm:p-5 flex flex-col justify-between cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-[0.98] relative overflow-hidden';
                 card.addEventListener('click', () => showWordModal(word.id));
-
-                const lzVariants = (word.lz || '').split(/[\/,]/).map(s => s.trim()).filter(Boolean);
-                const primaryLz = lzVariants[0] || word.lz;
 
                 const content = document.createElement('div');
                 content.className = 'flex-1 min-w-0';
-                const lzWrap = document.createElement('div');
-                lzWrap.className = 'lezgin-text text-emerald-950 font-bold mb-1 flex items-center gap-2 flex-wrap';
-                
-                const lzMain = document.createElement('span');
-                lzMain.textContent = primaryLz;
-                lzWrap.appendChild(lzMain);
 
-                if (lzVariants.length > 1) {
-                    const badge = document.createElement('span');
-                    badge.className = 'text-[11px] px-2 py-0.5 bg-emerald-100/70 text-emerald-800 rounded-full font-semibold';
-                    badge.textContent = `+${lzVariants.length - 1}`;
-                    badge.title = 'Есть другие варианты';
-                    lzWrap.appendChild(badge);
-                }
+                const wordLine = document.createElement('div');
+                wordLine.className = 'leading-normal flex flex-wrap items-center pt-0.5';
+
+                const lzMain = document.createElement('span');
+                lzMain.className = 'text-emerald-950 dark:text-emerald-300 font-bold text-base sm:text-lg';
+                lzMain.textContent = word.lz;
+
+                // Display only the first translation on the card
+                const primaryRu = (word.ru || '').split(/[,;]/)[0].trim();
+
+                const ruWrap = document.createElement('span');
+                ruWrap.className = 'inline-flex items-center text-base sm:text-lg text-slate-600 dark:text-slate-300 font-normal whitespace-nowrap';
+
+                const dash = document.createElement('span');
+                dash.className = 'text-slate-300 dark:text-slate-600 font-normal select-none';
+                dash.style.marginLeft = '6px';
+                dash.style.marginRight = '7px';
+                dash.textContent = '—';
+
+                const ru = document.createElement('span');
+                ru.textContent = primaryRu;
+
+                ruWrap.append(dash, ru);
+                wordLine.append(lzMain, ruWrap);
 
                 const metaWrap = document.createElement('div');
                 metaWrap.className = 'flex items-center gap-2 mt-1.5 flex-wrap';
@@ -843,40 +870,8 @@
                 cat.textContent = word.cat;
 
                 metaWrap.append(cat);
-                content.append(lzWrap, metaWrap);
-
-                const right = document.createElement('div');
-                right.className = 'text-right flex-shrink-0 flex flex-col items-end gap-2 max-w-[45%]';
-                const ruVariants = (word.ru || '').split(/[\/,]/).map(s => s.trim()).filter(Boolean);
-                const primaryRu = ruVariants[0] || word.ru;
-                const ru = document.createElement('div');
-                ru.className = 'text-sm px-3 py-1 bg-emerald-50 text-emerald-700 rounded-2xl font-medium block whitespace-normal text-right';
-                ru.textContent = primaryRu;
-
-                const bottom = document.createElement('div');
-                bottom.className = 'flex items-center gap-2';
-                const fav = document.createElement('button');
-                fav.className = 'p-1 -mr-1 cursor-pointer';
-                fav.setAttribute('aria-label', isFav ? 'Удалить из избранного' : 'Добавить в избранное');
-                fav.setAttribute('data-fav-btn', word.id);
-                fav.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggleFavorite(word.id);
-                });
-                const favIcon = document.createElement('i');
-                favIcon.className = `fa-${isFav ? 'solid' : 'regular'} fa-star ${isFav ? 'text-amber-400' : 'text-slate-200'}`;
-                favIcon.setAttribute('data-fav-icon', word.id);
-                fav.appendChild(favIcon);
-                if (SHOW_VOCABULARY_IPA) {
-                    const ipa = document.createElement('span');
-                    ipa.className = 'ipa-text text-sm';
-                    ipa.textContent = word.ipa || '—';
-                    bottom.appendChild(ipa);
-                }
-                bottom.appendChild(fav);
-
-                right.append(ru, bottom);
-                card.append(content, right);
+                content.append(wordLine, metaWrap);
+                card.append(content);
                 grid.appendChild(card);
             });
 
@@ -973,199 +968,151 @@
 
             const body = document.createElement('div');
             body.className = 'px-6 pb-5 flex flex-col flex-1 min-h-0 overflow-y-auto';
-            body.style.paddingTop = 'calc(var(--tg-safe-area-inset-top, 0px) + 2.5rem)';
 
-            const lzVariants = (word.lz || '').split(/[\/,]/).map(s => s.trim()).filter(Boolean);
-            const primaryLz = lzVariants[0] || word.lz;
-            const primaryTr = word.lz_lat || (typeof transliterateLezgin === 'function' ? transliterateLezgin(primaryLz) : '');
+            const dragHandle = document.createElement('div');
+            dragHandle.className = 'w-10 h-1 bg-slate-200 rounded-full mx-auto my-2 shrink-0 md:hidden';
+            body.append(dragHandle);
 
-            const ruVariants = (word.ru || '').split(/[\/,]/).map(s => s.trim()).filter(Boolean);
-            const primaryRu = (ruVariants.length === lzVariants.length) ? ruVariants[0] : word.ru;
+            const tr = word.lz_lat || (typeof transliterateLezgin === 'function' ? transliterateLezgin(word.lz) : '');
 
             const header = document.createElement('div');
-            header.className = 'flex justify-between items-start gap-4';
+            header.className = 'flex justify-between items-start gap-4 pt-1';
 
             const left = document.createElement('div');
             left.className = 'flex-1 min-w-0';
 
             // Category label
             const catSpan = document.createElement('span');
-            catSpan.className = 'block text-xs sm:text-sm font-bold uppercase tracking-widest text-emerald-600 mb-2 leading-none';
+            catSpan.className = 'block text-xs font-bold uppercase tracking-widest text-emerald-600 mb-1.5 leading-none';
             catSpan.textContent = word.cat;
             left.append(catSpan);
 
-            // Word + transliteration on same line, aligned by center
-            const wordRow = document.createElement('div');
-            wordRow.className = 'flex items-center gap-3 flex-wrap mt-1';
+            // Translations parsing (Primary and others)
+            const ruParts = (word.ru || '').split(/[,;]/).map(s => s.trim()).filter(Boolean);
+            const primaryRu = ruParts[0] || (word.ru || '');
+            const secondaryRu = ruParts.slice(1);
+
+            // Word Title + Primary Translation on same line: "Слово — Перевод"
+            const titleRow = document.createElement('div');
+            titleRow.className = 'leading-snug mt-0.5 flex flex-wrap items-center';
 
             const lzWord = document.createElement('span');
-            lzWord.className = 'text-3xl sm:text-4xl font-extrabold text-slate-900 lezgin-text tracking-tight';
-            lzWord.textContent = primaryLz;
-            wordRow.append(lzWord);
+            lzWord.className = 'text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight font-heading';
+            lzWord.textContent = word.lz;
 
-            if (primaryTr) {
-                const trEl = document.createElement('span');
-                trEl.className = 'text-lg sm:text-xl font-medium text-slate-400';
-                trEl.textContent = `— ${primaryTr}`;
-                wordRow.append(trEl);
+            const ruWrap = document.createElement('span');
+            ruWrap.className = 'inline-flex items-center text-2xl sm:text-3xl font-semibold text-slate-700 dark:text-slate-200 tracking-tight font-heading whitespace-nowrap';
+
+            const dash = document.createElement('span');
+            dash.className = 'text-xl sm:text-2xl font-light text-slate-300 dark:text-slate-600 select-none';
+            dash.style.marginLeft = '7px';
+            dash.style.marginRight = '8px';
+            dash.textContent = '—';
+
+            const ruWord = document.createElement('span');
+            ruWord.textContent = primaryRu;
+
+            ruWrap.append(dash, ruWord);
+            titleRow.append(lzWord, ruWrap);
+            left.append(titleRow);
+
+            // Transliteration directly below matching word size
+            if (tr) {
+                const trRow = document.createElement('div');
+                trRow.className = 'mt-0.5 text-2xl sm:text-3xl font-bold text-slate-400 dark:text-slate-500 tracking-tight font-heading';
+                trRow.textContent = tr;
+                left.append(trRow);
             }
-            left.append(wordRow);
 
-            const right = document.createElement('div');
-            right.className = 'flex items-center gap-4 flex-shrink-0';
-            const close = document.createElement('button');
-            close.id = 'modal-close-btn';
-            close.className = 'flex text-slate-400 hover:text-slate-600 active:text-slate-800 items-center justify-center text-2xl transition-colors p-1';
-            close.innerHTML = '<i class="fa-solid fa-times"></i>';
-            close.addEventListener('click', closeModal);
-            right.append(close);
-            header.append(left, right);
+            // Secondary translations if any
+            if (secondaryRu.length > 0) {
+                const otherWrap = document.createElement('div');
+                otherWrap.className = 'mt-2 flex items-center gap-1.5 flex-wrap text-sm text-slate-500 dark:text-slate-400 font-normal';
+                otherWrap.innerHTML = `<span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Другие значения:</span> <span class="text-slate-700 dark:text-slate-200 font-medium">${secondaryRu.join(', ')}</span>`;
+                left.append(otherWrap);
+            }
 
-            // Translation
-            const info = document.createElement('div');
-            info.className = 'mt-4 pt-4 border-t border-slate-100/80';
-            const ru = document.createElement('div');
-            ru.className = 'text-2xl sm:text-3xl font-semibold text-slate-700 mt-1';
-            ru.textContent = primaryRu;
-            info.appendChild(ru);
             if (SHOW_VOCABULARY_IPA && word.ipa) {
                 const ipa = document.createElement('div');
-                ipa.className = 'mt-2 ipa-text text-base text-slate-400';
+                ipa.className = 'mt-1.5 ipa-text text-sm text-slate-400';
                 ipa.textContent = word.ipa;
-                info.appendChild(ipa);
+                left.append(ipa);
             }
 
-            // Variants/synonyms
-            if (lzVariants.length > 1) {
-                const variantsSection = document.createElement('div');
-                variantsSection.className = 'mt-6';
-                
-                const varTitle = document.createElement('div');
-                varTitle.className = 'text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-widest mb-3';
-                varTitle.textContent = 'Синонимы';
-                variantsSection.appendChild(varTitle);
+            const right = document.createElement('div');
+            right.className = 'flex items-center gap-2 flex-shrink-0 pt-0.5';
 
-                const varList = document.createElement('div');
-                varList.className = 'flex flex-col gap-2';
+            const reportBtn = document.createElement('button');
+            reportBtn.className = 'w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 active:bg-rose-100 transition-colors cursor-pointer';
+            reportBtn.title = 'Сообщить об ошибке';
+            reportBtn.setAttribute('aria-label', 'Сообщить об ошибке в слове');
+            reportBtn.innerHTML = '<i class="fa-solid fa-flag text-xs"></i>';
+            reportBtn.addEventListener('click', () => {
+                showReportForm(word);
+            });
 
-                lzVariants.slice(1).forEach((v, idx) => {
-                    const vTranslit = typeof transliterateLezgin === 'function' ? transliterateLezgin(v) : '';
-                    const vRu = (ruVariants.length === lzVariants.length) ? ruVariants[idx + 1] : word.ru;
-                    const isSameAsPrimary = (vRu === word.ru || vRu === primaryRu);
+            const close = document.createElement('button');
+            close.id = 'modal-close-btn';
+            close.className = 'w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-200 active:bg-slate-300 transition-colors cursor-pointer';
+            close.innerHTML = '<i class="fa-solid fa-times text-xs"></i>';
+            close.addEventListener('click', closeModal);
 
-                    const vItem = document.createElement('div');
-                    vItem.className = 'flex items-center justify-between gap-4 px-4 py-3 bg-slate-50 rounded-2xl';
-                    if (isSameAsPrimary) {
-                        vItem.className = 'flex items-center justify-start gap-4 px-4 py-3 bg-slate-50 rounded-2xl';
-                    }
-                    
-                    const vLeft = document.createElement('div');
-                    vLeft.className = 'flex items-center gap-2.5 min-w-0 flex-wrap';
-                    
-                    const vLz = document.createElement('span');
-                    vLz.className = 'font-bold text-slate-800 lezgin-text text-xl sm:text-2xl';
-                    vLz.textContent = v;
-                    vLeft.appendChild(vLz);
-
-                    if (vTranslit) {
-                        const vTr = document.createElement('span');
-                        vTr.className = 'text-sm sm:text-base font-medium text-slate-400';
-                        vTr.textContent = `— ${vTranslit}`;
-                        vLeft.appendChild(vTr);
-                    }
-                    
-                    if (!isSameAsPrimary) {
-                        const vRuEl = document.createElement('span');
-                        vRuEl.className = 'text-sm sm:text-base font-medium text-slate-500 flex-shrink-0';
-                        vRuEl.textContent = vRu;
-                        vItem.append(vLeft, vRuEl);
-                    } else {
-                        vItem.append(vLeft);
-                    }
-                    
-                    varList.appendChild(vItem);
-                });
-                
-                variantsSection.appendChild(varList);
-                info.appendChild(variantsSection);
-            }
-
-            body.append(header, info);
+            right.append(reportBtn, close);
+            header.append(left, right);
+            body.append(header);
 
             if (word.mazin && word.mazin !== 'В слове') {
                 const dialectSection = document.createElement('div');
-                dialectSection.className = 'mt-6 pt-4 border-t border-slate-100/80';
+                dialectSection.className = 'mt-6 pt-4 border-t border-slate-100/80 dark:border-white/5';
                 
                 const dialectTitle = document.createElement('div');
-                dialectTitle.className = 'text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-widest mb-3';
-                dialectTitle.textContent = 'Мазинский диалект (Маза)';
+                dialectTitle.className = 'text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-widest mb-1.5';
+                dialectTitle.textContent = 'Мазинский говор (Маза)';
                 dialectSection.appendChild(dialectTitle);
 
-                const dialectCard = document.createElement('div');
-                dialectCard.className = 'flex flex-col gap-2 px-4 py-3.5 bg-emerald-50/30 border border-emerald-100/30 rounded-2xl';
-
-                // Row for standard mazin word + transcription
-                const mazinRow = document.createElement('div');
-                mazinRow.className = 'flex items-center gap-2.5 flex-wrap';
-                
-                const mazinWord = document.createElement('span');
-                mazinWord.className = 'font-bold text-emerald-950 lezgin-text text-xl sm:text-2xl';
+                const mazinWord = document.createElement('div');
+                mazinWord.className = 'font-bold text-emerald-950 dark:text-emerald-300 text-xl sm:text-2xl';
                 mazinWord.textContent = word.mazin;
-                mazinRow.appendChild(mazinWord);
-
-                if (word.mazin_lat) {
-                    const mazinTr = document.createElement('span');
-                    mazinTr.className = 'text-sm sm:text-base font-medium text-emerald-600/80';
-                    mazinTr.textContent = `— [${word.mazin_lat}]`;
-                    mazinRow.appendChild(mazinTr);
-                }
-                dialectCard.appendChild(mazinRow);
+                dialectSection.appendChild(mazinWord);
 
                 // If academic is different, show it
                 if (word.mazin_academic && word.mazin_academic !== word.mazin) {
                     const acadRow = document.createElement('div');
-                    acadRow.className = 'text-xs sm:text-sm text-slate-500 mt-1.5 flex items-center gap-1.5 flex-wrap';
+                    acadRow.className = 'text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5 flex-wrap';
                     
                     const label = document.createElement('span');
-                    label.className = 'font-semibold text-slate-400';
+                    label.className = 'font-semibold text-slate-400 dark:text-slate-500';
                     label.textContent = 'Академ. запись:';
                     
                     const val = document.createElement('span');
-                    val.className = 'font-bold text-slate-700 lezgin-text';
+                    val.className = 'font-bold text-slate-700 dark:text-slate-200';
                     val.textContent = word.mazin_academic;
                     
                     acadRow.appendChild(label);
                     acadRow.appendChild(val);
-                    
-                    if (word.mazin_academic_lat) {
-                        const latVal = document.createElement('span');
-                        latVal.className = 'text-slate-400';
-                        latVal.textContent = `[${word.mazin_academic_lat}]`;
-                        acadRow.appendChild(latVal);
-                    }
-                    dialectCard.appendChild(acadRow);
+                    dialectSection.appendChild(acadRow);
                 }
 
                 // Translation of the dialect word if it differs from primary translation
-                const primaryRu = (word.ru || '').split(/[\/,]/)[0].trim().toLowerCase();
+                const primaryRuNorm = primaryRu.toLowerCase();
                 const mazinRu = (word.mazin_ru || '').trim().toLowerCase();
-                if (word.mazin_ru && mazinRu !== primaryRu && !primaryRu.includes(mazinRu) && !mazinRu.includes(primaryRu)) {
+                if (word.mazin_ru && mazinRu !== primaryRuNorm && !primaryRuNorm.includes(mazinRu) && !mazinRu.includes(primaryRuNorm)) {
                     const transRow = document.createElement('div');
-                    transRow.className = 'text-sm sm:text-base text-slate-600 font-medium mt-1.5 border-t border-emerald-100/20 pt-1.5';
+                    transRow.className = 'text-sm text-slate-600 dark:text-slate-300 font-medium mt-1 flex items-center gap-1.5 flex-wrap';
                     
                     const label = document.createElement('span');
-                    label.className = 'text-slate-400 font-normal mr-1.5';
+                    label.className = 'text-slate-400 dark:text-slate-500 font-normal';
                     label.textContent = 'Перевод диалекта:';
                     
                     const val = document.createElement('span');
+                    val.className = 'font-semibold text-slate-700 dark:text-slate-200';
                     val.textContent = word.mazin_ru;
                     
                     transRow.appendChild(label);
                     transRow.appendChild(val);
-                    dialectCard.appendChild(transRow);
+                    dialectSection.appendChild(transRow);
                 }
 
-                dialectSection.appendChild(dialectCard);
                 body.appendChild(dialectSection);
             }
 
@@ -1210,14 +1157,14 @@
             }
 
             const footer = document.createElement('div');
-            footer.className = 'px-6 pb-6 flex gap-3 mt-auto pt-4';
+            footer.className = 'px-6 pb-6 mt-auto pt-3';
             const add = document.createElement('button');
             
             if (isFav) {
-                add.className = 'flex-1 py-3.5 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold rounded-3xl flex items-center justify-center gap-x-2 text-sm sm:text-base border border-amber-100 transition-colors shadow-sm';
+                add.className = 'w-full py-3.5 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold rounded-2xl flex items-center justify-center gap-x-2 text-sm sm:text-base border border-amber-200 transition-all active:scale-[0.98] shadow-sm cursor-pointer';
                 add.innerHTML = '<i class="fa-solid fa-star text-amber-500"></i><span>В избранном</span>';
             } else {
-                add.className = 'flex-1 py-3.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-3xl flex items-center justify-center gap-x-2 text-sm sm:text-base border border-emerald-100/50 transition-colors shadow-sm';
+                add.className = 'w-full py-3.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-2xl flex items-center justify-center gap-x-2 text-sm sm:text-base border border-emerald-200/60 transition-all active:scale-[0.98] shadow-sm cursor-pointer';
                 add.innerHTML = '<i class="fa-regular fa-star text-emerald-600"></i><span>В избранное</span>';
             }
             
@@ -1226,16 +1173,7 @@
                 showWordModal(word.id); 
             });
 
-            const reportBtn = document.createElement('button');
-            reportBtn.className = 'py-3.5 px-5 bg-rose-50 active:bg-rose-100 text-rose-600 font-bold rounded-3xl flex items-center justify-center gap-x-2 text-sm border border-rose-100/50 transition-colors shadow-sm';
-            reportBtn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-            reportBtn.title = 'Сообщить об ошибке';
-            reportBtn.setAttribute('aria-label', 'Сообщить об ошибке в слове');
-            reportBtn.addEventListener('click', () => {
-                showReportForm(word);
-            });
-
-            footer.append(add, reportBtn);
+            footer.append(add);
 
             content.append(body, footer);
             modal.classList.remove('hidden');
@@ -1560,25 +1498,72 @@
         }
 
         function showGrammarList() {
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                document.activeElement.blur();
+            }
+
             const mv = document.getElementById('practice-main-view');
             const gv = document.getElementById('practice-grammar-view');
             
             if (mv) mv.classList.add('hidden');
             if (gv) gv.classList.remove('hidden');
             
+            const main = document.querySelector('main');
+            const resetViewScroll = () => {
+                if (main) {
+                    main.scrollTop = 0;
+                    try { main.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch (e) {}
+                }
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            };
+
+            resetViewScroll();
+            
             if (typeof window.TelegramApp?.updateBackButton === 'function') {
                 window.TelegramApp.updateBackButton();
             }
-            renderGrammar();
-            document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const grid = document.getElementById('grammar-units-grid');
+            if (!grid || grid.children.length === 0) {
+                renderGrammar();
+            }
+            
+            resetViewScroll();
+            requestAnimationFrame(resetViewScroll);
+            setTimeout(resetViewScroll, 20);
+            setTimeout(resetViewScroll, 60);
+            setTimeout(resetViewScroll, 120);
+            setTimeout(resetViewScroll, 250);
         }
 
         function hideGrammarList() {
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                document.activeElement.blur();
+            }
+
             const mv = document.getElementById('practice-main-view');
             const gv = document.getElementById('practice-grammar-view');
             
             if (gv) gv.classList.add('hidden');
             if (mv) mv.classList.remove('hidden');
+            
+            const main = document.querySelector('main');
+            const resetViewScroll = () => {
+                if (main) {
+                    main.scrollTop = 0;
+                    try { main.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch (e) {}
+                }
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            };
+
+            resetViewScroll();
+            requestAnimationFrame(resetViewScroll);
+            setTimeout(resetViewScroll, 30);
+            setTimeout(resetViewScroll, 80);
             
             if (typeof window.TelegramApp?.updateBackButton === 'function') {
                 window.TelegramApp.updateBackButton();
@@ -1749,11 +1734,12 @@
             });
         }
 
-        function renderGrammar(filteredList) {
+        let grammarRenderedOnce = false;
+
+        function renderGrammar(filteredList, forceRebuild = false) {
             const grid = document.getElementById('grammar-units-grid');
             const stats = document.getElementById('grammar-stats');
             if (!grid) return;
-            grid.innerHTML = '';
 
             const list = filteredList || GRAMMAR;
 
@@ -1763,12 +1749,15 @@
             }
 
             if (stats) {
-                if (filteredList) {
-                    stats.textContent = `Найдено разделов: ${list.length}`;
-                } else {
-                    stats.textContent = `${GRAMMAR.length} разделов • основы и практика`;
-                }
+                stats.textContent = '';
             }
+
+            // Избегаем лишнего уничтожения DOM и повторной каскадной анимации, если карточки уже отрисованы
+            if (!filteredList && !forceRebuild && grid.children.length === list.length && grammarRenderedOnce) {
+                return;
+            }
+
+            grid.innerHTML = '';
 
             list.forEach(unit => {
                 const card = document.createElement('div');
@@ -1792,12 +1781,19 @@
                 grid.appendChild(card);
             });
 
-            staggerCards(grid);
+            if (!grammarRenderedOnce || filteredList) {
+                staggerCards(grid);
+            }
+            grammarRenderedOnce = true;
         }
 
         function showGrammarUnit(unitId) {
             const unit = GRAMMAR.find(u => u.id === unitId);
             if (!unit) return;
+
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                document.activeElement.blur();
+            }
 
             const modal = document.getElementById('word-modal');
             const content = document.getElementById('modal-content');
@@ -1806,13 +1802,14 @@
             const topBar = document.createElement('div');
             topBar.className = 'app-header relative flex items-center justify-center px-16 py-4 border-b border-slate-100 bg-white shrink-0 z-10 w-full text-center';
             topBar.innerHTML = `<div class="font-bold text-slate-800 text-lg text-center w-full truncate">Теория</div>
-                                <button id="modal-close-btn-grammar" class="hidden md:flex absolute right-5 top-1/2 -translate-y-1/2 w-8 h-8 items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-colors">
-                                    <i class="fa-solid fa-times"></i>
+                                <button id="modal-close-btn-grammar" class="flex absolute right-5 top-1/2 -translate-y-1/2 w-8 h-8 items-center justify-center bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-500 rounded-full transition-colors cursor-pointer">
+                                    <i class="fa-solid fa-times text-xs"></i>
                                 </button>`;
 
             const body = document.createElement('div');
             body.className = 'px-6 py-6 overflow-y-auto flex-1 min-h-0 w-full';
             body.style.webkitOverflowScrolling = 'touch';
+            body.style.overflowAnchor = 'none';
 
             const id = document.createElement('div');
             id.className = 'text-emerald-600 text-xs font-bold uppercase tracking-wider mb-1';
@@ -1849,6 +1846,25 @@
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+
+            const resetModalScroll = () => {
+                if (body) {
+                    body.scrollTop = 0;
+                    try { body.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch (e) {}
+                }
+                if (content) content.scrollTop = 0;
+                const modalBox = modal.querySelector('.modal');
+                if (modalBox) modalBox.scrollTop = 0;
+                modal.scrollTop = 0;
+            };
+
+            resetModalScroll();
+            requestAnimationFrame(resetModalScroll);
+            setTimeout(resetModalScroll, 20);
+            setTimeout(resetModalScroll, 60);
+            setTimeout(resetModalScroll, 120);
+            setTimeout(resetModalScroll, 250);
+            setTimeout(resetModalScroll, 380);
         }
 
         function escapeHtml(text = '') {
@@ -2191,6 +2207,10 @@
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+
+            requestAnimationFrame(() => {
+                content.scrollTop = 0;
+            });
         }
 
         function checkGrammarAnswer(selected, correct, explanation, btn) {

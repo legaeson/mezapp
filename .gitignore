@@ -1,3 +1,8 @@
 __pycache__/
 *.pyc
 *.db
+scratch/
+testui/
+figma_export/
+*.zip
+deploy/

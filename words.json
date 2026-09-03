@@ -29,7 +29,7 @@
     "ru": "До свидания, Спасибо",
     "cat": "фразы",
     "ex": "Сагърай, пакадалди! | До свидания, до завтра! | ЧIехи чухсагъул квез! | Большое спасибо вам!",
-    "lz_lat": "Saġray"
+    "lz_lat": "Saghray"
   },
   {
     "id": "w6_izvinite",
@@ -37,7 +37,7 @@
     "ru": "Извините",
     "cat": "фразы",
     "ex": "",
-    "lz_lat": "Ġil qacu"
+    "lz_lat": "Ghil qacu"
   },
   {
     "id": "w7_kak_dela",
@@ -96,7 +96,7 @@
     "ru": "Сколько стоит?",
     "cat": "торговля",
     "ex": "",
-    "lz_lat": "Im kun ya?"
+    "lz_lat": "Im kün ya?"
   },
   {
     "id": "w14_otets",
@@ -234,7 +234,7 @@
     "ex": "",
     "lz_lat": "Vaxt",
     "mazin": "Ваьда",
-    "mazin_lat": "Vada",
+    "mazin_lat": "Væda",
     "mazin_ru": "время"
   },
   {
@@ -334,9 +334,9 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Ичир хьун",
-    "mazin_lat": "Icir xun",
+    "mazin_lat": "Icir xhun",
     "mazin_academic": "Ичир хьун",
-    "mazin_academic_lat": "Icir xun",
+    "mazin_academic_lat": "Icir xhun",
     "mazin_ru": "узнавать",
     "lz_lat": "Cir xhun"
   },
@@ -404,7 +404,7 @@
     "ru": "Понимать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Ġavurda aq'un"
+    "lz_lat": "Ghavurda aq'un"
   },
   {
     "id": "w47_khoroshiy",
@@ -446,7 +446,7 @@
     "mazin_academic": "Вичи",
     "mazin_academic_lat": "Vici",
     "mazin_ru": "маленький",
-    "lz_lat": "Ġwec'i"
+    "lz_lat": "Ghwec'i"
   },
   {
     "id": "w51_novyy",
@@ -467,7 +467,7 @@
     "ru": "Старый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Kuhne"
+    "lz_lat": "Kühne"
   },
   {
     "id": "w53_belyy",
@@ -565,7 +565,7 @@
     "ru": "Село (Аул), Деревня",
     "cat": "места",
     "ex": "Зи хуьр дагълара ава. | Мое село находится в горах.",
-    "lz_lat": "Xur"
+    "lz_lat": "Xür"
   },
   {
     "id": "w63_ulitsa",
@@ -573,7 +573,7 @@
     "ru": "Улица",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Kuce"
+    "lz_lat": "Küce"
   },
   {
     "id": "w64_ya",
@@ -631,9 +631,9 @@
     "ru": "Вы",
     "cat": "местоим.",
     "ex": "",
-    "lz_lat": "Kun",
+    "lz_lat": "Kün",
     "mazin": "Ч˚уьн",
-    "mazin_lat": "C̊un",
+    "mazin_lat": "C̊ün",
     "mazin_ru": "вы"
   },
   {
@@ -679,7 +679,7 @@
     "ru": "Дешево",
     "cat": "торговля",
     "ex": "",
-    "lz_lat": "Q'ezil / Qimet aġuz"
+    "lz_lat": "Q'ezil / Qimet aghuz"
   },
   {
     "id": "w76_doroga",
@@ -716,9 +716,9 @@
     "ru": "Груша",
     "cat": "еда",
     "ex": "",
-    "lz_lat": "Cuxwer",
+    "lz_lat": "Cüxwer",
     "mazin": "Чихаьр",
-    "mazin_lat": "Cixar",
+    "mazin_lat": "Cixær",
     "mazin_ru": "груша"
   },
   {
@@ -727,7 +727,7 @@
     "ru": "Солнце",
     "cat": "природа",
     "ex": "Къе рагъ чIехиди я. | Сегодня солнце яркое.",
-    "lz_lat": "Raġ"
+    "lz_lat": "Ragh"
   },
   {
     "id": "w83_nebo",
@@ -772,9 +772,9 @@
     "ru": "Цветок",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Tsuk",
+    "lz_lat": "Tsük",
     "mazin": "ЧI˚уькI",
-    "mazin_lat": "C'˚uk'",
+    "mazin_lat": "C'˚ük'",
     "mazin_ru": "цветок"
   },
   {
@@ -834,9 +834,9 @@
     "ru": "Рыба",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Ġed, k'ezri",
+    "lz_lat": "Ghed, k'ezri",
     "mazin": "Балигъ",
-    "mazin_lat": "Baliġ",
+    "mazin_lat": "Baligh",
     "mazin_ru": "рыба"
   },
   {
@@ -884,9 +884,9 @@
     "cat": "обучение",
     "ex": "",
     "mazin": "МаьгIлим",
-    "mazin_lat": "Mæǵlim",
+    "mazin_lat": "Mæg'lim",
     "mazin_academic": "МаьгIлим",
-    "mazin_academic_lat": "Mæǵlim",
+    "mazin_academic_lat": "Mæghlim",
     "mazin_ru": "учитель",
     "lz_lat": "Muallim"
   },
@@ -896,7 +896,7 @@
     "ru": "Мир",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Dunya"
+    "lz_lat": "Dünya"
   },
   {
     "id": "w101_imya",
@@ -913,9 +913,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIакь",
-    "mazin_lat": "Ħaq'",
+    "mazin_lat": "X'aq'",
     "mazin_academic": "ХIакь",
-    "mazin_academic_lat": "Ħaq'",
+    "mazin_academic_lat": "Xhaq'",
     "mazin_ru": "истина, правда",
     "lz_lat": "Haqh / Haqiqat"
   },
@@ -927,7 +927,7 @@
     "ex": "",
     "lz_lat": "Ierdiz",
     "mazin": "Гуьйчекдаказ",
-    "mazin_lat": "Guycekdakaz",
+    "mazin_lat": "Güycekdakaz",
     "mazin_ru": "красиво"
   },
   {
@@ -938,7 +938,7 @@
     "ex": "",
     "lz_lat": "Fad / Tadiz",
     "mazin": "Таьдиз",
-    "mazin_lat": "Tadiz",
+    "mazin_lat": "Tædiz",
     "mazin_ru": "быстро"
   },
   {
@@ -979,9 +979,9 @@
     "ru": "Сад",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Baġ",
+    "lz_lat": "Bagh",
     "mazin": "Багъар",
-    "mazin_lat": "Baġar",
+    "mazin_lat": "Baghar",
     "mazin_ru": "сад"
   },
   {
@@ -990,7 +990,7 @@
     "ru": "Благодарность",
     "cat": "общение",
     "ex": "",
-    "lz_lat": "Barkalla / Saġray"
+    "lz_lat": "Barkalla / Saghray"
   },
   {
     "id": "w112_rynok",
@@ -1078,9 +1078,9 @@
     "cat": "качество",
     "ex": "",
     "mazin": "ВаьхIши",
-    "mazin_lat": "Væħshi",
+    "mazin_lat": "Væx'shi",
     "mazin_academic": "ВаьхIши",
-    "mazin_academic_lat": "Væħshi",
+    "mazin_academic_lat": "Væxhshi",
     "mazin_ru": "дикий",
     "lz_lat": "Vahshi"
   },
@@ -1097,7 +1097,7 @@
     "lz": "Ватан",
     "ru": "Родина",
     "cat": "места",
-    "ex": "Ватандин къадир къариблухда чир жеда. | Цену родины узнаешь на чужбине.",
+    "ex": "Ватандин къадир къариблухда чир жеда. | Цену родины узнаешь на чужбине. // Гьазаб такурдаз рагьатвилин къадир чир жедач. | Кто не увидел тяжесть, тот не будет знать цену покоя.",
     "lz_lat": "Vatan"
   },
   {
@@ -1155,7 +1155,7 @@
     "ex": "Вирт гъидай шерег яргъалай чир жеда. | Пчелу, несущую мёд, издалека узнаешь.",
     "lz_lat": "Virt",
     "mazin": "Уьрт",
-    "mazin_lat": "Urt",
+    "mazin_lat": "Ürt",
     "mazin_ru": "мед"
   },
   {
@@ -1266,9 +1266,9 @@
     "ru": "Уважение",
     "cat": "общение",
     "ex": "",
-    "lz_lat": "Hurmet",
+    "lz_lat": "Hürmet",
     "mazin": "Куьмбет",
-    "mazin_lat": "Kumbet",
+    "mazin_lat": "Kümbet",
     "mazin_ru": "уважение"
   },
   {
@@ -1285,7 +1285,7 @@
     "ru": "Далеко",
     "cat": "наречия",
     "ex": "",
-    "lz_lat": "Yarġa"
+    "lz_lat": "Yargha"
   },
   {
     "id": "w146_dama",
@@ -1301,7 +1301,7 @@
     "ru": "Дар, Подарок",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Baġish / Pishkesh"
+    "lz_lat": "Baghish / Pishkesh"
   },
   {
     "id": "w148_data",
@@ -1325,7 +1325,7 @@
     "ru": "Девочка",
     "cat": "семья",
     "ex": "",
-    "lz_lat": "Ġwec'i rush"
+    "lz_lat": "Ghwec'i rush"
   },
   {
     "id": "w151_dedushka",
@@ -1349,7 +1349,7 @@
     "ru": "День",
     "cat": "время",
     "ex": "И югъ хъсанди я. | Этот день хороший.",
-    "lz_lat": "Yuġ"
+    "lz_lat": "Yugh"
   },
   {
     "id": "w155_deti",
@@ -1365,7 +1365,7 @@
     "ru": "Длинный",
     "cat": "качество",
     "ex": "И рехъ пара яргъиди я. | Эта дорога очень длинная.",
-    "lz_lat": "Yarġi"
+    "lz_lat": "Yarghi"
   },
   {
     "id": "w158_dlya",
@@ -1413,7 +1413,7 @@
     "ru": "Дуб",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Meġun tar"
+    "lz_lat": "Meghün tar"
   },
   {
     "id": "w165_dumat",
@@ -1496,7 +1496,7 @@
     "ru": "Ёлка",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Yolka / Mutkwer tar"
+    "lz_lat": "Yolka / Mütkwer tar"
   },
   {
     "id": "w179_eshchyo",
@@ -1578,9 +1578,9 @@
     "ru": "Жатва",
     "cat": "работа",
     "ex": "",
-    "lz_lat": "Gwen gun",
+    "lz_lat": "Gwen gün",
     "mazin": "Уьгвен",
-    "mazin_lat": "Ugwen",
+    "mazin_lat": "Ügwen",
     "mazin_ru": "жатва"
   },
   {
@@ -1715,9 +1715,9 @@
     "cat": "природа",
     "ex": "И гьайван тамра ава. | Это животное в лесу.",
     "mazin": "ХIейван",
-    "mazin_lat": "Ħeyvan",
+    "mazin_lat": "X'eyvan",
     "mazin_academic": "ХIейван",
-    "mazin_academic_lat": "Ħeyvan",
+    "mazin_academic_lat": "Xheyvan",
     "mazin_ru": "животное",
     "lz_lat": "Hayvan"
   },
@@ -1743,7 +1743,7 @@
     "ru": "Жир",
     "cat": "еда",
     "ex": "",
-    "lz_lat": "Ġeri / Maq'"
+    "lz_lat": "Gheri / Maq'"
   },
   {
     "id": "w208_zhitel",
@@ -1775,7 +1775,7 @@
     "ru": "Забава",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Mashġulat"
+    "lz_lat": "Mashghulat"
   },
   {
     "id": "w215_zavtrak",
@@ -1799,7 +1799,7 @@
     "ru": "Задание",
     "cat": "работа",
     "ex": "",
-    "lz_lat": "Tapshuruġ"
+    "lz_lat": "Tapshurugh"
   },
   {
     "id": "w218_zakat",
@@ -1847,7 +1847,7 @@
     "ru": "Занятый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Mashġul"
+    "lz_lat": "Mashghul"
   },
   {
     "id": "w226_zapad",
@@ -1855,7 +1855,7 @@
     "ru": "Запад",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Raġak'iday pad"
+    "lz_lat": "Raghak'iday pad"
   },
   {
     "id": "w228_zapakh",
@@ -1897,7 +1897,7 @@
     "mazin_academic": "Гъаьд",
     "mazin_academic_lat": "Ghæd",
     "mazin_ru": "звезда",
-    "lz_lat": "Ġed"
+    "lz_lat": "Ghed"
   },
   {
     "id": "w233_zver",
@@ -1913,7 +1913,7 @@
     "ru": "Звонить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Zeng yaġun"
+    "lz_lat": "Zeng yaghun"
   },
   {
     "id": "w236_zdanie",
@@ -1945,7 +1945,7 @@
     "ru": "Земляк",
     "cat": "люди",
     "ex": "",
-    "lz_lat": "Sa xuræy tirdi"
+    "lz_lat": "Sa xüræy tirdi"
   },
   {
     "id": "w241_zerkalo",
@@ -1953,7 +1953,7 @@
     "ru": "Зеркало",
     "cat": "предметы",
     "ex": "",
-    "lz_lat": "Guzgu"
+    "lz_lat": "Güzgü"
   },
   {
     "id": "w242_zerno",
@@ -1969,7 +1969,7 @@
     "ru": "Зима",
     "cat": "время",
     "ex": "",
-    "lz_lat": "Q'ud"
+    "lz_lat": "Q'üd"
   },
   {
     "id": "w244_zimniy",
@@ -1982,7 +1982,7 @@
     "mazin_academic": "КьуьтIуьн",
     "mazin_academic_lat": "Q'üt'ün",
     "mazin_ru": "зимний",
-    "lz_lat": "Qhut'un"
+    "lz_lat": "Qhüt'ün"
   },
   {
     "id": "w245_zlo",
@@ -2046,7 +2046,7 @@
     "ru": "Игра",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Quġun"
+    "lz_lat": "Qughun"
   },
   {
     "id": "w254_ideya",
@@ -2094,7 +2094,7 @@
     "ru": "Кашель",
     "cat": "здоровье",
     "ex": "",
-    "lz_lat": "Uhu"
+    "lz_lat": "Ühü"
   },
   {
     "id": "w261_kishka",
@@ -2131,7 +2131,7 @@
     "ru": "Ключ",
     "cat": "предметы",
     "ex": "",
-    "lz_lat": "Kuleg",
+    "lz_lat": "Küleg",
     "mazin": "Гьачар",
     "mazin_lat": "Hacar",
     "mazin_ru": "ключ"
@@ -2301,7 +2301,7 @@
     "ru": "Лечение",
     "cat": "работа",
     "ex": "",
-    "lz_lat": "Saġarun"
+    "lz_lat": "Sagharun"
   },
   {
     "id": "w284_litso",
@@ -2317,7 +2317,7 @@
     "ru": "Локоть",
     "cat": "тело",
     "ex": "",
-    "lz_lat": "Q'unt"
+    "lz_lat": "Q'ünt"
   },
   {
     "id": "w286_luch",
@@ -2333,7 +2333,7 @@
     "ru": "Любовь",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Muhubbat"
+    "lz_lat": "Mühübbat"
   },
   {
     "id": "w289_machekha",
@@ -2387,7 +2387,7 @@
     "cat": "тело",
     "ex": "",
     "mazin": "Махч˚",
-    "mazin_lat": "Maxc˚",
+    "mazin_lat": "Maxc̊",
     "mazin_academic": "Махч˚",
     "mazin_academic_lat": "Maxc˚",
     "mazin_ru": "мозг",
@@ -2407,7 +2407,7 @@
     "ru": "Мука",
     "cat": "еда",
     "ex": "",
-    "lz_lat": "Ġur"
+    "lz_lat": "Ghür"
   },
   {
     "id": "w297_mylo",
@@ -2431,7 +2431,7 @@
     "ru": "Награда",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Pishkesh / Baġish"
+    "lz_lat": "Pishkesh / Baghish"
   },
   {
     "id": "w301_nadezhda",
@@ -2480,7 +2480,7 @@
     "cat": "семья",
     "ex": "",
     "mazin": "Ж˚оьш˚",
-    "mazin_lat": "J˚ösh˚",
+    "mazin_lat": "J̊ösh̊",
     "mazin_academic": "Ж˚оьш˚",
     "mazin_academic_lat": "J˚ösh˚",
     "mazin_ru": "невеста, сноха",
@@ -2554,8 +2554,8 @@
     "lz": "Хуьрек / Нисинин хуьрек",
     "ru": "Обед",
     "cat": "еда",
-    "ex": "",
-    "lz_lat": "Xurek / Nisinin xurek"
+    "ex": "Къачун тавур дуьгуьдикай аш жедач. | Из необработанного риса плов не сделаешь.",
+    "lz_lat": "Xürek / Nisinin xürek"
   },
   {
     "id": "w314_oblako",
@@ -2617,7 +2617,7 @@
     "cat": "время",
     "ex": "",
     "mazin": "Ж˚уьл",
-    "mazin_lat": "J˚ül",
+    "mazin_lat": "J̊ül",
     "mazin_academic": "Ж˚уьл",
     "mazin_academic_lat": "J˚ül",
     "mazin_ru": "осень, полоса",
@@ -2637,7 +2637,7 @@
     "ru": "Охота",
     "cat": "работа",
     "ex": "",
-    "lz_lat": "Ġurc"
+    "lz_lat": "Ghürc"
   },
   {
     "id": "w323_ochag",
@@ -2645,7 +2645,7 @@
     "ru": "Очаг",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Qul / Ujaġ"
+    "lz_lat": "Qul / Ujagh"
   },
   {
     "id": "w324_pamyat",
@@ -2662,11 +2662,11 @@
     "cat": "искусство",
     "ex": "",
     "mazin": "МагIни",
-    "mazin_lat": "Maǵni",
+    "mazin_lat": "Mag'ni",
     "mazin_academic": "МагIни",
-    "mazin_academic_lat": "Maǵni",
+    "mazin_academic_lat": "Maghni",
     "mazin_ru": "песня",
-    "lz_lat": "Mani / Naġma"
+    "lz_lat": "Mani / Naghma"
   },
   {
     "id": "w327_pech",
@@ -2698,7 +2698,7 @@
     "ru": "Победа",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Ġalibval"
+    "lz_lat": "Ghalibval"
   },
   {
     "id": "w331_pogoda",
@@ -2714,7 +2714,7 @@
     "ru": "Помощь",
     "cat": "общение",
     "ex": "",
-    "lz_lat": "Kumek"
+    "lz_lat": "Kümek"
   },
   {
     "id": "w334_prazdnik",
@@ -2738,7 +2738,7 @@
     "ru": "Радуга",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Yarġirush / Xwajamjam"
+    "lz_lat": "Yarghirush / Xwajamjam"
   },
   {
     "id": "w337_razum",
@@ -2751,7 +2751,7 @@
     "mazin_academic": "Гьакьул",
     "mazin_academic_lat": "Haq'ul",
     "mazin_ru": "ум, разум",
-    "lz_lat": "Aq'ul / Qanajaġ"
+    "lz_lat": "Aq'ul / Qanajagh"
   },
   {
     "id": "w338_rassvet",
@@ -2783,9 +2783,9 @@
     "ru": "Рука",
     "cat": "тело",
     "ex": "",
-    "lz_lat": "Ġil",
+    "lz_lat": "Ghil",
     "mazin": "Гъил-ер",
-    "mazin_lat": "Ġil-er",
+    "mazin_lat": "Ghil-er",
     "mazin_ru": "рука"
   },
   {
@@ -2820,7 +2820,7 @@
     "mazin_academic": "Иших",
     "mazin_academic_lat": "Ishix",
     "mazin_ru": "свет, луч",
-    "lz_lat": "Ekw / Ishiġ"
+    "lz_lat": "Ekw / Ishigh"
   },
   {
     "id": "w345_svoboda",
@@ -2926,9 +2926,9 @@
     "ru": "Спор",
     "cat": "общение",
     "ex": "",
-    "lz_lat": "Hujet",
+    "lz_lat": "Hüjet",
     "mazin": "БаьхIс",
-    "mazin_lat": "Bax's",
+    "mazin_lat": "Bæx's",
     "mazin_ru": "спор"
   },
   {
@@ -2956,7 +2956,7 @@
     "ru": "Страна",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Ulkwe"
+    "lz_lat": "Ülkwe"
   },
   {
     "id": "w360_sudba",
@@ -2972,7 +2972,7 @@
     "ru": "Табак",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tutun"
+    "lz_lat": "Tütün"
   },
   {
     "id": "w362_tayna",
@@ -2988,7 +2988,7 @@
     "ru": "Танец",
     "cat": "искусство",
     "ex": "",
-    "lz_lat": "Q'ul"
+    "lz_lat": "Q'ül"
   },
   {
     "id": "w369_telo",
@@ -3123,7 +3123,7 @@
     "mazin_academic": "Аазур",
     "mazin_academic_lat": "Āzur",
     "mazin_ru": "тысяча",
-    "lz_lat": "Aġzur"
+    "lz_lat": "Aghzur"
   },
   {
     "id": "w385_uborka",
@@ -3170,7 +3170,7 @@
     "ex": "",
     "lz_lat": "Lezet",
     "mazin": "ХIаьз",
-    "mazin_lat": "X'az",
+    "mazin_lat": "X'æz",
     "mazin_ru": "удовольствие"
   },
   {
@@ -3186,7 +3186,7 @@
     "lz": "Акьул",
     "ru": "Ум",
     "cat": "люди",
-    "ex": "",
+    "ex": "Акьул маса къачуз жедай зад туш. | Ум нельзя купить.",
     "mazin": "Гьакьул",
     "mazin_lat": "Haq'ul",
     "mazin_academic": "Гьакьул",
@@ -3405,7 +3405,7 @@
     "ru": "Ябеда",
     "cat": "люди",
     "ex": "",
-    "lz_lat": "Ġibet / Fitne"
+    "lz_lat": "Ghibet / Fitne"
   },
   {
     "id": "w432_yablonya",
@@ -3439,7 +3439,7 @@
     "mazin_academic": "Аагъу",
     "mazin_academic_lat": "Āghu",
     "mazin_ru": "яд",
-    "lz_lat": "Aġu / Zeher"
+    "lz_lat": "Aghu / Zeher"
   },
   {
     "id": "w437_yaichnitsa",
@@ -3447,7 +3447,7 @@
     "ru": "Яичница",
     "cat": "еда",
     "ex": "",
-    "lz_lat": "Qayġanax / At'ay kakayar"
+    "lz_lat": "Qayghanax / At'ay kakayar"
   },
   {
     "id": "w438_yaytso",
@@ -3495,7 +3495,7 @@
     "ru": "Ярость",
     "cat": "эмоции",
     "ex": "",
-    "lz_lat": "Pis qhel / Ajuġ"
+    "lz_lat": "Pis qhel / Ajugh"
   },
   {
     "id": "w445_yasnyy",
@@ -3503,7 +3503,7 @@
     "ru": "Ясный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Acux / Eku"
+    "lz_lat": "Acux / Ekü"
   },
   {
     "id": "w446_yastreb",
@@ -3535,7 +3535,7 @@
     "ru": "Авторитет",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Avtoritet / Hurmet"
+    "lz_lat": "Avtoritet / Hürmet"
   },
   {
     "id": "w452_azbuka",
@@ -3569,7 +3569,7 @@
     "ex": "",
     "lz_lat": "Ishtæh",
     "mazin": "ИштаьхI",
-    "mazin_lat": "Ishtax'",
+    "mazin_lat": "Ishtæx'",
     "mazin_ru": "аппетит"
   },
   {
@@ -3594,7 +3594,7 @@
     "ru": "Арест, Заключать",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Dustaġ avun"
+    "lz_lat": "Dustagh avun"
   },
   {
     "id": "w459_arka",
@@ -3602,7 +3602,7 @@
     "ru": "Арка",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Taġ"
+    "lz_lat": "Tagh"
   },
   {
     "id": "w461_ataka",
@@ -3668,7 +3668,7 @@
     "ru": "Беседа",
     "cat": "общение",
     "ex": "",
-    "lz_lat": "Suhbet / Ixtilat"
+    "lz_lat": "Sühbet / Ixtilat"
   },
   {
     "id": "w469_binokl",
@@ -3741,7 +3741,7 @@
     "cat": "здоровье",
     "ex": "",
     "mazin": "Итарвал",
-    "mazin_lat": "Itarwal",
+    "mazin_lat": "Itarval",
     "mazin_academic": "Итарвал",
     "mazin_academic_lat": "Itarwal",
     "mazin_ru": "боль",
@@ -3777,7 +3777,7 @@
     "ru": "Бревно",
     "cat": "материалы",
     "ex": "",
-    "lz_lat": "Ġwar / Cuq'wan / Shalman"
+    "lz_lat": "Ghwar / Cuq'wan / Shalman"
   },
   {
     "id": "w484_brov",
@@ -3798,7 +3798,7 @@
     "ru": "Бронза",
     "cat": "материалы",
     "ex": "",
-    "lz_lat": "Burunj"
+    "lz_lat": "Bürünj"
   },
   {
     "id": "w488_buben",
@@ -3823,9 +3823,9 @@
     "cat": "обучение",
     "ex": "",
     "mazin": "ХIаьрф",
-    "mazin_lat": "Ħærf",
+    "mazin_lat": "X'ærf",
     "mazin_academic": "ХIаьрф",
-    "mazin_academic_lat": "Ħærf",
+    "mazin_academic_lat": "Xhærf",
     "mazin_ru": "буква",
     "lz_lat": "Harf"
   },
@@ -3859,7 +3859,7 @@
     "ru": "Быт",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Yashayish / Dulanajaġ"
+    "lz_lat": "Yashayish / Dulanajagh"
   },
   {
     "id": "w496_bychok",
@@ -4092,7 +4092,7 @@
     "ru": "Встреча, Встретить",
     "cat": "общение",
     "ex": "",
-    "lz_lat": "Haltun / Dushush xhun"
+    "lz_lat": "Haltun / Düshüsh xhun"
   },
   {
     "id": "w525_vkhod",
@@ -4116,7 +4116,7 @@
     "ru": "Выговор",
     "cat": "общение",
     "ex": "",
-    "lz_lat": "Tuhmet / Vɨgovor / Ayib"
+    "lz_lat": "Tühmet / Vɨgovor / Ayib"
   },
   {
     "id": "w528_vyzov",
@@ -4132,7 +4132,7 @@
     "ru": "Вымя",
     "cat": "тело",
     "ex": "",
-    "lz_lat": "Reġu"
+    "lz_lat": "Reghü"
   },
   {
     "id": "w530_vysota",
@@ -4148,7 +4148,7 @@
     "ru": "Выстрел, Стрелять",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Yaġun"
+    "lz_lat": "Yaghun"
   },
   {
     "id": "w532_vyuga",
@@ -4156,7 +4156,7 @@
     "ru": "Вьюга",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Savrux / Cayġun"
+    "lz_lat": "Savrux / Cayghun"
   },
   {
     "id": "w533_galka",
@@ -4164,7 +4164,7 @@
     "ru": "Галка",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "C'aġ"
+    "lz_lat": "C'agh"
   },
   {
     "id": "w534_garmonika",
@@ -4172,7 +4172,7 @@
     "ru": "Гармоника",
     "cat": "предметы",
     "ex": "",
-    "lz_lat": "C'aġan"
+    "lz_lat": "C'aghan"
   },
   {
     "id": "w535_gvozdika",
@@ -4212,7 +4212,7 @@
     "ru": "Глотка",
     "cat": "тело",
     "ex": "",
-    "lz_lat": "Tutux / Tud"
+    "lz_lat": "Tütüx / Tüd"
   },
   {
     "id": "w541_glubina",
@@ -4236,7 +4236,7 @@
     "ru": "Гнет",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Ġunt' / Zulum / Guj"
+    "lz_lat": "Ghünt' / Zulum / Guj"
   },
   {
     "id": "w544_govyadina",
@@ -4292,7 +4292,7 @@
     "ru": "Горечь",
     "cat": "ощущения",
     "ex": "",
-    "lz_lat": "Tuq'ulval"
+    "lz_lat": "Tüq'ülval"
   },
   {
     "id": "w554_gorlo",
@@ -4300,9 +4300,9 @@
     "ru": "Горло",
     "cat": "тело",
     "ex": "",
-    "lz_lat": "Tud / Tutux",
+    "lz_lat": "Tüd / Tütüx",
     "mazin": "Туьтуьх",
-    "mazin_lat": "Tutux",
+    "mazin_lat": "Tütüx",
     "mazin_ru": "горло"
   },
   {
@@ -4311,7 +4311,7 @@
     "ru": "Грусть",
     "cat": "эмоции",
     "ex": "",
-    "lz_lat": "Sefilval / Ġam"
+    "lz_lat": "Sefilval / Gham"
   },
   {
     "id": "w556_gryaz",
@@ -4367,7 +4367,7 @@
     "ru": "Даль",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Yarġa cka / Yarġal menzil"
+    "lz_lat": "Yargha cka / Yarghal menzil"
   },
   {
     "id": "w563_dan",
@@ -4418,7 +4418,7 @@
     "ru": "Диалект",
     "cat": "обучение",
     "ex": "",
-    "lz_lat": "Nuġat"
+    "lz_lat": "Nughat"
   },
   {
     "id": "w570_dynya",
@@ -4436,7 +4436,7 @@
     "ex": "",
     "lz_lat": "Qhalqham",
     "mazin": "ТIоькв",
-    "mazin_lat": "T'okw",
+    "mazin_lat": "T'ökw",
     "mazin_ru": "дыра"
   },
   {
@@ -4453,7 +4453,7 @@
     "ru": "Еда",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "T'un / Xurek"
+    "lz_lat": "T'ün / Xürek"
   },
   {
     "id": "w574_yozh",
@@ -4461,7 +4461,7 @@
     "ru": "Ёж",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "Q'uġur"
+    "lz_lat": "Q'üghür"
   },
   {
     "id": "w575_zhaba",
@@ -4509,7 +4509,7 @@
     "ru": "Заболевание",
     "cat": "здоровье",
     "ex": "",
-    "lz_lat": "Nacaġwal / Azar"
+    "lz_lat": "Nacaghwal / Azar"
   },
   {
     "id": "w583_zabota",
@@ -4517,7 +4517,7 @@
     "ru": "Забота",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Qayġu / Didar"
+    "lz_lat": "Qayghu / Didar"
   },
   {
     "id": "w584_zavist",
@@ -4549,7 +4549,7 @@
     "ru": "Замашка",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Amalar / Q'uruk"
+    "lz_lat": "Amalar / Q'ürük"
   },
   {
     "id": "w588_zamechanie",
@@ -4557,7 +4557,7 @@
     "ru": "Замечание",
     "cat": "общение",
     "ex": "",
-    "lz_lat": "Tuhmet / Fikir"
+    "lz_lat": "Tühmet / Fikir"
   },
   {
     "id": "w589_zamysel",
@@ -4597,7 +4597,7 @@
     "ru": "Злодей",
     "cat": "люди",
     "ex": "",
-    "lz_lat": "Yaġi / Pis kas"
+    "lz_lat": "Yaghi / Pis kas"
   },
   {
     "id": "w595_znak",
@@ -4605,7 +4605,7 @@
     "ru": "Знак",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Lishan / Ulcme"
+    "lz_lat": "Lishan / Ülcme"
   },
   {
     "id": "w596_znoy",
@@ -4621,7 +4621,7 @@
     "ru": "Зола",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Ruqh"
+    "lz_lat": "Rüqh"
   },
   {
     "id": "w598_zontik",
@@ -4656,7 +4656,7 @@
     "ru": "Иго",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Ġunt' / Zulum"
+    "lz_lat": "Ghünt' / Zulum"
   },
   {
     "id": "w602_izvestie",
@@ -4850,7 +4850,7 @@
     "mazin_academic": "Джазаа",
     "mazin_academic_lat": "Djazā",
     "mazin_ru": "наказание, кара",
-    "lz_lat": "Jaza / Tunbuh"
+    "lz_lat": "Jaza / Tünbüh"
   },
   {
     "id": "w626_kartech",
@@ -4874,7 +4874,7 @@
     "ru": "Клен",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Ġwershi tar"
+    "lz_lat": "Ghwershi tar"
   },
   {
     "id": "w629_kleshch",
@@ -5076,7 +5076,7 @@
     "ru": "Красота",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Ierval / Gurcegwal",
+    "lz_lat": "Ierval / Gürcegwal",
     "mazin": "Айарвил-ер",
     "mazin_lat": "Ayarvil-er",
     "mazin_ru": "красота"
@@ -5132,7 +5132,7 @@
     "ru": "Крышка",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Q'il / Qalpaġ",
+    "lz_lat": "Q'il / Qalpagh",
     "mazin": "Хъалпах",
     "mazin_lat": "Qhalpax",
     "mazin_ru": "крышка"
@@ -5143,7 +5143,7 @@
     "ru": "Кувшин",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "K'utsun / Kutar / Gicin"
+    "lz_lat": "K'ütsün / Kutar / Gicin"
   },
   {
     "id": "w659_kuznechik",
@@ -5225,7 +5225,7 @@
     "ru": "Кушанье",
     "cat": "еда",
     "ex": "",
-    "lz_lat": "Xurek"
+    "lz_lat": "Xürek"
   },
   {
     "id": "w668_lay",
@@ -5252,7 +5252,7 @@
     "ru": "Лемех",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Maġ"
+    "lz_lat": "Magh"
   },
   {
     "id": "w671_liniya",
@@ -5268,7 +5268,7 @@
     "ru": "Липа",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Ġultsin tar"
+    "lz_lat": "Ghultsin tar"
   },
   {
     "id": "w673_lisitsa",
@@ -5372,7 +5372,7 @@
     "ru": "Мизинец",
     "cat": "тело",
     "ex": "",
-    "lz_lat": "Ġwec'i t'ub"
+    "lz_lat": "Ghwec'i t'ub"
   },
   {
     "id": "w686_milost",
@@ -5404,7 +5404,7 @@
     "ru": "Молодец",
     "cat": "люди",
     "ex": "",
-    "lz_lat": "Q'ehal / Qucaġ / Aferin"
+    "lz_lat": "Q'ehal / Qucagh / Aferin"
   },
   {
     "id": "w693_molot",
@@ -5433,7 +5433,7 @@
     "mazin_academic": "КьваьчI",
     "mazin_academic_lat": "Q'wæc'",
     "mazin_ru": "моль",
-    "lz_lat": "Ġuc'"
+    "lz_lat": "Ghüc'"
   },
   {
     "id": "w697_motyga",
@@ -5490,7 +5490,7 @@
     "cat": "животные",
     "ex": "",
     "mazin": "Кьуьш˚",
-    "mazin_lat": "Q'üsh˚",
+    "mazin_lat": "Q'üsh̊",
     "mazin_academic": "Кьуьш˚",
     "mazin_academic_lat": "Q'üsh˚",
     "mazin_ru": "мышь",
@@ -5515,7 +5515,7 @@
     "ru": "Навык",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Verdishval / Bajaraġwal"
+    "lz_lat": "Verdishval / Bajaraghwal"
   },
   {
     "id": "w705_nagayka",
@@ -5531,7 +5531,7 @@
     "ru": "Наклон",
     "cat": "мера",
     "ex": "",
-    "lz_lat": "Alġun / Gune"
+    "lz_lat": "Alghun / Güne"
   },
   {
     "id": "w708_napev",
@@ -5547,7 +5547,7 @@
     "ru": "Наседка",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "Kakayral atsuq'day verc / Q'urt'i verc"
+    "lz_lat": "Kakayral atsuq'day verc / Q'ürt'i verc"
   },
   {
     "id": "w710_nasekomye",
@@ -5595,7 +5595,7 @@
     "ru": "Находка",
     "cat": "события",
     "ex": "",
-    "lz_lat": "Jaġay zat'"
+    "lz_lat": "Jaghay zat'"
   },
   {
     "id": "w718_nachalo",
@@ -5635,7 +5635,7 @@
     "ru": "Негодование",
     "cat": "эмоции",
     "ex": "",
-    "lz_lat": "Qhel / Ajuġ"
+    "lz_lat": "Qhel / Ajugh"
   },
   {
     "id": "w726_nedostatok",
@@ -5664,7 +5664,7 @@
     "mazin_academic": "Гьаззар",
     "mazin_academic_lat": "Hazzar",
     "mazin_ru": "болезнь, недуг",
-    "lz_lat": "Azar / Nacaġwal"
+    "lz_lat": "Azar / Nacaghwal"
   },
   {
     "id": "w729_nezhnost",
@@ -5725,7 +5725,7 @@
     "mazin_academic": "Кам",
     "mazin_academic_lat": "Kam",
     "mazin_ru": "овраг, ущелье",
-    "lz_lat": "K'am / Yarġi cuxur"
+    "lz_lat": "K'am / Yarghi cuxur"
   },
   {
     "id": "w739_ovchina",
@@ -5874,7 +5874,7 @@
     "ru": "Пойло",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "Xwal / Ġurush"
+    "lz_lat": "Xwal / Ghurush"
   },
   {
     "id": "w763_pokoynik",
@@ -5898,7 +5898,7 @@
     "ru": "Покос",
     "cat": "работа",
     "ex": "",
-    "lz_lat": "Veq' yaġun"
+    "lz_lat": "Veq' yaghun"
   },
   {
     "id": "w766_pokrov",
@@ -5943,7 +5943,7 @@
     "ru": "Порог",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Gurtsel"
+    "lz_lat": "Gürtsel"
   },
   {
     "id": "w772_porok",
@@ -6127,7 +6127,7 @@
     "ru": "Ругань",
     "cat": "общение",
     "ex": "",
-    "lz_lat": "Equġun / Seb / Seperar"
+    "lz_lat": "Eqüghun / Seb / Seperar"
   },
   {
     "id": "w799_ruina",
@@ -6183,7 +6183,7 @@
     "ru": "Сало",
     "cat": "еда",
     "ex": "",
-    "lz_lat": "Maq' / Pi / Ġeri"
+    "lz_lat": "Maq' / Pi / Gheri"
   },
   {
     "id": "w805_samets",
@@ -6209,7 +6209,7 @@
     "ex": "",
     "lz_lat": "Gugurt / Yapun q'aq'",
     "mazin": "Гуьгуьрт",
-    "mazin_lat": "Gugurt",
+    "mazin_lat": "Gügürt",
     "mazin_ru": "сера"
   },
   {
@@ -6226,7 +6226,7 @@
     "ru": "Серьга",
     "cat": "одежда",
     "ex": "",
-    "lz_lat": "Yapahan / Sirġa"
+    "lz_lat": "Yapahan / Sirgha"
   },
   {
     "id": "w810_sitets",
@@ -6250,7 +6250,7 @@
     "ru": "Скука",
     "cat": "эмоции",
     "ex": "",
-    "lz_lat": "Darixwal / Suġulval"
+    "lz_lat": "Darixwal / Sughulval"
   },
   {
     "id": "w813_sled",
@@ -6266,7 +6266,7 @@
     "ru": "Слеза",
     "cat": "тело",
     "ex": "",
-    "lz_lat": "Naġw"
+    "lz_lat": "Naghw"
   },
   {
     "id": "w815_slivki",
@@ -6295,7 +6295,7 @@
     "ru": "Слюна",
     "cat": "тело",
     "ex": "",
-    "lz_lat": "Tsuk'un / Ġer / Ts'aran yad"
+    "lz_lat": "Tsük'ün / Gher / Ts'aran yad"
   },
   {
     "id": "w819_smola",
@@ -6312,9 +6312,9 @@
     "cat": "понятия",
     "ex": "",
     "mazin": "МагIна",
-    "mazin_lat": "Maǵna",
+    "mazin_lat": "Mag'na",
     "mazin_academic": "МагIна",
-    "mazin_academic_lat": "Maǵna",
+    "mazin_academic_lat": "Maghna",
     "mazin_ru": "содержание, смысл",
     "lz_lat": "Mana / Metleb / Aq'ul"
   },
@@ -6356,7 +6356,7 @@
     "ru": "Сторона",
     "cat": "мера",
     "ex": "",
-    "lz_lat": "Pad / Teref / Ulkwe"
+    "lz_lat": "Pad / Teref / Ülkwe"
   },
   {
     "id": "w827_strela",
@@ -6365,9 +6365,9 @@
     "cat": "война",
     "ex": "",
     "mazin": "Хьаьл",
-    "mazin_lat": "Xæl",
+    "mazin_lat": "Xhæl",
     "mazin_academic": "Хьаьл",
-    "mazin_academic_lat": "Xæl",
+    "mazin_academic_lat": "Xhæl",
     "mazin_ru": "стрела",
     "lz_lat": "Xhel"
   },
@@ -6398,7 +6398,7 @@
     "mazin_academic": "Гьайиб",
     "mazin_academic_lat": "Hayib",
     "mazin_ru": "стыд, позор",
-    "lz_lat": "Reġuval / Ayib"
+    "lz_lat": "Reghüwal / Ayib"
   },
   {
     "id": "w831_sugrob",
@@ -6406,7 +6406,7 @@
     "ru": "Сугроб",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Jived marġal"
+    "lz_lat": "Jived marghal"
   },
   {
     "id": "w832_sudno",
@@ -6465,7 +6465,7 @@
     "ru": "Телка",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "Duge"
+    "lz_lat": "Düge"
   },
   {
     "id": "w839_tesnost",
@@ -6497,7 +6497,7 @@
     "ru": "Тип",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Jure / Ceshne"
+    "lz_lat": "Jüre / Ceshne"
   },
   {
     "id": "w843_toplivo",
@@ -6513,7 +6513,7 @@
     "ru": "Тоска",
     "cat": "эмоции",
     "ex": "",
-    "lz_lat": "Darixwal / Ġam"
+    "lz_lat": "Darixwal / Gham"
   },
   {
     "id": "w845_tochka",
@@ -6561,7 +6561,7 @@
     "ru": "Тропа",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Jiġir / Reqh"
+    "lz_lat": "Jighir / Reqh"
   },
   {
     "id": "w853_tulup",
@@ -6593,7 +6593,7 @@
     "ru": "Удалец",
     "cat": "люди",
     "ex": "",
-    "lz_lat": "Qucaġ / Vik'eh kas"
+    "lz_lat": "Qucagh / Vik'eh kas"
   },
   {
     "id": "w858_udar",
@@ -6601,7 +6601,7 @@
     "ru": "Удар",
     "cat": "события",
     "ex": "",
-    "lz_lat": "Yaġun / Hujum"
+    "lz_lat": "Yaghun / Hujum"
   },
   {
     "id": "w859_udochka",
@@ -6713,7 +6713,7 @@
     "ru": "Хвоя",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Pesher (shamaġajdin)"
+    "lz_lat": "Pesher (shamaghajdin)"
   },
   {
     "id": "w876_khizhina",
@@ -6721,7 +6721,7 @@
     "ru": "Хижина",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Ġwec'i k'wal / Qazma"
+    "lz_lat": "Ghwec'i k'wal / Qazma"
   },
   {
     "id": "w879_khlopok",
@@ -6806,7 +6806,7 @@
     "ru": "Цепь",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Zunjur / Ts'irġ"
+    "lz_lat": "Zunjur / Ts'irgh"
   },
   {
     "id": "w900_chas",
@@ -6944,7 +6944,7 @@
     "ex": "",
     "lz_lat": "Yurk / Paya",
     "mazin": "Уьрк",
-    "mazin_lat": "Urk",
+    "mazin_lat": "Ürk",
     "mazin_ru": "шест"
   },
   {
@@ -6953,7 +6953,7 @@
     "ru": "Широта",
     "cat": "мера",
     "ex": "",
-    "lz_lat": "Hyarq'uval"
+    "lz_lat": "Hyarq'üwal"
   },
   {
     "id": "w919_shite",
@@ -6985,7 +6985,7 @@
     "ru": "Аплодировать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kapar yaġun"
+    "lz_lat": "Kapar yaghun"
   },
   {
     "id": "w924_arestovat",
@@ -6993,7 +6993,7 @@
     "ru": "Арестовать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Q'un / Dustaġ avun"
+    "lz_lat": "Q'un / Dustagh avun"
   },
   {
     "id": "w925_bezhat",
@@ -7009,7 +7009,7 @@
     "ru": "Беседовать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Suhbet avun / Ixtilatar avun"
+    "lz_lat": "Sühbet avun / Ixtilatar avun"
   },
   {
     "id": "w929_bit",
@@ -7017,7 +7017,7 @@
     "ru": "Бить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Gatun / Yaġun / Xun / Tuk'un"
+    "lz_lat": "Gatun / Yaghun / Xun / Tuk'un"
   },
   {
     "id": "w930_blagodarit",
@@ -7025,7 +7025,7 @@
     "ru": "Благодарить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Cuxsaġul luhun"
+    "lz_lat": "Cuxsaghul luhun"
   },
   {
     "id": "w931_blestet",
@@ -7097,7 +7097,7 @@
     "ru": "Вернуть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Elq'urun / Vaxkun"
+    "lz_lat": "Elq'ürün / Vaxkun"
   },
   {
     "id": "w943_vertetsya",
@@ -7105,7 +7105,7 @@
     "ru": "Вертеться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Alcud xhun / Elqun"
+    "lz_lat": "Alcud xhun / Elqün"
   },
   {
     "id": "w944_veselitsya",
@@ -7121,7 +7121,7 @@
     "ru": "Вести",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tuxun / C'ugun / Qequrun"
+    "lz_lat": "Tuxun / C'ugun / Qeqürun"
   },
   {
     "id": "w946_vzvolnovat",
@@ -7169,7 +7169,7 @@
     "ru": "Взяться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Egec'un / Ġile q'un"
+    "lz_lat": "Egec'un / Ghile q'un"
   },
   {
     "id": "w953_viset",
@@ -7177,7 +7177,7 @@
     "ru": "Висеть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kurs xhun"
+    "lz_lat": "Kürs xhun"
   },
   {
     "id": "w954_vit",
@@ -7209,7 +7209,7 @@
     "ru": "Внести",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Ġun / Tuxun / Gun / Kutun"
+    "lz_lat": "Ghun / Tuxun / Gun / Kutun"
   },
   {
     "id": "w958_vodit",
@@ -7217,7 +7217,7 @@
     "ru": "Водить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tuxun / Halun / Qequrun"
+    "lz_lat": "Tuxun / Halun / Qeqürun"
   },
   {
     "id": "w959_voevat",
@@ -7233,7 +7233,7 @@
     "ru": "Возвратить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Elqurun / Raxkurun"
+    "lz_lat": "Elqürun / Raxkurun"
   },
   {
     "id": "w961_vozvratitsya",
@@ -7241,7 +7241,7 @@
     "ru": "Возвратиться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Elqun / Xtun"
+    "lz_lat": "Elqün / Xtun"
   },
   {
     "id": "w962_vozglavit",
@@ -7249,7 +7249,7 @@
     "ru": "Возглавить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Q'il q'un / Ġile q'un"
+    "lz_lat": "Q'il q'un / Ghile q'un"
   },
   {
     "id": "w963_vozit",
@@ -7273,7 +7273,7 @@
     "ru": "Восстанавливать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Ts'iyi qhuvun / Ckadal ġun"
+    "lz_lat": "Ts'iyi qhuvun / Ckadal ghun"
   },
   {
     "id": "w966_vrat",
@@ -7289,7 +7289,7 @@
     "ru": "Вручать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Vugun / Ġile vugun"
+    "lz_lat": "Vugun / Ghile vugun"
   },
   {
     "id": "w968_vspominat",
@@ -7313,7 +7313,7 @@
     "ru": "Вставать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Qaraġun / Aqwazun"
+    "lz_lat": "Qaraghun / Aqwazun"
   },
   {
     "id": "w971_vstavit",
@@ -7321,7 +7321,7 @@
     "ru": "Вставить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tun / Shusheyar tun"
+    "lz_lat": "Tun / Shüsheyar tun"
   },
   {
     "id": "w973_vstretitsya",
@@ -7329,7 +7329,7 @@
     "ru": "Встретиться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Sad-sadal haltun / Dushush xhun"
+    "lz_lat": "Sad-sadal haltun / Düshüsh xhun"
   },
   {
     "id": "w974_vstupat",
@@ -7366,7 +7366,7 @@
     "ru": "Выбирать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Xkæġun / Xkudun / Qacun"
+    "lz_lat": "Xkæghun / Xkudun / Qacun"
   },
   {
     "id": "w978_vybrasyvat",
@@ -7382,7 +7382,7 @@
     "ru": "Вывести",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Aqudun / Kuc avun"
+    "lz_lat": "Aqudun / Küc avun"
   },
   {
     "id": "w980_vygladit",
@@ -7390,7 +7390,7 @@
     "ru": "Выгладить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Utu yaġun"
+    "lz_lat": "Ütü yaghun"
   },
   {
     "id": "w981_vydavat",
@@ -7422,7 +7422,7 @@
     "ru": "Вызвать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Everun / Everna ġun"
+    "lz_lat": "Everun / Everna ghun"
   },
   {
     "id": "w985_vyzdoravlivat",
@@ -7430,7 +7430,7 @@
     "ru": "Выздоравливать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Saġ qhxhun / Diri qhxhun"
+    "lz_lat": "Sagh qhxhun / Diri qhxhun"
   },
   {
     "id": "w986_vyigryvat",
@@ -7438,7 +7438,7 @@
     "ru": "Выигрывать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Atun / Tuxun / Ġalib xhun"
+    "lz_lat": "Atun / Tuxun / Ghalib xhun"
   },
   {
     "id": "w987_vykapyvat",
@@ -7446,7 +7446,7 @@
     "ru": "Выкапывать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Eġunun / Xkudun"
+    "lz_lat": "Eghünun / Xkudun"
   },
   {
     "id": "w988_vyklyuchat",
@@ -7491,7 +7491,7 @@
     "ru": "Вымыть, Мыть, Стирать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Cuxun"
+    "lz_lat": "Cüxün"
   },
   {
     "id": "w994_vymytsya",
@@ -7499,7 +7499,7 @@
     "ru": "Вымыться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Juv cuxwena mixhi avun"
+    "lz_lat": "Juv cüxwena mixhi avun"
   },
   {
     "id": "w995_vynesti",
@@ -7547,7 +7547,7 @@
     "ru": "Вянуть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Shutq'un / Sust xhun"
+    "lz_lat": "Shütq'ün / Sust xhun"
   },
   {
     "id": "w1001_gasit_svet",
@@ -7555,7 +7555,7 @@
     "ru": "Гасить (свет)",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tuxurun / Xkadarun"
+    "lz_lat": "Tüxürun / Xkadarun"
   },
   {
     "id": "w1002_gasnut",
@@ -7571,7 +7571,7 @@
     "ru": "Гладить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Utu yaġun / Kap altadun"
+    "lz_lat": "Ütü yaghun / Kap altadun"
   },
   {
     "id": "w1004_glotat",
@@ -7579,7 +7579,7 @@
     "ru": "Глотать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tuq'unun"
+    "lz_lat": "Tüq'ünun"
   },
   {
     "id": "w1005_glyadet",
@@ -7587,7 +7587,7 @@
     "ru": "Глядеть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kiligun / Guzetun"
+    "lz_lat": "Kiligun / Güzetun"
   },
   {
     "id": "w1006_gnat",
@@ -7640,7 +7640,7 @@
     "ru": "Даривать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Baġishun / Pishkeshun"
+    "lz_lat": "Baghishun / Pishkeshun"
   },
   {
     "id": "w1014_dvigat",
@@ -7656,7 +7656,7 @@
     "ru": "Двигаться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Yuzun / Elqun / Vilik fin"
+    "lz_lat": "Yuzun / Elqün / Vilik fin"
   },
   {
     "id": "w1016_deystvovat",
@@ -7680,7 +7680,7 @@
     "ru": "Держаться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Q'un / Alk'un / Qaraġna aqwazun"
+    "lz_lat": "Q'un / Alk'un / Qaraghna aqwazun"
   },
   {
     "id": "w1020_dobavit",
@@ -7736,7 +7736,7 @@
     "ru": "Доставить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Qacun / Jaġurun"
+    "lz_lat": "Qacun / Jaghurun"
   },
   {
     "id": "w1028_dostigat",
@@ -7752,7 +7752,7 @@
     "ru": "Дразнить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "C'alar aqhayiz qhel ġun"
+    "lz_lat": "C'alar aqhayiz qhel ghun"
   },
   {
     "id": "w1030_drozhat",
@@ -7768,7 +7768,7 @@
     "ru": "Дуть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Uf gun / Gar qequn"
+    "lz_lat": "Uf gun / Gar qeqün"
   },
   {
     "id": "w1032_dyshat",
@@ -7800,7 +7800,7 @@
     "ru": "Жечь",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kun / Ts'ay yaġun"
+    "lz_lat": "Kun / Ts'ay yaghun"
   },
   {
     "id": "w1037_zabivat",
@@ -7808,7 +7808,7 @@
     "ru": "Забивать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Yaġun / Mix yaġun"
+    "lz_lat": "Yaghun / Mix yaghun"
   },
   {
     "id": "w1038_zabluditsya",
@@ -7896,7 +7896,7 @@
     "ru": "Загореться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Ts'ay q'un / Kuk'unun"
+    "lz_lat": "Ts'ay q'un / Kük'ünun"
   },
   {
     "id": "w1051_zadevat",
@@ -7904,7 +7904,7 @@
     "ru": "Задевать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Xkurun / Etsæġun"
+    "lz_lat": "Xkürun / Etsæghun"
   },
   {
     "id": "w1052_zaderzhat",
@@ -7920,7 +7920,7 @@
     "ru": "Зажечь",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kuk'urun / Ts'ay yaġun"
+    "lz_lat": "Kük'ürun / Ts'ay yaghun"
   },
   {
     "id": "w1054_zayti",
@@ -7928,7 +7928,7 @@
     "ru": "Зайти",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Haxhun / Q'il etsæġun"
+    "lz_lat": "Haxhun / Q'il etsæghun"
   },
   {
     "id": "w1055_zakazat",
@@ -7944,7 +7944,7 @@
     "ru": "Закончить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Aq'altun / Kutæhun"
+    "lz_lat": "Aq'altun / Kütæhun"
   },
   {
     "id": "w1058_zaryadit",
@@ -7965,7 +7965,7 @@
     "mazin_academic": "Хъуьрхъуьн",
     "mazin_academic_lat": "Qhürqhün",
     "mazin_ru": "смеяться",
-    "lz_lat": "Qhurun"
+    "lz_lat": "Qhürün"
   },
   {
     "id": "w1060_zasnut",
@@ -7989,7 +7989,7 @@
     "ru": "Застегивать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tun (dugme / K'ir)"
+    "lz_lat": "Tun (dügme / K'ir)"
   },
   {
     "id": "w1063_zdorovatsya",
@@ -8013,7 +8013,7 @@
     "ru": "Играть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Quġun / Yaġun (muzɨka)"
+    "lz_lat": "Qughun / Yaghun (muzɨka)"
   },
   {
     "id": "w1066_izbegat",
@@ -8021,7 +8021,7 @@
     "ru": "Избегать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Katna yarġaz xhun"
+    "lz_lat": "Katna yarghaz xhun"
   },
   {
     "id": "w1067_izbirat",
@@ -8029,7 +8029,7 @@
     "ru": "Избирать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Xkæġun"
+    "lz_lat": "Xkæghun"
   },
   {
     "id": "w1069_izlagat",
@@ -8066,7 +8066,7 @@
     "mazin_academic": "Кцаьгъун",
     "mazin_academic_lat": "Ktsæghun",
     "mazin_ru": "трогать, касаться",
-    "lz_lat": "Xk'un / Xk'urun / Kæġun"
+    "lz_lat": "Xk'un / Xk'urun / Kæghun"
   },
   {
     "id": "w1077_katatsya",
@@ -8082,7 +8082,7 @@
     "ru": "Качаться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Ec'æġ xhun / Galtad xhun"
+    "lz_lat": "Ec'ægh xhun / Galtad xhun"
   },
   {
     "id": "w1079_kashlyat",
@@ -8090,7 +8090,7 @@
     "ru": "Кашлять",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Uhu yaġun"
+    "lz_lat": "Ühü yaghun"
   },
   {
     "id": "w1080_kipet",
@@ -8130,7 +8130,7 @@
     "ru": "Кончать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kutæhun / Aq'alt'un"
+    "lz_lat": "Kütæhun / Aq'alt'un"
   },
   {
     "id": "w1085_kopat",
@@ -8138,7 +8138,7 @@
     "ru": "Копать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Eġunun / Per yaġun"
+    "lz_lat": "Eghünun / Per yaghun"
   },
   {
     "id": "w1086_kormit",
@@ -8146,7 +8146,7 @@
     "ru": "Кормить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Em gun / T'un gun"
+    "lz_lat": "Em gun / T'ün gun"
   },
   {
     "id": "w1087_krasit",
@@ -8154,7 +8154,7 @@
     "ru": "Красить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Shir yaġun / Rang yaġun"
+    "lz_lat": "Shir yaghun / Rang yaghun"
   },
   {
     "id": "w1088_kupatsya",
@@ -8162,7 +8162,7 @@
     "ru": "Купаться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Eqhun / Cuxunagar avun"
+    "lz_lat": "Eqhün / Cüxünagar avun"
   },
   {
     "id": "w1089_kupit",
@@ -8186,7 +8186,7 @@
     "ru": "Лаять",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Eluq'un"
+    "lz_lat": "Elüq'un"
   },
   {
     "id": "w1092_lezhat",
@@ -8202,7 +8202,7 @@
     "ru": "Лечить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Darmanar avun / Saġarun"
+    "lz_lat": "Darmanar avun / Sagharun"
   },
   {
     "id": "w1095_lomat",
@@ -8274,7 +8274,7 @@
     "ru": "Молчать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kisun / Cuq'ni tavun"
+    "lz_lat": "Kisun / Cüq'ni tavun"
   },
   {
     "id": "w1106_mchatsya",
@@ -8306,7 +8306,7 @@
     "ru": "Наблюдать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Guzetun / Kiligun"
+    "lz_lat": "Güzetun / Kiligun"
   },
   {
     "id": "w1111_nagradit",
@@ -8314,7 +8314,7 @@
     "ru": "Наградить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Baġish avun"
+    "lz_lat": "Baghish avun"
   },
   {
     "id": "w1112_nadevat",
@@ -8324,7 +8324,7 @@
     "ex": "",
     "lz_lat": "Aluk'un / Halun",
     "mazin": "ХIаьлсун",
-    "mazin_lat": "X'alsun",
+    "mazin_lat": "X'ælsun",
     "mazin_ru": "надевать"
   },
   {
@@ -8341,7 +8341,7 @@
     "ru": "Найти",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Jaġurun"
+    "lz_lat": "Jaghurun"
   },
   {
     "id": "w1116_nakazat",
@@ -8349,7 +8349,7 @@
     "ru": "Наказать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Jaza gun / Tunbuh avun"
+    "lz_lat": "Jaza gun / Tünbüh avun"
   },
   {
     "id": "w1117_nakormit",
@@ -8357,7 +8357,7 @@
     "ru": "Накормить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "T'un gun / Em gun"
+    "lz_lat": "T'ün gun / Em gun"
   },
   {
     "id": "w1118_nalit",
@@ -8397,7 +8397,7 @@
     "ru": "Нарисовать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "C'ugun / Suret c'ugun"
+    "lz_lat": "C'ugun / Süret c'ugun"
   },
   {
     "id": "w1124_narushit",
@@ -8477,7 +8477,7 @@
     "ru": "Нырять",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tsik cunux xhun"
+    "lz_lat": "Tsik cünüx xhun"
   },
   {
     "id": "w1135_obedat",
@@ -8485,7 +8485,7 @@
     "ru": "Обедать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Fu t'un"
+    "lz_lat": "Fu t'ün"
   },
   {
     "id": "w1137_obmenivatsya",
@@ -8501,7 +8501,7 @@
     "ru": "Обнаружить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Jaġurun / Acuxun"
+    "lz_lat": "Jaghurun / Acuxun"
   },
   {
     "id": "w1139_obognat",
@@ -8541,7 +8541,7 @@
     "ru": "Объяснять",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Ġavurda tun"
+    "lz_lat": "Ghavurda tun"
   },
   {
     "id": "w1146_ozhidat",
@@ -8557,7 +8557,7 @@
     "ru": "Оканчивать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kutæhun"
+    "lz_lat": "Kütæhun"
   },
   {
     "id": "w1149_okruzhat",
@@ -8618,7 +8618,7 @@
     "ru": "Освещать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Ekw (ishiġ) gun"
+    "lz_lat": "Ekw (ishigh) gun"
   },
   {
     "id": "w1157_osvobozhdat",
@@ -8653,7 +8653,7 @@
     "ru": "Отбирать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Qaqudun / Xkæġun"
+    "lz_lat": "Qaqudun / Xkæghun"
   },
   {
     "id": "w1162_otozvat",
@@ -8693,7 +8693,7 @@
     "ru": "Охотиться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Ġurc avun"
+    "lz_lat": "Ghürc avun"
   },
   {
     "id": "w1168_okhranyat",
@@ -8701,7 +8701,7 @@
     "ru": "Охранять",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Xun / Salamatdiz xun"
+    "lz_lat": "Xün / Salamatdiz xün"
   },
   {
     "id": "w1170_pakhat",
@@ -8717,7 +8717,7 @@
     "ru": "Петь",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Mani yaġun"
+    "lz_lat": "Mani yaghun"
   },
   {
     "id": "w1173_plavat",
@@ -8757,7 +8757,7 @@
     "ru": "Победить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Ġalibval qacun"
+    "lz_lat": "Ghalibval qacun"
   },
   {
     "id": "w1179_povernut",
@@ -8765,7 +8765,7 @@
     "ru": "Повернуть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Elqurun"
+    "lz_lat": "Elqürun"
   },
   {
     "id": "w1180_povesit",
@@ -8773,7 +8773,7 @@
     "ru": "Повесить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kursarun"
+    "lz_lat": "Kürsarun"
   },
   {
     "id": "w1181_povysit",
@@ -8797,7 +8797,7 @@
     "ru": "Подать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Gun / Ġun"
+    "lz_lat": "Gun / Ghun"
   },
   {
     "id": "w1184_podgotovitsya",
@@ -8821,7 +8821,7 @@
     "ru": "Поднимать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Xkajun / Qaraġarun",
+    "lz_lat": "Xkajun / Qaragharun",
     "mazin": "Виниз ун",
     "mazin_lat": "Viniz un",
     "mazin_ru": "поднимать"
@@ -8832,7 +8832,7 @@
     "ru": "Подниматься",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Xkaj xhun / Qaraġun"
+    "lz_lat": "Xkaj xhun / Qaraghun"
   },
   {
     "id": "w1188_podozhdat",
@@ -8864,7 +8864,7 @@
     "ru": "Прижать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Cuq'un / Ilisun"
+    "lz_lat": "Cüq'ün / Ilisun"
   },
   {
     "id": "w1193_prikleivat",
@@ -8888,7 +8888,7 @@
     "ru": "Прятать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Cunuxun"
+    "lz_lat": "Cünüxun"
   },
   {
     "id": "w1196_svarit",
@@ -8917,7 +8917,7 @@
     "mazin_academic": "Уцун",
     "mazin_academic_lat": "Utsun",
     "mazin_ru": "сеять, пахать",
-    "lz_lat": "Tsun / Yaġun"
+    "lz_lat": "Tsun / Yaghun"
   },
   {
     "id": "w1199_skazat",
@@ -8951,7 +8951,7 @@
     "ru": "Танцевать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Q'ul avun"
+    "lz_lat": "Q'ül avun"
   },
   {
     "id": "w1206_terpet",
@@ -8980,7 +8980,7 @@
     "ru": "Уважать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Hurmet avun"
+    "lz_lat": "Hürmet avun"
   },
   {
     "id": "w1209_uznavat",
@@ -8989,9 +8989,9 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Ичир хьун",
-    "mazin_lat": "Icir xun",
+    "mazin_lat": "Icir xhun",
     "mazin_academic": "Ичир хьун",
-    "mazin_academic_lat": "Icir xun",
+    "mazin_academic_lat": "Icir xhun",
     "mazin_ru": "узнавать",
     "lz_lat": "Cirun / Cir xhun"
   },
@@ -9009,7 +9009,7 @@
     "ru": "Умываться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Cin cuxun"
+    "lz_lat": "Cin cüxün"
   },
   {
     "id": "w1213_shumet",
@@ -9033,7 +9033,7 @@
     "ru": "Беззубый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Sarar avacir / Quru"
+    "lz_lat": "Sarar avacir / Qürü"
   },
   {
     "id": "w1219_bessmertnyy",
@@ -9081,7 +9081,7 @@
     "ru": "Глупый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Axmaq' / Sefiġ"
+    "lz_lat": "Axmaq' / Sefigh"
   },
   {
     "id": "w1227_goryachiy",
@@ -9097,7 +9097,7 @@
     "ru": "Густой",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Qalin / Siġ"
+    "lz_lat": "Qalin / Sigh"
   },
   {
     "id": "w1232_zhadnyy",
@@ -9105,7 +9105,7 @@
     "ru": "Жадный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Qanix / Azġun"
+    "lz_lat": "Qanix / Azghun"
   },
   {
     "id": "w1234_zhirnyy",
@@ -9113,7 +9113,7 @@
     "ru": "Жирный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Kuk"
+    "lz_lat": "Kük"
   },
   {
     "id": "w1235_zdorovyy",
@@ -9121,7 +9121,7 @@
     "ru": "Здоровый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Saġ / Saġlam"
+    "lz_lat": "Sagh / Saghlam"
   },
   {
     "id": "w1236_kislyy",
@@ -9148,7 +9148,7 @@
     "ru": "Мягкий",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Qhutul / Yumshaġ"
+    "lz_lat": "Qhütül / Yumshagh"
   },
   {
     "id": "w1239_ostryy",
@@ -9161,7 +9161,7 @@
     "mazin_academic": "Хуьцуь",
     "mazin_academic_lat": "Xütsü",
     "mazin_ru": "острый",
-    "lz_lat": "Xtsi / Tunt"
+    "lz_lat": "Xtsi / Tünt"
   },
   {
     "id": "w1240_prozrachnyy",
@@ -9169,7 +9169,7 @@
     "ru": "Прозрачный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Eku / Mixhi"
+    "lz_lat": "Ekü / Mixhi"
   },
   {
     "id": "w1241_ravnyy",
@@ -9211,7 +9211,7 @@
     "mazin_academic": "ПIиркьи",
     "mazin_academic_lat": "P'irq'i",
     "mazin_ru": "слепой",
-    "lz_lat": "Burq'u / Kur"
+    "lz_lat": "Bürq'ü / Kur"
   },
   {
     "id": "w1245_solenyy",
@@ -9220,11 +9220,11 @@
     "cat": "качество",
     "ex": "",
     "mazin": "Уьч˚уь",
-    "mazin_lat": "Üc˚ü",
+    "mazin_lat": "Üc̊ü",
     "mazin_academic": "Уьч˚уь",
     "mazin_academic_lat": "Üc˚ü",
     "mazin_ru": "солёный",
-    "lz_lat": "Uts'u / Q'el kway"
+    "lz_lat": "Üts'ü / Q'el kway"
   },
   {
     "id": "w1247_sukhoy",
@@ -9258,7 +9258,7 @@
     "mazin_academic": "Шики",
     "mazin_academic_lat": "Shiki",
     "mazin_ru": "тонкий",
-    "lz_lat": "Shuk'u"
+    "lz_lat": "Shük'ü"
   },
   {
     "id": "w1251_tyazhelyy",
@@ -9461,7 +9461,7 @@
     "ru": "Правильно",
     "cat": "наречия",
     "ex": "",
-    "lz_lat": "Duz"
+    "lz_lat": "Düz"
   },
   {
     "id": "w1281_prevoskhodno",
@@ -9503,7 +9503,7 @@
     "ex": "",
     "lz_lat": "Hic / Erli",
     "mazin": "Буьркуьллуь",
-    "mazin_lat": "Burkullu",
+    "mazin_lat": "Bürküllü",
     "mazin_ru": "совсем"
   },
   {
@@ -9537,9 +9537,9 @@
     "cat": "наречия",
     "ex": "",
     "mazin": "Хьил",
-    "mazin_lat": "Xil",
+    "mazin_lat": "Xhil",
     "mazin_academic": "Хьил",
-    "mazin_academic_lat": "Xil",
+    "mazin_academic_lat": "Xhil",
     "mazin_ru": "теперь, ныне",
     "lz_lat": "Gila"
   },
@@ -9557,7 +9557,7 @@
     "ru": "Точно",
     "cat": "наречия",
     "ex": "",
-    "lz_lat": "Duzdakaz"
+    "lz_lat": "Düzdakaz"
   },
   {
     "id": "w1292_tyazhelo",
@@ -9589,7 +9589,7 @@
     "ru": "Ясно",
     "cat": "наречия",
     "ex": "",
-    "lz_lat": "Acuxdiz / Ġavurda aq'adayval"
+    "lz_lat": "Acuxdiz / Ghavurda aq'adayval"
   },
   {
     "id": "w1297_korichnevyy",
@@ -9597,7 +9597,7 @@
     "ru": "Коричневый",
     "cat": "цвета",
     "ex": "",
-    "lz_lat": "Shutru"
+    "lz_lat": "Shütrü"
   },
   {
     "id": "w1299_pervyy",
@@ -9634,7 +9634,7 @@
     "mazin_academic": "Къуллух",
     "mazin_academic_lat": "Qullux",
     "mazin_ru": "работа, должность",
-    "lz_lat": "Qulluġ / Kar-k'walax"
+    "lz_lat": "Qullugh / Kar-k'walax"
   },
   {
     "id": "w1305_spetsialist",
@@ -9719,7 +9719,7 @@
     "ru": "Покупатель",
     "cat": "торговля",
     "ex": "",
-    "lz_lat": "Mushteri / Qacudaydi"
+    "lz_lat": "Müshteri / Qacudaydi"
   },
   {
     "id": "w1319_sdacha",
@@ -9759,7 +9759,7 @@
     "mazin_academic": "Туьдгъваьр",
     "mazin_academic_lat": "Tüdghwær",
     "mazin_ru": "сливочное масло",
-    "lz_lat": "Dudġwer / Ġeri"
+    "lz_lat": "Düdghwer / Gheri"
   },
   {
     "id": "w1324_vinograd",
@@ -9767,7 +9767,7 @@
     "ru": "Виноград",
     "cat": "еда",
     "ex": "",
-    "lz_lat": "Tsipits' / Uzum",
+    "lz_lat": "Tsipits' / Üzüm",
     "mazin": "ЦIипIицI",
     "mazin_lat": "Ts'ip'its'",
     "mazin_ru": "виноград"
@@ -9786,7 +9786,7 @@
     "ru": "Забор",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Paru / Juġun",
+    "lz_lat": "Paru / Jughun",
     "mazin": "Чепер",
     "mazin_lat": "Ceper",
     "mazin_ru": "забор"
@@ -9797,7 +9797,7 @@
     "ru": "Подушка",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Qhutsugan / Yastux"
+    "lz_lat": "Qhütsügan / Yastux"
   },
   {
     "id": "w1332_odeyalo",
@@ -9805,7 +9805,7 @@
     "ru": "Одеяло",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Yarġan"
+    "lz_lat": "Yarghan"
   },
   {
     "id": "w1335_posuda",
@@ -9821,7 +9821,7 @@
     "ru": "Кастрюля",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Katul / Qajġan"
+    "lz_lat": "Katul / Qajghan"
   },
   {
     "id": "w1338_chaynik",
@@ -9850,7 +9850,7 @@
     "ru": "Стирка",
     "cat": "быт",
     "ex": "",
-    "lz_lat": "Cuxunar"
+    "lz_lat": "Cüxünar"
   },
   {
     "id": "w1341_gost",
@@ -9956,9 +9956,9 @@
     "ru": "Море",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Hul",
+    "lz_lat": "Hül",
     "mazin": "Гьуьл-ер",
-    "mazin_lat": "Hul-er",
+    "mazin_lat": "Hül-er",
     "mazin_ru": "море"
   },
   {
@@ -9975,7 +9975,7 @@
     "ru": "Муж",
     "cat": "семья",
     "ex": "",
-    "lz_lat": "Ġul"
+    "lz_lat": "Ghül"
   },
   {
     "id": "w1354_tetya",
@@ -10025,7 +10025,7 @@
     "ex": "",
     "lz_lat": "Shalvar",
     "mazin": "Ваьхчег",
-    "mazin_lat": "Vaxceg",
+    "mazin_lat": "Væxceg",
     "mazin_ru": "брюки"
   },
   {
@@ -10050,7 +10050,7 @@
     "ru": "Носки",
     "cat": "одежда",
     "ex": "",
-    "lz_lat": "Gulutar"
+    "lz_lat": "Gülütar"
   },
   {
     "id": "w1367_platok",
@@ -10058,7 +10058,7 @@
     "ru": "Платок",
     "cat": "одежда",
     "ex": "",
-    "lz_lat": "Yaġlux / Bushme",
+    "lz_lat": "Yaghlux / Büshme",
     "mazin": "Шал",
     "mazin_lat": "Shal"
   },
@@ -10076,7 +10076,7 @@
     "ru": "Пуговица",
     "cat": "одежда",
     "ex": "",
-    "lz_lat": "Dugme / Sedef"
+    "lz_lat": "Dügme / Sedef"
   },
   {
     "id": "w1370_karman",
@@ -10156,7 +10156,7 @@
     "ru": "Заяц",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "Qur"
+    "lz_lat": "Qür"
   },
   {
     "id": "w1380_mukha",
@@ -10185,7 +10185,7 @@
     "ru": "Красивый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Ier / Gurceg",
+    "lz_lat": "Ier / Gürceg",
     "mazin": "Абурлу",
     "mazin_lat": "Aburlu",
     "mazin_ru": "красивый"
@@ -10244,7 +10244,7 @@
     "mazin_academic": "УьтIуьн",
     "mazin_academic_lat": "Üt'ün",
     "mazin_ru": "есть",
-    "lz_lat": "T'un"
+    "lz_lat": "T'ün"
   },
   {
     "id": "w1390_schaste",
@@ -10260,7 +10260,7 @@
     "ru": "Магазин",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Tukwen / Magazin"
+    "lz_lat": "Tükwen / Magazin"
   },
   {
     "id": "w1392_biblioteka",
@@ -10276,7 +10276,7 @@
     "ru": "Парк",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Baġ / Sal"
+    "lz_lat": "Bagh / Sal"
   },
   {
     "id": "w1397_slava",
@@ -10300,7 +10300,7 @@
     "ru": "Герб",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Urb / Irb"
+    "lz_lat": "Ürb / Irb"
   },
   {
     "id": "w1400_voin",
@@ -10371,7 +10371,7 @@
     "mazin_academic": "Нуьчо",
     "mazin_academic_lat": "Nüco",
     "mazin_ru": "воробей",
-    "lz_lat": "Nuk'"
+    "lz_lat": "Nük'"
   },
   {
     "id": "w1407_voron",
@@ -10379,7 +10379,7 @@
     "ru": "Ворон",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "K'waġ"
+    "lz_lat": "K'wagh"
   },
   {
     "id": "w1408_vorona",
@@ -10426,7 +10426,7 @@
     "ex": "",
     "lz_lat": "T'æm",
     "mazin": "ТIаьгIм",
-    "mazin_lat": "T'ag'm",
+    "mazin_lat": "T'æg'm",
     "mazin_ru": "вкус"
   },
   {
@@ -10459,7 +10459,7 @@
     "ru": "Мелочь",
     "cat": "торговля",
     "ex": "",
-    "lz_lat": "Kulu pul"
+    "lz_lat": "Külü pul"
   },
   {
     "id": "w1420_priroda",
@@ -10483,7 +10483,7 @@
     "ru": "Гнев",
     "cat": "эмоции",
     "ex": "",
-    "lz_lat": "Qhel / Ajuġ / Qizġinval"
+    "lz_lat": "Qhel / Ajugh / Qizghinval"
   },
   {
     "id": "w1425_udivlenie",
@@ -10504,7 +10504,7 @@
     "ex": "",
     "lz_lat": "Ashqival / Heves",
     "mazin": "Гьаьшкъи",
-    "mazin_lat": "Hashqi",
+    "mazin_lat": "Hæshqi",
     "mazin_ru": "вдохновение"
   },
   {
@@ -10550,7 +10550,7 @@
     "ru": "Тупой",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Quru"
+    "lz_lat": "Qürü"
   },
   {
     "id": "w1433_gibkiy",
@@ -10574,7 +10574,7 @@
     "ru": "Стекло",
     "cat": "материалы",
     "ex": "",
-    "lz_lat": "Shushe"
+    "lz_lat": "Shüshe"
   },
   {
     "id": "w1437_iskusstvo",
@@ -10590,7 +10590,7 @@
     "ru": "Образ",
     "cat": "искусство",
     "ex": "",
-    "lz_lat": "Suret / Qamat"
+    "lz_lat": "Süret / Qamat"
   },
   {
     "id": "w1441_syuzhet",
@@ -10643,7 +10643,7 @@
     "ru": "Памятник",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Pamætnik / Gumbet"
+    "lz_lat": "Pamætnik / Gümbet"
   },
   {
     "id": "w1448_kupol",
@@ -10651,7 +10651,7 @@
     "ru": "Купол",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Quba / Taġ"
+    "lz_lat": "Quba / Tagh"
   },
   {
     "id": "w1449_kolonna",
@@ -10675,7 +10675,7 @@
     "ru": "Бог",
     "cat": "религия",
     "ex": "",
-    "lz_lat": "Allah / Ġuts / Xaliq'"
+    "lz_lat": "Allah / Ghuts / Xaliq'"
   },
   {
     "id": "w1452_molitva",
@@ -10684,11 +10684,11 @@
     "cat": "религия",
     "ex": "",
     "mazin": "ДуьгIа",
-    "mazin_lat": "Düǵa",
+    "mazin_lat": "Düg'a",
     "mazin_academic": "ДуьгIа",
-    "mazin_academic_lat": "Düǵa",
+    "mazin_academic_lat": "Dügha",
     "mazin_ru": "молитва",
-    "lz_lat": "Ibadat / Dua"
+    "lz_lat": "Ibadat / Düa"
   },
   {
     "id": "w1453_mechet",
@@ -10742,9 +10742,9 @@
     "cat": "религия",
     "ex": "",
     "mazin": "ГуьнахI",
-    "mazin_lat": "Günaħ",
+    "mazin_lat": "Günax'",
     "mazin_academic": "ГуьнахI",
-    "mazin_academic_lat": "Günaħ",
+    "mazin_academic_lat": "Günaxh",
     "mazin_ru": "грех",
     "lz_lat": "Gunah / Taxsir"
   },
@@ -10821,7 +10821,7 @@
     "ru": "Арбуз",
     "cat": "еда",
     "ex": "",
-    "lz_lat": "Qarpuz, qhut'un xali"
+    "lz_lat": "Qarpuz, qhüt'ün xali"
   },
   {
     "id": "w1469_babochka",
@@ -10861,7 +10861,7 @@
     "ru": "Бутылка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Butɨlka, shushe"
+    "lz_lat": "Butɨlka, shüshe"
   },
   {
     "id": "w1474_vnimanie",
@@ -10909,7 +10909,7 @@
     "ru": "Груз",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Par, yuk"
+    "lz_lat": "Par, yük"
   },
   {
     "id": "w1483_gruppa",
@@ -11021,7 +11021,7 @@
     "ru": "Крот",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "Munuġ"
+    "lz_lat": "Münügh"
   },
   {
     "id": "w1496_krylo",
@@ -11053,7 +11053,7 @@
     "ru": "Кукуруза",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Hajibuġda"
+    "lz_lat": "Hajibughda"
   },
   {
     "id": "w1501_lastochka",
@@ -11122,7 +11122,7 @@
     "mazin_academic": "Мигъ",
     "mazin_academic_lat": "Migh",
     "mazin_ru": "мост",
-    "lz_lat": "Muġ"
+    "lz_lat": "Mügh"
   },
   {
     "id": "w1510_muravey",
@@ -11210,7 +11210,7 @@
     "ru": "Отдых",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Yal yaġun"
+    "lz_lat": "Yal yaghun"
   },
   {
     "id": "w1521_otsutstvie",
@@ -11277,7 +11277,7 @@
     "ru": "Понедельник",
     "cat": "время",
     "ex": "",
-    "lz_lat": "Islen yuġ"
+    "lz_lat": "Islen yugh"
   },
   {
     "id": "w1529_portret",
@@ -11285,7 +11285,7 @@
     "ru": "Портрет",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Portret, shikil, suret"
+    "lz_lat": "Portret, shikil, süret"
   },
   {
     "id": "w1530_poet",
@@ -11309,7 +11309,7 @@
     "ru": "Пшеница",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qul"
+    "lz_lat": "Qül"
   },
   {
     "id": "w1534_rebyonok",
@@ -11334,7 +11334,7 @@
     "cat": "еда",
     "ex": "",
     "status": "needs_human_check",
-    "lz_lat": "Dugu"
+    "lz_lat": "Dügü"
   },
   {
     "id": "w1537_risunok",
@@ -11342,7 +11342,7 @@
     "ru": "Рисунок",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Shikil, suret"
+    "lz_lat": "Shikil, süret"
   },
   {
     "id": "w1538_roza",
@@ -11350,7 +11350,7 @@
     "ru": "Роза",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qizilgul, marvard-tsuk"
+    "lz_lat": "Qizilgül, marvard-tsük"
   },
   {
     "id": "w1539_roshcha",
@@ -11358,7 +11358,7 @@
     "ru": "Роща",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Ġwec'i tam"
+    "lz_lat": "Ghwec'i tam"
   },
   {
     "id": "w1540_sever",
@@ -11427,7 +11427,7 @@
     "ru": "Сосна",
     "cat": "природа",
     "ex": "",
-    "lz_lat": "Shamaġaj, narat tar"
+    "lz_lat": "Shamaghaj, narat tar"
   },
   {
     "id": "w1548_spichka",
@@ -11459,7 +11459,7 @@
     "ru": "Тюрьма",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Dustaġxana, tyurma"
+    "lz_lat": "Dustaghxana, tyurma"
   },
   {
     "id": "w1552_urozhay",
@@ -11499,9 +11499,9 @@
     "ru": "Четверг",
     "cat": "время",
     "ex": "",
-    "lz_lat": "Xemis yuġ",
+    "lz_lat": "Xemis yugh",
     "mazin": "Гъуьйуьш˚",
-    "mazin_lat": "Ġuyush̊",
+    "mazin_lat": "Ghüyüsh̊",
     "mazin_ru": "четверг"
   },
   {
@@ -11613,7 +11613,7 @@
     "ru": "Ветка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tsurts, bits'i xel"
+    "lz_lat": "Tsürts, bits'i xel"
   },
   {
     "id": "w1570_vilka",
@@ -11706,9 +11706,9 @@
     "ru": "Горький",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Tuq'ul",
+    "lz_lat": "Tüq'ül",
     "mazin": "ТIуькьуьл",
-    "mazin_lat": "T'uq'ul",
+    "mazin_lat": "T'üq'ül",
     "mazin_ru": "горький"
   },
   {
@@ -11717,7 +11717,7 @@
     "ru": "Гребень",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Reġ"
+    "lz_lat": "Regh"
   },
   {
     "id": "w1583_grib",
@@ -11774,11 +11774,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "РуьхI",
-    "mazin_lat": "Rüħ",
+    "mazin_lat": "Rüx'",
     "mazin_academic": "РуьхI",
-    "mazin_academic_lat": "Rüħ",
+    "mazin_academic_lat": "Rüxh",
     "mazin_ru": "дух",
-    "lz_lat": "Ruh"
+    "lz_lat": "Rüh"
   },
   {
     "id": "w1591_zadacha",
@@ -11794,7 +11794,7 @@
     "ru": "Замок",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "T'ap'ar, kulegar"
+    "lz_lat": "T'ap'ar, külegar"
   },
   {
     "id": "w1593_kazhdyy",
@@ -11818,7 +11818,7 @@
     "ru": "Картина",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Suret, shikil"
+    "lz_lat": "Süret, shikil"
   },
   {
     "id": "w1596_kasha",
@@ -11851,11 +11851,11 @@
     "cat": "качество",
     "ex": "",
     "mazin": "Ч˚уьру",
-    "mazin_lat": "C˚üru",
+    "mazin_lat": "C̊üru",
     "mazin_academic": "Ч˚уьру",
     "mazin_academic_lat": "C˚üru",
     "mazin_ru": "короткий",
-    "lz_lat": "Kuru"
+    "lz_lat": "Kürü"
   },
   {
     "id": "w1600_koryto",
@@ -11892,7 +11892,7 @@
     "ex": "",
     "lz_lat": "C'axar, krupa",
     "mazin": "ЧIихаьр",
-    "mazin_lat": "C'ixar",
+    "mazin_lat": "C'ixær",
     "mazin_ru": "крупа"
   },
   {
@@ -11986,7 +11986,7 @@
     "ru": "Нитка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġal"
+    "lz_lat": "Ghal"
   },
   {
     "id": "w1616_nozh",
@@ -12063,7 +12063,7 @@
     "ex": "",
     "lz_lat": "Istivut",
     "mazin": "Устуьут",
-    "mazin_lat": "Ustuut",
+    "mazin_lat": "Ustüut",
     "mazin_ru": "перец"
   },
   {
@@ -12088,7 +12088,7 @@
     "ru": "Печаль",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġam, xajalat, dert"
+    "lz_lat": "Gham, xajalat, dert"
   },
   {
     "id": "w1631_plavanie",
@@ -12104,7 +12104,7 @@
     "ru": "Плечо",
     "cat": "анатомия",
     "ex": "",
-    "lz_lat": "Qun"
+    "lz_lat": "Qün"
   },
   {
     "id": "w1633_ploshchad",
@@ -12138,7 +12138,7 @@
     "ex": "",
     "lz_lat": "Nik",
     "mazin": "Чуьл-лер",
-    "mazin_lat": "Cul-ler",
+    "mazin_lat": "Cül-ler",
     "mazin_ru": "поле"
   },
   {
@@ -12166,7 +12166,7 @@
     "ru": "Поражение",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Yaġun, galuq'run"
+    "lz_lat": "Yaghun, galuq'run"
   },
   {
     "id": "w1640_poryadok",
@@ -12241,7 +12241,7 @@
     "ru": "Рвота",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Equcun"
+    "lz_lat": "Eqücun"
   },
   {
     "id": "w1650_redkiy",
@@ -12265,7 +12265,7 @@
     "ru": "Ровный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Duz, dumduz"
+    "lz_lat": "Düz, dümdüz"
   },
   {
     "id": "w1653_sapog",
@@ -12298,9 +12298,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ГьинзаьгIтзи",
-    "mazin_lat": "Hinzæǵtzi",
+    "mazin_lat": "Hinzæg'tzi",
     "mazin_academic": "ГьинзаьгIтзи",
-    "mazin_academic_lat": "Hinzæǵtzi",
+    "mazin_academic_lat": "Hinzæghtzi",
     "mazin_ru": "сейчас",
     "lz_lat": "Isætda"
   },
@@ -12342,7 +12342,7 @@
     "ru": "Случай",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Dushush"
+    "lz_lat": "Düshüsh"
   },
   {
     "id": "w1663_sok",
@@ -12359,9 +12359,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIаьл",
-    "mazin_lat": "Ħæl",
+    "mazin_lat": "X'æl",
     "mazin_academic": "ХIаьл",
-    "mazin_academic_lat": "Ħæl",
+    "mazin_academic_lat": "Xhæl",
     "mazin_ru": "состояние, здоровье",
     "lz_lat": "Hal"
   },
@@ -12406,7 +12406,7 @@
     "ru": "Труба",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gurmaġ"
+    "lz_lat": "Gurmagh"
   },
   {
     "id": "w1670_tryapka",
@@ -12430,7 +12430,7 @@
     "ru": "Факел",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ciraġ"
+    "lz_lat": "Ciragh"
   },
   {
     "id": "w1674_khvost",
@@ -12521,7 +12521,7 @@
     "ru": "Учёный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Arġan"
+    "lz_lat": "Arghan"
   },
   {
     "id": "w1686_armiya",
@@ -12603,7 +12603,7 @@
     "ru": "Наказание",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Dunġuz"
+    "lz_lat": "Dunghuz"
   },
   {
     "id": "w1698_obshchestvo",
@@ -12627,7 +12627,7 @@
     "ru": "Чемодан",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Jumæyar"
+    "lz_lat": "Jümæyar"
   },
   {
     "id": "w1701_sovet",
@@ -12638,7 +12638,7 @@
     "status": "needs_human_check",
     "lz_lat": "Zid",
     "mazin": "МеслаьгIт",
-    "mazin_lat": "Meslag't",
+    "mazin_lat": "Meslæg't",
     "mazin_ru": "совет"
   },
   {
@@ -12687,7 +12687,7 @@
     "ru": "Вид",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qayġudarval"
+    "lz_lat": "Qayghudarval"
   },
   {
     "id": "w1708_glava",
@@ -12735,7 +12735,7 @@
     "ru": "Плод",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Muhtej"
+    "lz_lat": "Mühtej"
   },
   {
     "id": "w1714_kozyol",
@@ -12783,7 +12783,7 @@
     "ru": "Полезный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Saġdi"
+    "lz_lat": "Saghdi"
   },
   {
     "id": "w1720_chistyy",
@@ -12826,7 +12826,7 @@
     "ru": "Помидор",
     "cat": "еда",
     "ex": "",
-    "lz_lat": "Tumbuh"
+    "lz_lat": "Tümbüh"
   },
   {
     "id": "w1726_dvizhenie",
@@ -12882,7 +12882,7 @@
     "ru": "Абажур",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Abajur, lampadin qalpaġ"
+    "lz_lat": "Abajur, lampadin qalpagh"
   },
   {
     "id": "w1733_aborigen",
@@ -13074,7 +13074,7 @@
     "ru": "Арестант",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Dustaġ"
+    "lz_lat": "Dustagh"
   },
   {
     "id": "w1763_armeets",
@@ -13082,7 +13082,7 @@
     "ru": "Армеец",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Armiyada qulluġ iyizwaydi"
+    "lz_lat": "Armiyada qullugh iyizwaydi"
   },
   {
     "id": "w1764_armyanin",
@@ -13170,7 +13170,7 @@
     "ru": "Багровый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Tunt yaru"
+    "lz_lat": "Tünt yaru"
   },
   {
     "id": "w1776_bagryanets",
@@ -13178,7 +13178,7 @@
     "ru": "Багрянец",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tunt yaru rang"
+    "lz_lat": "Tünt yaru rang"
   },
   {
     "id": "w1777_badya",
@@ -13370,7 +13370,7 @@
     "ru": "Бедняга",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Faġir, yazux"
+    "lz_lat": "Faghir, yazux"
   },
   {
     "id": "w1805_bednyak",
@@ -13394,7 +13394,7 @@
     "ru": "Бедуин",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Bedevi, kuceri arab"
+    "lz_lat": "Bedevi, küceri arab"
   },
   {
     "id": "w1808_bezvode",
@@ -13554,7 +13554,7 @@
     "ru": "Беляк",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Latsu qur"
+    "lz_lat": "Latsu qür"
   },
   {
     "id": "w1832_beregovoy",
@@ -13586,7 +13586,7 @@
     "ru": "Берлога",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Sevren maġar"
+    "lz_lat": "Sevren maghar"
   },
   {
     "id": "w1836_besyonok",
@@ -13642,7 +13642,7 @@
     "ru": "Бешмет",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Valcaġ"
+    "lz_lat": "Valcagh"
   },
   {
     "id": "w1844_bikfordov",
@@ -13658,7 +13658,7 @@
     "ru": "Битва",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Dæve, yaġunar"
+    "lz_lat": "Dæve, yaghunar"
   },
   {
     "id": "w1846_bleyat",
@@ -13698,7 +13698,7 @@
     "ru": "Блик",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Eku t'exw"
+    "lz_lat": "Ekü t'exw"
   },
   {
     "id": "w1851_blokha",
@@ -13746,7 +13746,7 @@
     "ru": "Бодать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Krcarivdi yaġun"
+    "lz_lat": "Krcarivdi yaghun"
   },
   {
     "id": "w1859_bodnut",
@@ -13789,7 +13789,7 @@
     "ru": "Болото",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ulen"
+    "lz_lat": "Ülen"
   },
   {
     "id": "w1864_bolshaki",
@@ -13797,7 +13797,7 @@
     "ru": "Большаки",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "C'exi ulcu, shehre"
+    "lz_lat": "C'exi ülcü, shehre"
   },
   {
     "id": "w1865_bordovyy",
@@ -13813,7 +13813,7 @@
     "ru": "Борзая",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tazi, ġurcen tula"
+    "lz_lat": "Tazi, ghürcen tula"
   },
   {
     "id": "w1867_borovik",
@@ -13829,7 +13829,7 @@
     "ru": "Бородка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i curu"
+    "lz_lat": "Ghwec'i curu"
   },
   {
     "id": "w1869_borozdnik",
@@ -13861,7 +13861,7 @@
     "ru": "Бочонок",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i bocka"
+    "lz_lat": "Ghwec'i bocka"
   },
   {
     "id": "w1874_boyarskiy",
@@ -13944,7 +13944,7 @@
     "ru": "Брюзжание",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġurġur avun"
+    "lz_lat": "Ghurghur avun"
   },
   {
     "id": "w1886_bryukhastyy",
@@ -13976,7 +13976,7 @@
     "ru": "Буёк",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i buy"
+    "lz_lat": "Ghwec'i buy"
   },
   {
     "id": "w1893_bunti",
@@ -14016,7 +14016,7 @@
     "ru": "Бурение",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Eġunun, buruġ eġunun"
+    "lz_lat": "Eghünun, burugh eghünun"
   },
   {
     "id": "w1901_burlachit",
@@ -14032,7 +14032,7 @@
     "ru": "Бурьян",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ruġ"
+    "lz_lat": "Rugh"
   },
   {
     "id": "w1903_but",
@@ -14048,7 +14048,7 @@
     "ru": "Бутыль",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "C'exi shushe"
+    "lz_lat": "C'exi shüshe"
   },
   {
     "id": "w1905_byki",
@@ -14082,7 +14082,7 @@
     "ex": "",
     "lz_lat": "Zarbval, yiginval",
     "mazin": "Уьж˚вар",
-    "mazin_lat": "Uj̊war",
+    "mazin_lat": "Üj̊war",
     "mazin_ru": "быстрота"
   },
   {
@@ -14107,7 +14107,7 @@
     "ru": "Ваксить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Vaksi yaġun"
+    "lz_lat": "Vaksi yaghun"
   },
   {
     "id": "w1912_valet",
@@ -14294,7 +14294,7 @@
     "ru": "Вернуться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Elqun, elqwena xtun"
+    "lz_lat": "Elqün, elqwena xtun"
   },
   {
     "id": "w1944_vertel",
@@ -14353,7 +14353,7 @@
     "ru": "Весточка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i xabar"
+    "lz_lat": "Ghwec'i xabar"
   },
   {
     "id": "w1953_vetvistyy",
@@ -14518,7 +14518,7 @@
     "mazin_academic": "Дарагъач",
     "mazin_academic_lat": "Daraghac",
     "mazin_ru": "виселица",
-    "lz_lat": "Taraġaj"
+    "lz_lat": "Taraghaj"
   },
   {
     "id": "w1977_visloukhiy",
@@ -14526,7 +14526,7 @@
     "ru": "Вислоухий",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Yapar kurs xhayi"
+    "lz_lat": "Yapar kürs xhayi"
   },
   {
     "id": "w1978_visochnyy",
@@ -14583,11 +14583,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ч˚уьрелзи",
-    "mazin_lat": "C˚ürelzi",
+    "mazin_lat": "C̊ürelzi",
     "mazin_academic": "Ч˚уьрелзи",
     "mazin_academic_lat": "C˚ürelzi",
     "mazin_ru": "кратко, вкратце",
-    "lz_lat": "Kureldi"
+    "lz_lat": "Küreldi"
   },
   {
     "id": "w1985_vladelets",
@@ -14603,7 +14603,7 @@
     "ru": "Властелин",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Aġa"
+    "lz_lat": "Agha"
   },
   {
     "id": "w1987_vlevo",
@@ -14643,7 +14643,7 @@
     "ru": "Внакидку",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Quneriqh vihena, galcukna"
+    "lz_lat": "Qüneriqh vihena, galcukna"
   },
   {
     "id": "w1994_vnakladku",
@@ -14675,7 +14675,7 @@
     "ru": "Вниз",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Aġuz"
+    "lz_lat": "Aghuz"
   },
   {
     "id": "w1998_vnov",
@@ -14739,7 +14739,7 @@
     "ru": "Водоросль",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tse eqec'day leġer"
+    "lz_lat": "Tse eqec'day legher"
   },
   {
     "id": "w2007_vodospusk",
@@ -14805,7 +14805,7 @@
     "ex": "",
     "lz_lat": "Mumkin tir",
     "mazin": "МуьгIкуьн",
-    "mazin_lat": "Mug'kun",
+    "mazin_lat": "Müg'kün",
     "mazin_ru": "возможный"
   },
   {
@@ -14927,7 +14927,7 @@
     "ru": "Вороньё",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "Peqher: k'waġar"
+    "lz_lat": "Peqher: k'waghar"
   },
   {
     "id": "w2041_voroti",
@@ -14972,7 +14972,7 @@
     "mazin_academic": "Мижид",
     "mazin_academic_lat": "Mijid",
     "mazin_ru": "восемь",
-    "lz_lat": "Mujud"
+    "lz_lat": "Müjüd"
   },
   {
     "id": "w2046_vosemsot",
@@ -14980,7 +14980,7 @@
     "ru": "Восемьсот",
     "cat": "числа",
     "ex": "",
-    "lz_lat": "Mujud vish"
+    "lz_lat": "Müjüd vish"
   },
   {
     "id": "w2047_voskovka",
@@ -14988,7 +14988,7 @@
     "ru": "Восковка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Mum yaġay car"
+    "lz_lat": "Mum yaghay car"
   },
   {
     "id": "w2048_vossest",
@@ -15012,7 +15012,7 @@
     "ru": "Восьмой",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Mujud lahay"
+    "lz_lat": "Müjüd lahay"
   },
   {
     "id": "w2051_votchinnik",
@@ -15125,7 +15125,7 @@
     "ru": "Врачевать",
     "cat": "здоровье",
     "ex": "",
-    "lz_lat": "Darmanar avun, saġrun"
+    "lz_lat": "Darmanar avun, saghrun"
   },
   {
     "id": "w2066_vrashchenie",
@@ -15133,7 +15133,7 @@
     "ru": "Вращение",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Elqun, elq'urun"
+    "lz_lat": "Elqün, elq'ürun"
   },
   {
     "id": "w2067_vrezat",
@@ -15173,7 +15173,7 @@
     "ru": "Вручную",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Paren, ġileldi"
+    "lz_lat": "Paren, ghileldi"
   },
   {
     "id": "w2072_vryt",
@@ -15181,7 +15181,7 @@
     "ru": "Врыть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Eġunna cilik kutun"
+    "lz_lat": "Eghünna cilik kutun"
   },
   {
     "id": "w2073_vsasyvat",
@@ -15285,7 +15285,7 @@
     "ru": "Вспашка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tsan, q'uġwer"
+    "lz_lat": "Tsan, q'üghwer"
   },
   {
     "id": "w2087_vspenit",
@@ -15517,7 +15517,7 @@
     "ru": "Выискать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Juġurun, qeqwena juġurun"
+    "lz_lat": "Jughurun, qeqwena jughurun"
   },
   {
     "id": "w2118_vykipet",
@@ -15525,7 +15525,7 @@
     "ru": "Выкипеть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Rgana kutæh xhun"
+    "lz_lat": "Rgana kütæh xhun"
   },
   {
     "id": "w2119_vykrutasy",
@@ -15533,7 +15533,7 @@
     "ru": "Выкрутасы",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Q'urukar, uyunar"
+    "lz_lat": "Q'ürükar, uyunar"
   },
   {
     "id": "w2120_vykrutit",
@@ -15549,7 +15549,7 @@
     "ru": "Выкупать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Cuxun, eqhurun"
+    "lz_lat": "Cüxün, eqhürun"
   },
   {
     "id": "w2122_vymenyat",
@@ -15629,7 +15629,7 @@
     "ru": "Выпрямить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Duzrun"
+    "lz_lat": "Düzrun"
   },
   {
     "id": "w2132_vypuchit",
@@ -15653,7 +15653,7 @@
     "ru": "Выругать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Equhun, seb"
+    "lz_lat": "Eqühun, seb"
   },
   {
     "id": "w2135_vysev",
@@ -15669,7 +15669,7 @@
     "ru": "Выселить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Aqudun, kuc avun"
+    "lz_lat": "Aqudun, küc avun"
   },
   {
     "id": "w2138_vystudit",
@@ -15693,7 +15693,7 @@
     "ru": "Вытолкать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Etsæġiz-etsæġiz aqudun"
+    "lz_lat": "Etsæghiz-etsæghiz aqudun"
   },
   {
     "id": "w2141_vyuchenik",
@@ -15717,7 +15717,7 @@
     "ru": "Вычесать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Evæġun"
+    "lz_lat": "Evæghun"
   },
   {
     "id": "w2144_vychitanie",
@@ -15757,7 +15757,7 @@
     "ru": "Вяз",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qaraġaj"
+    "lz_lat": "Qaraghaj"
   },
   {
     "id": "w2149_vyazalnyy",
@@ -15829,7 +15829,7 @@
     "ru": "Галочий",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "C'aġran"
+    "lz_lat": "C'aghran"
   },
   {
     "id": "w2159_galun",
@@ -15845,7 +15845,7 @@
     "ru": "Галчонок",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "C'aġran sharag"
+    "lz_lat": "C'aghran sharag"
   },
   {
     "id": "w2161_gam",
@@ -16093,7 +16093,7 @@
     "ru": "Голубить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Azizdakaz, nazdaldi xun"
+    "lz_lat": "Azizdakaz, nazdaldi xün"
   },
   {
     "id": "w2200_golyshom",
@@ -16117,7 +16117,7 @@
     "ru": "Гонор",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Lavġaval"
+    "lz_lat": "Lavghaval"
   },
   {
     "id": "w2203_gorazdo",
@@ -16149,7 +16149,7 @@
     "ru": "Горкнуть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tuq'ul xhun"
+    "lz_lat": "Tüq'ül xhun"
   },
   {
     "id": "w2208_gornitsa",
@@ -16181,7 +16181,7 @@
     "ru": "Гортанный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "K'alxandin, tutuxdin"
+    "lz_lat": "K'alxandin, tütüxdin"
   },
   {
     "id": "w2213_gortan",
@@ -16189,7 +16189,7 @@
     "ru": "Гортань",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "K'alxan, tutux"
+    "lz_lat": "K'alxan, tütüx"
   },
   {
     "id": "w2215_gosbank",
@@ -16221,7 +16221,7 @@
     "ru": "Господин",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gospodin, aġa, janabi"
+    "lz_lat": "Gospodin, agha, janabi"
   },
   {
     "id": "w2219_gospod",
@@ -16229,7 +16229,7 @@
     "ru": "Господь",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Allah, aġa"
+    "lz_lat": "Allah, agha"
   },
   {
     "id": "w2220_gospozha",
@@ -16261,7 +16261,7 @@
     "ru": "Грабли",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tsuruġul"
+    "lz_lat": "Tsürüghül"
   },
   {
     "id": "w2226_gradina",
@@ -16306,7 +16306,7 @@
     "ru": "Графин",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Grafin, shushed gicin"
+    "lz_lat": "Grafin, shüshed gicin"
   },
   {
     "id": "w2231_grafit",
@@ -16330,7 +16330,7 @@
     "ru": "Гребешок",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i reġ"
+    "lz_lat": "Ghwec'i regh"
   },
   {
     "id": "w2234_grezitsya",
@@ -16386,7 +16386,7 @@
     "ru": "Грот",
     "cat": "места",
     "ex": "",
-    "lz_lat": "Maġara, q'wet'"
+    "lz_lat": "Maghara, q'wet'"
   },
   {
     "id": "w2243_gruda",
@@ -16418,7 +16418,7 @@
     "ru": "Грушевый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Cuxwerin"
+    "lz_lat": "Cüxwerin"
   },
   {
     "id": "w2248_gryzlo",
@@ -16498,7 +16498,7 @@
     "ru": "Гурия",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Huri, huriperi",
+    "lz_lat": "Hüri, hüriperi",
     "mazin": "В словах",
     "mazin_lat": "V slovax",
     "mazin_ru": "гурия"
@@ -16549,7 +16549,7 @@
     "ru": "Давильный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Cuq'weday"
+    "lz_lat": "Cüq'weday"
   },
   {
     "id": "w2266_davnenko",
@@ -16573,7 +16573,7 @@
     "ru": "Дальность",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Yarġalval"
+    "lz_lat": "Yarghalval"
   },
   {
     "id": "w2269_damka",
@@ -16706,7 +16706,7 @@
     "ru": "Двоякий",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Q'we juredin"
+    "lz_lat": "Q'we jüredin"
   },
   {
     "id": "w2286_dvuglavyy",
@@ -16778,7 +16778,7 @@
     "ru": "Дебелый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Ats'ay kuk"
+    "lz_lat": "Ats'ay kük"
   },
   {
     "id": "w2296_dever",
@@ -16786,7 +16786,7 @@
     "ru": "Деверь",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Xen, hulun stxa"
+    "lz_lat": "Xen, hülün stxa"
   },
   {
     "id": "w2297_devchata",
@@ -16810,7 +16810,7 @@
     "ru": "Девятеро",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "K'ud"
+    "lz_lat": "K'üd"
   },
   {
     "id": "w2300_devyatyy",
@@ -16818,7 +16818,7 @@
     "ru": "Девятый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "K'ud lahay"
+    "lz_lat": "K'üd lahay"
   },
   {
     "id": "w2301_devyatsot",
@@ -16826,7 +16826,7 @@
     "ru": "Девятьсот",
     "cat": "числа",
     "ex": "",
-    "lz_lat": "Q'ud vish"
+    "lz_lat": "Q'üd vish"
   },
   {
     "id": "w2302_degtyarnyy",
@@ -16898,7 +16898,7 @@
     "ru": "Деревушка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i xur"
+    "lz_lat": "Ghwec'i xür"
   },
   {
     "id": "w2312_detyonysh",
@@ -16970,7 +16970,7 @@
     "ru": "Длина",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Yarġival"
+    "lz_lat": "Yarghival"
   },
   {
     "id": "w2322_dnevnoy",
@@ -17053,7 +17053,7 @@
     "ru": "Доесть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "T'una kutæhun"
+    "lz_lat": "T'üna kütæhun"
   },
   {
     "id": "w2334_doekhat",
@@ -17069,7 +17069,7 @@
     "ru": "Дожарить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Crana kutæhun"
+    "lz_lat": "Crana kütæhun"
   },
   {
     "id": "w2336_dozhdevoy",
@@ -17109,7 +17109,7 @@
     "ru": "Доиграть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Quġwana kutæhun"
+    "lz_lat": "Qughwana kütæhun"
   },
   {
     "id": "w2342_dokatit",
@@ -17133,7 +17133,7 @@
     "ru": "Докурить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "C'uguna kutæhun"
+    "lz_lat": "C'uguna kütæhun"
   },
   {
     "id": "w2345_dolgo",
@@ -17141,7 +17141,7 @@
     "ru": "Долго",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gzaf gahdi, yarġaldi"
+    "lz_lat": "Gzaf gahdi, yarghaldi"
   },
   {
     "id": "w2346_dolgovoy",
@@ -17202,7 +17202,7 @@
     "ru": "Домик",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i k'waler"
+    "lz_lat": "Ghwec'i k'waler"
   },
   {
     "id": "w2354_domovyy",
@@ -17250,7 +17250,7 @@
     "ru": "Допить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Qhwana kutæhun"
+    "lz_lat": "Qhwana kütæhun"
   },
   {
     "id": "w2361_dopozdna",
@@ -17319,7 +17319,7 @@
     "ru": "Достроить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Etsigna kutæhun"
+    "lz_lat": "Etsigna kütæhun"
   },
   {
     "id": "w2369_dosyta",
@@ -17351,7 +17351,7 @@
     "ru": "Доцвести",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tsuk aqhayna kutæhun"
+    "lz_lat": "Tsük aqhayna kütæhun"
   },
   {
     "id": "w2373_doshit",
@@ -17359,7 +17359,7 @@
     "ru": "Дошить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tswana kutæhun"
+    "lz_lat": "Tswana kütæhun"
   },
   {
     "id": "w2374_doshchanik",
@@ -17367,7 +17367,7 @@
     "ru": "Дощаник",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "K'an duz lodka"
+    "lz_lat": "K'an düz lodka"
   },
   {
     "id": "w2375_draka",
@@ -17391,7 +17391,7 @@
     "ru": "Дратва",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Mum yaġay eb"
+    "lz_lat": "Mum yaghay eb"
   },
   {
     "id": "w2379_drevesina",
@@ -17415,7 +17415,7 @@
     "ru": "Дреколье",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Vahramar, rukunar, payayar"
+    "lz_lat": "Vahramar, rükünar, payayar"
   },
   {
     "id": "w2382_dremota",
@@ -17439,7 +17439,7 @@
     "ru": "Дробилка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Kulu iyiday mashin"
+    "lz_lat": "Külü iyiday mashin"
   },
   {
     "id": "w2385_drobitsya",
@@ -17447,7 +17447,7 @@
     "ru": "Дробиться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kulu xhun"
+    "lz_lat": "Külü xhun"
   },
   {
     "id": "w2386_droblyonyy",
@@ -17455,7 +17455,7 @@
     "ru": "Дроблёный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Kulu avur"
+    "lz_lat": "Külü avur"
   },
   {
     "id": "w2387_drobovik",
@@ -17471,7 +17471,7 @@
     "ru": "Дровни",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġelerar"
+    "lz_lat": "Ghelerar"
   },
   {
     "id": "w2389_drovyanik",
@@ -17487,7 +17487,7 @@
     "ru": "Дрозд",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "C'ulav nuk'"
+    "lz_lat": "C'ulav nük'"
   },
   {
     "id": "w2391_druzheskiy",
@@ -17543,7 +17543,7 @@
     "ru": "Дубить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tabaġun"
+    "lz_lat": "Tabaghun"
   },
   {
     "id": "w2399_dudet",
@@ -17551,7 +17551,7 @@
     "ru": "Дудеть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kfil yaġun"
+    "lz_lat": "Kfil yaghun"
   },
   {
     "id": "w2400_dulo",
@@ -17567,7 +17567,7 @@
     "ru": "Дуновение",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Aqatun, qaraġun, atun"
+    "lz_lat": "Aqatun, qaraghun, atun"
   },
   {
     "id": "w2402_durost",
@@ -17599,7 +17599,7 @@
     "ru": "Дымка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Hum"
+    "lz_lat": "Hüm"
   },
   {
     "id": "w2407_dymnyy",
@@ -17719,7 +17719,7 @@
     "ru": "Жаворонок",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "P'ap'ish nuk'"
+    "lz_lat": "P'ap'ish nük'"
   },
   {
     "id": "w2423_zhalobno",
@@ -17759,7 +17759,7 @@
     "ru": "Жаровня",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Manġal"
+    "lz_lat": "Manghal"
   },
   {
     "id": "w2429_zhatvennyy",
@@ -17767,7 +17767,7 @@
     "ru": "Жатвенный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Gwenin, gwen guday"
+    "lz_lat": "Gwenin, gwen güday"
   },
   {
     "id": "w2430_zhban",
@@ -17839,7 +17839,7 @@
     "ru": "Желудевый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Mehverin, meġun"
+    "lz_lat": "Mehverin, meghün"
   },
   {
     "id": "w2439_zhelud",
@@ -17847,7 +17847,7 @@
     "ru": "Желудь",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Meġw"
+    "lz_lat": "Meghw"
   },
   {
     "id": "w2440_zhenin",
@@ -17879,7 +17879,7 @@
     "ru": "Жернов",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Reġun qwan"
+    "lz_lat": "Reghün qwan"
   },
   {
     "id": "w2446_zhestyanoy",
@@ -17911,7 +17911,7 @@
     "ru": "Живописно",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gurcegdiz, guzeldiz"
+    "lz_lat": "Gürcegdiz, güzeldiz"
   },
   {
     "id": "w2450_zhivem",
@@ -17935,7 +17935,7 @@
     "ru": "Жиреть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Kuk xhun"
+    "lz_lat": "Kük xhun"
   },
   {
     "id": "w2454_zhitnyy",
@@ -17975,7 +17975,7 @@
     "ru": "Жнейка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gwen guday mashin"
+    "lz_lat": "Gwen güday mashin"
   },
   {
     "id": "w2460_zhulik",
@@ -17991,7 +17991,7 @@
     "ru": "Забавлять",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Mashġulrun, rik' aladrun"
+    "lz_lat": "Mashghulrun, rik' aladrun"
   },
   {
     "id": "w2462_zabeg",
@@ -18007,7 +18007,7 @@
     "ru": "Забодать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Yaġun, krcariv yaġun"
+    "lz_lat": "Yaghun, krcariv yaghun"
   },
   {
     "id": "w2465_zabrosit",
@@ -18039,7 +18039,7 @@
     "ru": "Завидеть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Akun, yarġay akun"
+    "lz_lat": "Akun, yarghay akun"
   },
   {
     "id": "w2472_zavistnik",
@@ -18071,7 +18071,7 @@
     "ru": "Завядший",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Shutq'wey, shutq'wenvay"
+    "lz_lat": "Shütq'wey, shütq'wenvay"
   },
   {
     "id": "w2477_zavyalit",
@@ -18087,7 +18087,7 @@
     "ru": "Завялый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Shutq'wey, shut'um xhayi"
+    "lz_lat": "Shütq'wey, shut'um xhayi"
   },
   {
     "id": "w2479_zavyanut",
@@ -18095,7 +18095,7 @@
     "ru": "Завянуть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Shutq'un, elcuxun"
+    "lz_lat": "Shütq'ün, elcüxun"
   },
   {
     "id": "w2480_zagadit",
@@ -18159,7 +18159,7 @@
     "ru": "Задаток",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Biġ"
+    "lz_lat": "Bigh"
   },
   {
     "id": "w2489_zadachnik",
@@ -18199,7 +18199,7 @@
     "ru": "Заживить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Saġrun"
+    "lz_lat": "Saghrun"
   },
   {
     "id": "w2496_zazhivo",
@@ -18215,7 +18215,7 @@
     "ru": "Зайчиха",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Dishi qur"
+    "lz_lat": "Dishi qür"
   },
   {
     "id": "w2498_zaychonok",
@@ -18223,7 +18223,7 @@
     "ru": "Зайчонок",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Quren shap'a"
+    "lz_lat": "Qüren shap'a"
   },
   {
     "id": "w2499_zakayatsya",
@@ -18247,7 +18247,7 @@
     "ru": "Заклинить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "K'un yaġun"
+    "lz_lat": "K'un yaghun"
   },
   {
     "id": "w2504_zakoptet",
@@ -18279,7 +18279,7 @@
     "ru": "Закружить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Elqurun, alcudrun"
+    "lz_lat": "Elqürun, alcudrun"
   },
   {
     "id": "w2508_zakupshchik",
@@ -18343,7 +18343,7 @@
     "ru": "Замыть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Cuxun, cuxwena mixhivun"
+    "lz_lat": "Cüxün, cüxwena mixhivun"
   },
   {
     "id": "w2518_zamyat",
@@ -18351,7 +18351,7 @@
     "ru": "Замять",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Shutq'urun"
+    "lz_lat": "Shütq'ürun"
   },
   {
     "id": "w2519_zanaveska",
@@ -18375,7 +18375,7 @@
     "ru": "Занозить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "C'idġer"
+    "lz_lat": "C'idgher"
   },
   {
     "id": "w2522_zanos",
@@ -18383,7 +18383,7 @@
     "ru": "Занос",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Marġal, k'unt'"
+    "lz_lat": "Marghal, k'unt'"
   },
   {
     "id": "w2525_zapevat",
@@ -18407,7 +18407,7 @@
     "ru": "Запихать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Cuq'wez-cuq'wez tun"
+    "lz_lat": "Cüq'wez-cüq'wez tun"
   },
   {
     "id": "w2528_zaplata",
@@ -18423,7 +18423,7 @@
     "ru": "Заплатать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Pine yaġun"
+    "lz_lat": "Pine yaghun"
   },
   {
     "id": "w2531_zapomnit",
@@ -18431,7 +18431,7 @@
     "ru": "Запомнить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Rik'el xun"
+    "lz_lat": "Rik'el xün"
   },
   {
     "id": "w2532_zaporot",
@@ -18447,7 +18447,7 @@
     "ru": "Запрет",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qadaġa"
+    "lz_lat": "Qadagha"
   },
   {
     "id": "w2534_zapretit",
@@ -18455,7 +18455,7 @@
     "ru": "Запретить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Qadaġa avun"
+    "lz_lat": "Qadagha avun"
   },
   {
     "id": "w2535_zaprodazha",
@@ -18479,7 +18479,7 @@
     "ru": "Запрятать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Cunuxun, k'evun"
+    "lz_lat": "Cünüxun, k'evun"
   },
   {
     "id": "w2538_zapugat",
@@ -18535,7 +18535,7 @@
     "ru": "Засветло",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ekw alamaz, ekuzamaz"
+    "lz_lat": "Ekw alamaz, eküzamaz"
   },
   {
     "id": "w2548_zasile",
@@ -18559,7 +18559,7 @@
     "ru": "Заслать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Raqurun, yarġaz raqurun"
+    "lz_lat": "Raqurun, yarghaz raqurun"
   },
   {
     "id": "w2551_zaspatsya",
@@ -18615,7 +18615,7 @@
     "ru": "Затупить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Quru avun"
+    "lz_lat": "Qürü avun"
   },
   {
     "id": "w2560_zauchit",
@@ -18655,7 +18655,7 @@
     "ru": "Зачесать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Evæġun, evæna ts'alts'amrun"
+    "lz_lat": "Evæghun, evæna ts'alts'amrun"
   },
   {
     "id": "w2566_zachinit",
@@ -18663,7 +18663,7 @@
     "ru": "Зачинить",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Pine yaġun, rasun"
+    "lz_lat": "Pine yaghun, rasun"
   },
   {
     "id": "w2567_zvenovoy",
@@ -18727,7 +18727,7 @@
     "ru": "Зелье",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qhcarikay avur aġu"
+    "lz_lat": "Qhcarikay avur aghu"
   },
   {
     "id": "w2575_zemnoy",
@@ -18751,7 +18751,7 @@
     "ru": "Зимой",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Qhut'uz"
+    "lz_lat": "Qhüt'üz"
   },
   {
     "id": "w2578_zipun",
@@ -18783,7 +18783,7 @@
     "ru": "Змееныш",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġulæġdin sharag"
+    "lz_lat": "Ghülæghdin sharag"
   },
   {
     "id": "w2583_znakomets",
@@ -18815,7 +18815,7 @@
     "ru": "Золовка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Balduz, ġulun vax"
+    "lz_lat": "Balduz, ghülün vax"
   },
   {
     "id": "w2588_zolochyonyy",
@@ -18844,7 +18844,7 @@
     "mazin_academic": "Зуьрней",
     "mazin_academic_lat": "Zürney",
     "mazin_ru": "зурна",
-    "lz_lat": "Zurne"
+    "lz_lat": "Zürne"
   },
   {
     "id": "w2592_zyb",
@@ -18852,7 +18852,7 @@
     "ru": "Зыбь",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Q'eri ġwec'i lepeyar"
+    "lz_lat": "Q'eri ghwec'i lepeyar"
   },
   {
     "id": "w2593_zychnyy",
@@ -18892,7 +18892,7 @@
     "ru": "Избранный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Xkæġay, secme"
+    "lz_lat": "Xkæghay, secme"
   },
   {
     "id": "w2599_izbushka",
@@ -18900,7 +18900,7 @@
     "ru": "Избушка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Usal ġwec'i k'wal"
+    "lz_lat": "Usal ghwec'i k'wal"
   },
   {
     "id": "w2600_izvayanie",
@@ -18956,7 +18956,7 @@
     "ru": "Издали",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Yarġay, yarġalay"
+    "lz_lat": "Yarghay, yarghalay"
   },
   {
     "id": "w2607_izdevka",
@@ -18972,7 +18972,7 @@
     "ru": "Изжевать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Jaq'un, jaq'wana kutæhun"
+    "lz_lat": "Jaq'un, jaq'wana kütæhun"
   },
   {
     "id": "w2609_izlechimyy",
@@ -18980,7 +18980,7 @@
     "ru": "Излечимый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Saġriz jeday"
+    "lz_lat": "Saghriz jeday"
   },
   {
     "id": "w2610_izlechit",
@@ -19020,7 +19020,7 @@
     "ru": "Измолоть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Reġun, rehvena kutæhun"
+    "lz_lat": "Reghün, rehvena kütæhun"
   },
   {
     "id": "w2616_izmoroz",
@@ -19036,7 +19036,7 @@
     "ru": "Измятый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Shutq'wey"
+    "lz_lat": "Shütq'wey"
   },
   {
     "id": "w2618_izodrat",
@@ -19068,7 +19068,7 @@
     "ru": "Изругать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Equġun, seperar gun"
+    "lz_lat": "Eqüghun, seperar gun"
   },
   {
     "id": "w2622_izrytyy",
@@ -19092,7 +19092,7 @@
     "ru": "Изящный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Guzel, zerif, gurceg"
+    "lz_lat": "Güzel, zerif, gürceg"
   },
   {
     "id": "w2627_ikrichnyy",
@@ -19100,7 +19100,7 @@
     "ru": "Икричный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Gzaf kur avay"
+    "lz_lat": "Gzaf kür avay"
   },
   {
     "id": "w2629_imbir",
@@ -19124,7 +19124,7 @@
     "ru": "Индюк",
     "cat": "животные",
     "ex": "",
-    "lz_lat": "Undushkad k'ek"
+    "lz_lat": "Ündüshkad k'ek"
   },
   {
     "id": "w2633_indyushka",
@@ -19132,7 +19132,7 @@
     "ru": "Индюшка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Undushkad verc"
+    "lz_lat": "Ündüshkad verc"
   },
   {
     "id": "w2634_inzhir",
@@ -19148,7 +19148,7 @@
     "ru": "Иноземный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Cara ulkwedin"
+    "lz_lat": "Cara ülkwedin"
   },
   {
     "id": "w2636_inokhodets",
@@ -19156,7 +19156,7 @@
     "ru": "Иноходец",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Yurġa balk'an"
+    "lz_lat": "Yurgha balk'an"
   },
   {
     "id": "w2637_inokhod",
@@ -19164,7 +19164,7 @@
     "ru": "Иноходь",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Yurġa"
+    "lz_lat": "Yurgha"
   },
   {
     "id": "w2638_interval",
@@ -19204,7 +19204,7 @@
     "ru": "Исключая",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Kwaciz, ġeyri"
+    "lz_lat": "Kwaciz, gheyri"
   },
   {
     "id": "w2644_iskolot",
@@ -19220,7 +19220,7 @@
     "ru": "Искомкать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Mixhiz shutq'urun"
+    "lz_lat": "Mixhiz shütq'ürun"
   },
   {
     "id": "w2646_iskorka",
@@ -19228,7 +19228,7 @@
     "ru": "Искорка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i ts'erek'w"
+    "lz_lat": "Ghwec'i ts'erek'w"
   },
   {
     "id": "w2647_iskusnik",
@@ -19244,7 +19244,7 @@
     "ru": "Испахать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Q'uġwer avun, tsun"
+    "lz_lat": "Q'üghwer avun, tsun"
   },
   {
     "id": "w2649_ispitoy",
@@ -19292,7 +19292,7 @@
     "ru": "Иссякнуть",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Aq'alt'un, kutæh xhun"
+    "lz_lat": "Aq'alt'un, kütæh xhun"
   },
   {
     "id": "w2657_istekshiy",
@@ -19340,7 +19340,7 @@
     "ru": "Исцеление",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Saġ xhun"
+    "lz_lat": "Sagh xhun"
   },
   {
     "id": "w2665_ischerpat",
@@ -19348,7 +19348,7 @@
     "ru": "Исчерпать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Aq'alt'un, kutæhun"
+    "lz_lat": "Aq'alt'un, kütæhun"
   },
   {
     "id": "w2666_itak",
@@ -19356,7 +19356,7 @@
     "ru": "Итак",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġa ik'"
+    "lz_lat": "Gha ik'"
   },
   {
     "id": "w2667_itogo",
@@ -19388,7 +19388,7 @@
     "ru": "Кабачки",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i duxan"
+    "lz_lat": "Ghwec'i duxan"
   },
   {
     "id": "w2672_kabluchnyy",
@@ -19428,7 +19428,7 @@
     "ru": "Кадушка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i celeg"
+    "lz_lat": "Ghwec'i celeg"
   },
   {
     "id": "w2677_kadyk",
@@ -19436,7 +19436,7 @@
     "ru": "Кадык",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tutunin xat"
+    "lz_lat": "Tütünin xat"
   },
   {
     "id": "w2678_kaemka",
@@ -19444,7 +19444,7 @@
     "ru": "Каемка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gut'u hashiya"
+    "lz_lat": "Güt'ü hashiya"
   },
   {
     "id": "w2679_kazatskiy",
@@ -19492,7 +19492,7 @@
     "ru": "Калибр",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Kalibr, ulcme"
+    "lz_lat": "Kalibr, ülcme"
   },
   {
     "id": "w2685_kalievyy",
@@ -19532,7 +19532,7 @@
     "ru": "Камфорка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Samovardin suzek"
+    "lz_lat": "Samovardin süzek"
   },
   {
     "id": "w2690_kanareyka",
@@ -19588,7 +19588,7 @@
     "ru": "Каравай",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Elqwey gumbe"
+    "lz_lat": "Elqwey gümbe"
   },
   {
     "id": "w2697_karavan",
@@ -19604,7 +19604,7 @@
     "ru": "Карагач",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qaraġaj tar"
+    "lz_lat": "Qaraghaj tar"
   },
   {
     "id": "w2699_karakovyy",
@@ -19636,7 +19636,7 @@
     "ru": "Кармашек",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i jibin"
+    "lz_lat": "Ghwec'i jibin"
   },
   {
     "id": "w2703_karmin",
@@ -19660,7 +19660,7 @@
     "ru": "Картинка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i shikil, suret"
+    "lz_lat": "Ghwec'i shikil, süret"
   },
   {
     "id": "w2708_kartonnyy",
@@ -19724,7 +19724,7 @@
     "ru": "Каурый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Eku shabalt rangunin"
+    "lz_lat": "Ekü shabalt rangunin"
   },
   {
     "id": "w2716_kacheli",
@@ -19759,7 +19759,7 @@
     "ru": "Квасцы",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tsaġ"
+    "lz_lat": "Tsagh"
   },
   {
     "id": "w2721_keglya",
@@ -19775,7 +19775,7 @@
     "ru": "Келья",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Hujre"
+    "lz_lat": "Hüjre"
   },
   {
     "id": "w2725_kerosin",
@@ -19885,7 +19885,7 @@
     "ru": "Кичиться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Damaxun, lavġaval avun"
+    "lz_lat": "Damaxun, lavghaval avun"
   },
   {
     "id": "w2738_kichlivyy",
@@ -19893,7 +19893,7 @@
     "ru": "Кичливый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Damax gway, lavġa"
+    "lz_lat": "Damax gway, lavgha"
   },
   {
     "id": "w2739_kishechnik",
@@ -19917,7 +19917,7 @@
     "ru": "Кишлак",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Kishlak, xur"
+    "lz_lat": "Kishlak, xür"
   },
   {
     "id": "w2743_klad",
@@ -19925,7 +19925,7 @@
     "ru": "Кладь",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Par, yuk, sheyer"
+    "lz_lat": "Par, yük, sheyer"
   },
   {
     "id": "w2744_klapan",
@@ -19933,7 +19933,7 @@
     "ru": "Клапан",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Klapan, qalpaġ"
+    "lz_lat": "Klapan, qalpagh"
   },
   {
     "id": "w2746_kleveta",
@@ -19941,7 +19941,7 @@
     "ru": "Клевета",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Buhten, sher, fitne",
+    "lz_lat": "Bühten, sher, fitne",
     "mazin": "Бигьтан",
     "mazin_lat": "Bihtan",
     "mazin_ru": "клевета"
@@ -19952,7 +19952,7 @@
     "ru": "Клеврет",
     "cat": "люди",
     "ex": "",
-    "lz_lat": "Tumuban, ġiliban"
+    "lz_lat": "Tumuban, ghiliban"
   },
   {
     "id": "w2749_kleykiy",
@@ -19992,7 +19992,7 @@
     "ru": "Клиентура",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Klientar, mushteriyar"
+    "lz_lat": "Klientar, müshteriyar"
   },
   {
     "id": "w2754_klika",
@@ -20048,7 +20048,7 @@
     "ru": "Кляуза",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Fitne, buhten"
+    "lz_lat": "Fitne, bühten"
   },
   {
     "id": "w2762_klyacha",
@@ -20104,7 +20104,7 @@
     "ru": "Кобчик",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Cunurug"
+    "lz_lat": "Cünürug"
   },
   {
     "id": "w2771_kobyliy",
@@ -20144,7 +20144,7 @@
     "ru": "Коврига",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qalaj, elqwey gumbe"
+    "lz_lat": "Qalaj, elqwey gümbe"
   },
   {
     "id": "w2776_kovrik",
@@ -20152,7 +20152,7 @@
     "ru": "Коврик",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i xalica"
+    "lz_lat": "Ghwec'i xalica"
   },
   {
     "id": "w2777_kovyl",
@@ -20184,7 +20184,7 @@
     "ru": "Кожанка",
     "cat": "одежда",
     "ex": "",
-    "lz_lat": "Tumajdin kuru palto"
+    "lz_lat": "Tumajdin kürü palto"
   },
   {
     "id": "w2781_kozhanyy",
@@ -20224,7 +20224,7 @@
     "ru": "Козлик",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i q'un"
+    "lz_lat": "Ghwec'i q'un"
   },
   {
     "id": "w2786_kozlinyy",
@@ -20280,7 +20280,7 @@
     "ru": "Колдобина",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Leġw"
+    "lz_lat": "Leghw"
   },
   {
     "id": "w2794_kolenka",
@@ -20328,7 +20328,7 @@
     "ru": "Колышек",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Xak, ġwec'i rukun"
+    "lz_lat": "Xak, ghwec'i rükün"
   },
   {
     "id": "w2801_komarinyy",
@@ -20368,7 +20368,7 @@
     "ru": "Комичный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Qhururday, qhurun qweday"
+    "lz_lat": "Qhürürday, qhürün qweday"
   },
   {
     "id": "w2807_kommertsiya",
@@ -20493,7 +20493,7 @@
     "ru": "Копия",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Kopiya, cin, suret"
+    "lz_lat": "Kopiya, cin, süret"
   },
   {
     "id": "w2822_koptilka",
@@ -20525,7 +20525,7 @@
     "ru": "Корзинка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Korzinka, ġwec'i zinbil"
+    "lz_lat": "Korzinka, ghwec'i zinbil"
   },
   {
     "id": "w2826_koridor",
@@ -20586,7 +20586,7 @@
     "ru": "Коровай",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gumbe, elqwey gumbe"
+    "lz_lat": "Gümbe, elqwey gümbe"
   },
   {
     "id": "w2833_koroviy",
@@ -20642,7 +20642,7 @@
     "ru": "Корректив",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Korektiv, duzar qhuvun"
+    "lz_lat": "Korektiv, düzar qhuvun"
   },
   {
     "id": "w2840_korchevat",
@@ -20658,7 +20658,7 @@
     "ru": "Коршун",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Calaġan"
+    "lz_lat": "Calaghan"
   },
   {
     "id": "w2842_korystnyy",
@@ -20666,7 +20666,7 @@
     "ru": "Корыстный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Temæġkarvilin"
+    "lz_lat": "Temæghkarvilin"
   },
   {
     "id": "w2843_kor",
@@ -20791,7 +20791,7 @@
     "ru": "Кочевой",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Kuceri"
+    "lz_lat": "Küceri"
   },
   {
     "id": "w2858_kochenet",
@@ -20831,7 +20831,7 @@
     "ru": "Краденый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Cunuxay"
+    "lz_lat": "Cünüxay"
   },
   {
     "id": "w2863_krayne",
@@ -20847,7 +20847,7 @@
     "ru": "Красавец",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gurceg itim"
+    "lz_lat": "Gürceg itim"
   },
   {
     "id": "w2865_krasavitsa",
@@ -20855,7 +20855,7 @@
     "ru": "Красавица",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Guzel, gurceg dishehli"
+    "lz_lat": "Güzel, gürceg dishehli"
   },
   {
     "id": "w2866_krasnota",
@@ -20871,7 +20871,7 @@
     "ru": "Красочка",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Guzel rush"
+    "lz_lat": "Güzel rush"
   },
   {
     "id": "w2868_krasyashchiy",
@@ -20887,7 +20887,7 @@
     "ru": "Краткость",
     "cat": "понятия",
     "ex": "",
-    "lz_lat": "Kuruval, kurelval"
+    "lz_lat": "Kürüwal, kürelval"
   },
   {
     "id": "w2870_krashe",
@@ -20895,7 +20895,7 @@
     "ru": "Краше",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gurceg, qhsan"
+    "lz_lat": "Gürceg, qhsan"
   },
   {
     "id": "w2871_krayukha",
@@ -20911,7 +20911,7 @@
     "ru": "Крениться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Alġun, yan gun"
+    "lz_lat": "Alghun, yan gun"
   },
   {
     "id": "w2873_krepovyy",
@@ -20927,7 +20927,7 @@
     "ru": "Крепыш",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Can k'evi, saġ"
+    "lz_lat": "Can k'evi, sagh"
   },
   {
     "id": "w2875_krestets",
@@ -20943,7 +20943,7 @@
     "ru": "Кречет",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Shanġar"
+    "lz_lat": "Shanghar"
   },
   {
     "id": "w2877_krivaya",
@@ -21007,7 +21007,7 @@
     "ru": "Кроха",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwel"
+    "lz_lat": "Ghwel"
   },
   {
     "id": "w2886_kroshechnyy",
@@ -21015,7 +21015,7 @@
     "ru": "Крошечный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Bits'i, lap ġwec'i"
+    "lz_lat": "Bits'i, lap ghwec'i"
   },
   {
     "id": "w2887_kruglet",
@@ -21031,7 +21031,7 @@
     "ru": "Кружиться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Elqun, alcud xhun"
+    "lz_lat": "Elqün, alcud xhun"
   },
   {
     "id": "w2889_kruzhnyy",
@@ -21087,7 +21087,7 @@
     "ru": "Кручина",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Xajalat, dert, ġam"
+    "lz_lat": "Xajalat, dert, gham"
   },
   {
     "id": "w2896_krylyshko",
@@ -21095,7 +21095,7 @@
     "ru": "Крылышко",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Luv, ġwec'i luv"
+    "lz_lat": "Luv, ghwec'i luv"
   },
   {
     "id": "w2897_kryadu",
@@ -21111,7 +21111,7 @@
     "ru": "Кряква",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "C'uran urdeg"
+    "lz_lat": "C'uran ürdeg"
   },
   {
     "id": "w2899_ksendz",
@@ -21127,7 +21127,7 @@
     "ru": "Кубовый",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Vili, tunt vili"
+    "lz_lat": "Vili, tünt vili"
   },
   {
     "id": "w2901_kudakhtat",
@@ -21135,7 +21135,7 @@
     "ru": "Кудахтать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Qaqra yaġun"
+    "lz_lat": "Qaqra yaghun"
   },
   {
     "id": "w2902_kudel",
@@ -21175,7 +21175,7 @@
     "ru": "Кукареку",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "U-u-u"
+    "lz_lat": "Ü-ü-ü"
   },
   {
     "id": "w2907_kukolnyy",
@@ -21247,7 +21247,7 @@
     "ru": "Купать",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Eqhurun, cuxun"
+    "lz_lat": "Eqhürun, cüxün"
   },
   {
     "id": "w2916_kuporos",
@@ -21311,7 +21311,7 @@
     "ru": "Курьез",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qhureday qarib"
+    "lz_lat": "Qhüreday qarib"
   },
   {
     "id": "w2924_kureznyy",
@@ -21319,7 +21319,7 @@
     "ru": "Курьезный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Qhurun qweday qarib"
+    "lz_lat": "Qhürün qweday qarib"
   },
   {
     "id": "w2925_kuryatina",
@@ -21415,7 +21415,7 @@
     "ru": "Ладиться",
     "cat": "глаголы",
     "ex": "",
-    "lz_lat": "Tuk'un, q'ile fin"
+    "lz_lat": "Tük'ün, q'ile fin"
   },
   {
     "id": "w2939_laykovyy",
@@ -21479,7 +21479,7 @@
     "ru": "Ларец",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Gurceg q'wati"
+    "lz_lat": "Gürceg q'wati"
   },
   {
     "id": "w2947_latyn",
@@ -21575,7 +21575,7 @@
     "ru": "Лепесток",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tsukwedin pesh"
+    "lz_lat": "Tsükwedin pesh"
   },
   {
     "id": "w2961_lesnoy",
@@ -21607,7 +21607,7 @@
     "ru": "Леток",
     "cat": "время",
     "ex": "",
-    "lz_lat": "Kunudin t'ekwen, siv"
+    "lz_lat": "Künüdin t'ekwen, siv"
   },
   {
     "id": "w2965_letom",
@@ -21676,7 +21676,7 @@
     "ru": "Ливень",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Yurġ"
+    "lz_lat": "Yurgh"
   },
   {
     "id": "w2973_lizat",
@@ -21796,7 +21796,7 @@
     "ru": "Лог",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Hyarq'u k'am"
+    "lz_lat": "Hyarq'ü k'am"
   },
   {
     "id": "w2990_lodochnyy",
@@ -21804,7 +21804,7 @@
     "ru": "Лодочный",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Lutkwedin"
+    "lz_lat": "Lütkwedin"
   },
   {
     "id": "w2991_lodyzhka",
@@ -21836,7 +21836,7 @@
     "ru": "Локотник",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Q'unt etsigday cka"
+    "lz_lat": "Q'ünt etsigday cka"
   },
   {
     "id": "w2996_loktevoy",
@@ -21844,7 +21844,7 @@
     "ru": "Локтевой",
     "cat": "качество",
     "ex": "",
-    "lz_lat": "Q'unten"
+    "lz_lat": "Q'ünten"
   },
   {
     "id": "w2997_lomovoy",
@@ -21860,7 +21860,7 @@
     "ru": "Ломтик",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġwec'i c'uk"
+    "lz_lat": "Ghwec'i c'uk"
   },
   {
     "id": "w2999_lopukh",
@@ -21889,7 +21889,7 @@
     "mazin_academic": "Уьхуьн",
     "mazin_academic_lat": "Üxün",
     "mazin_ru": "хранить, беречь",
-    "lz_lat": "Xun"
+    "lz_lat": "Xün"
   },
   {
     "id": "w3000_zhit",
@@ -21897,7 +21897,7 @@
     "ru": "Жить",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Umur halun"
+    "lz_lat": "Ümür halun"
   },
   {
     "id": "w3001_nachinat",
@@ -21926,7 +21926,7 @@
     "ru": "Искать",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Juġurun / Qequn"
+    "lz_lat": "Jughurun / Qeqün"
   },
   {
     "id": "w3004_berech",
@@ -21939,7 +21939,7 @@
     "mazin_academic": "Уьхуьн",
     "mazin_academic_lat": "Üxün",
     "mazin_ru": "хранить, беречь",
-    "lz_lat": "Xun"
+    "lz_lat": "Xün"
   },
   {
     "id": "w3006_vylechit",
@@ -21947,7 +21947,7 @@
     "ru": "Вылечить, спасти",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Xkudun / Saġarun"
+    "lz_lat": "Xkudun / Sagharun"
   },
   {
     "id": "w3007_gnoit",
@@ -21963,7 +21963,7 @@
     "ru": "Жениться",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Pab ġun (muj.) / Ġuluz fin (jen.)",
+    "lz_lat": "Pab ghun (muj.) / Ghülüz fin (jen.)",
     "mazin": "Эвлемиш хьун",
     "mazin_lat": "Evlemish xhun",
     "mazin_ru": "жениться"
@@ -21990,7 +21990,7 @@
     "ru": "Беспомощный",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Kumek avacir, ajuz"
+    "lz_lat": "Kümek avacir, ajuz"
   },
   {
     "id": "w3012_bezmolvie",
@@ -22065,7 +22065,7 @@
     "ru": "Царство",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Pacahluġ, tsumaval"
+    "lz_lat": "Pacahlugh, tsumaval"
   },
   {
     "id": "w3020_pustynya",
@@ -22073,7 +22073,7 @@
     "ru": "Пустыня",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ic'i cul / Q'urah cil"
+    "lz_lat": "Ic'i cül / Q'urah cil"
   },
   {
     "id": "w3021_zarplata",
@@ -22113,7 +22113,7 @@
     "ru": "Извинять, прощать",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġil qacun"
+    "lz_lat": "Ghil qacun"
   },
   {
     "id": "w3026_velet",
@@ -22121,7 +22121,7 @@
     "ru": "Велеть, приказывать",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Buyruġ gun"
+    "lz_lat": "Buyrugh gun"
   },
   {
     "id": "w3027_bezotvetnyy",
@@ -22201,7 +22201,7 @@
     "ru": "Давить",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Cuq'un / Ilisun"
+    "lz_lat": "Cüq'ün / Ilisun"
   },
   {
     "id": "w3037_grabit",
@@ -22249,7 +22249,7 @@
     "ru": "Больной",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "T'al kway / Nacaġ / Ittar",
+    "lz_lat": "T'al kway / Nacagh / Ittar",
     "mazin": "Гьаззаалу",
     "mazin_lat": "Hazzālu",
     "mazin_ru": "больной"
@@ -22260,7 +22260,7 @@
     "ru": "Волшебник",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Suhurqhan"
+    "lz_lat": "Sühürqhan"
   },
   {
     "id": "w3044_vinodel",
@@ -22329,7 +22329,7 @@
     "ru": "Грузить",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Par yaġun"
+    "lz_lat": "Par yaghun"
   },
   {
     "id": "w3053_zhestokiy",
@@ -22380,7 +22380,7 @@
     "ru": "Справедливый",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Duz / Haqh tir",
+    "lz_lat": "Düz / Haqh tir",
     "mazin": "ХIадалат-ту",
     "mazin_lat": "X'adalat-tu",
     "mazin_ru": "справедливый"
@@ -22439,7 +22439,7 @@
     "ru": "Клясть, проклинать",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Lænet ġun"
+    "lz_lat": "Lænet ghun"
   },
   {
     "id": "w3066_zapyatnat",
@@ -22535,7 +22535,7 @@
     "ru": "Лавочник",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Tukwenqhan"
+    "lz_lat": "Tükwenqhan"
   },
   {
     "id": "w3078_sluga",
@@ -22543,7 +22543,7 @@
     "ru": "Слуга, служащий",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Qulluġqhan"
+    "lz_lat": "Qullughqhan"
   },
   {
     "id": "w3079_gonchar",
@@ -22599,7 +22599,7 @@
     "ru": "Зависимый",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "Ġilik kway / Sadakay kumek k'anzavay"
+    "lz_lat": "Ghilik kway / Sadakay kümek k'anzavay"
   },
   {
     "id": "w3086_schastlivyy",
@@ -22615,7 +22615,7 @@
     "ru": "Должность, услуга",
     "cat": "общее",
     "ex": "",
-    "lz_lat": "K'walax / Kumek"
+    "lz_lat": "K'walax / Kümek"
   },
   {
     "id": "w3088_zheltukha",
@@ -22703,9 +22703,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ГIабдал",
-    "mazin_lat": "Ǵabdal",
+    "mazin_lat": "G'abdal",
     "mazin_academic": "ГIабдал",
-    "mazin_academic_lat": "Ǵabdal",
+    "mazin_academic_lat": "Ghabdal",
     "mazin_ru": "юродивый",
     "lz_lat": "Abdal"
   },
@@ -22733,7 +22733,7 @@
     "mazin_academic": "Авагъаарун",
     "mazin_academic_lat": "Avaghārun",
     "mazin_ru": "оттаивать",
-    "lz_lat": "Avaġarun"
+    "lz_lat": "Avagharun"
   },
   {
     "id": "w_m_9",
@@ -22781,7 +22781,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Агадж˚ун",
-    "mazin_lat": "Agadj˚un",
+    "mazin_lat": "Agadj̊un",
     "mazin_academic": "Агадж˚ун",
     "mazin_academic_lat": "Agadj˚un",
     "mazin_ru": "стягивать, соединять",
@@ -22850,7 +22850,7 @@
     "mazin_academic": "Аасакъал",
     "mazin_academic_lat": "Āsaqal",
     "mazin_ru": "старейшина, старик",
-    "lz_lat": "Aġsaqal"
+    "lz_lat": "Aghsaqal"
   },
   {
     "id": "w_m_23",
@@ -22863,7 +22863,7 @@
     "mazin_academic": "Гьагъузиз тун",
     "mazin_academic_lat": "Haghuziz tun",
     "mazin_ru": "дать опускать",
-    "lz_lat": "Aġuziz tun"
+    "lz_lat": "Aghuziz tun"
   },
   {
     "id": "w_m_24",
@@ -22876,7 +22876,7 @@
     "mazin_academic": "Агъуз ун",
     "mazin_academic_lat": "Aghuz un",
     "mazin_ru": "уменьшить, убавить",
-    "lz_lat": "Aġuzun"
+    "lz_lat": "Aghuzun"
   },
   {
     "id": "w_m_25",
@@ -22889,7 +22889,7 @@
     "mazin_academic": "Аьаьгъир",
     "mazin_academic_lat": "Ǣghir",
     "mazin_ru": "тяжёлый",
-    "lz_lat": "Aġur"
+    "lz_lat": "Aghur"
   },
   {
     "id": "w_m_26",
@@ -23054,9 +23054,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ГIезиз",
-    "mazin_lat": "Ǵeziz",
+    "mazin_lat": "G'eziz",
     "mazin_academic": "ГIезиз",
-    "mazin_academic_lat": "Ǵeziz",
+    "mazin_academic_lat": "Gheziz",
     "mazin_ru": "дорогой, милый",
     "lz_lat": "Aziz"
   },
@@ -23119,9 +23119,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Акахьун",
-    "mazin_lat": "Akaxun",
+    "mazin_lat": "Akaxhun",
     "mazin_academic": "Акахьун",
-    "mazin_academic_lat": "Akaxun",
+    "mazin_academic_lat": "Akaxhun",
     "mazin_ru": "быть запущенным",
     "lz_lat": "Ak'axhun"
   },
@@ -23280,19 +23280,6 @@
     "mazin_academic_lat": "Iq'rab",
     "mazin_ru": "скорпион",
     "lz_lat": "Aq'rab"
-  },
-  {
-    "id": "w_m_65",
-    "lz": "Акьул маса къачуз жедай зад туш.",
-    "ru": "Ум нельзя купить.",
-    "cat": "фразы",
-    "ex": "",
-    "mazin": "Гьакьул маса къач˚ва жезай зад туш.",
-    "mazin_lat": "Haq'ul masa qac˚va jezay zad tush.",
-    "mazin_academic": "Гьакьул маса къач˚ва жезай зад туш.",
-    "mazin_academic_lat": "Haq'ul masa qac˚va jezay zad tush.",
-    "mazin_ru": "Ум нельзя купить.",
-    "lz_lat": "Aq'ul masa qacuz jeday zad tush."
   },
   {
     "id": "w_m_67",
@@ -23630,7 +23617,7 @@
     "mazin_academic": "Баджарах",
     "mazin_academic_lat": "Badjarax",
     "mazin_ru": "способность",
-    "lz_lat": "Bajaraġ"
+    "lz_lat": "Bajaragh"
   },
   {
     "id": "w_m_109",
@@ -23682,7 +23669,7 @@
     "mazin_academic": "Балгъам",
     "mazin_academic_lat": "Balgham",
     "mazin_ru": "мокрота",
-    "lz_lat": "Balġan"
+    "lz_lat": "Balghan"
   },
   {
     "id": "w_m_116",
@@ -23695,7 +23682,7 @@
     "mazin_academic": "Барашух",
     "mazin_academic_lat": "Barashux",
     "mazin_ru": "мирный",
-    "lz_lat": "Barishuġ"
+    "lz_lat": "Barishugh"
   },
   {
     "id": "w_m_118",
@@ -23899,7 +23886,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Тарвази",
-    "mazin_lat": "Tarwazi",
+    "mazin_lat": "Tarvazi",
     "mazin_academic": "Тарвази",
     "mazin_academic_lat": "Tarwazi",
     "mazin_ru": "ворота",
@@ -23951,9 +23938,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Уьл хьун",
-    "mazin_lat": "Ül xun",
+    "mazin_lat": "Ül xhun",
     "mazin_academic": "Уьл хьун",
-    "mazin_academic_lat": "Ül xun",
+    "mazin_academic_lat": "Ül xhun",
     "mazin_ru": "скучать, соскучиться",
     "lz_lat": "Vil xhun"
   },
@@ -23964,7 +23951,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Уьл-ер",
-    "mazin_lat": "Ül-yer",
+    "mazin_lat": "Ül-er",
     "mazin_academic": "Уьл-ер",
     "mazin_academic_lat": "Ül-yer",
     "mazin_ru": "глаз",
@@ -24289,9 +24276,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Хьилан",
-    "mazin_lat": "Xilan",
+    "mazin_lat": "Xhilan",
     "mazin_academic": "Хьилан",
-    "mazin_academic_lat": "Xilan",
+    "mazin_academic_lat": "Xhilan",
     "mazin_ru": "теперешний",
     "lz_lat": "Gilan"
   },
@@ -24332,7 +24319,7 @@
     "mazin_academic": "Гуьлаьхъ",
     "mazin_academic_lat": "Gülæqh",
     "mazin_ru": "жвачка",
-    "lz_lat": "Girnaġ"
+    "lz_lat": "Girnagh"
   },
   {
     "id": "w_m_206",
@@ -24345,7 +24332,7 @@
     "mazin_academic": "Гуьлаьхъ ун",
     "mazin_academic_lat": "Gülæqh un",
     "mazin_ru": "жевать жвачку",
-    "lz_lat": "Girnaġun"
+    "lz_lat": "Girnaghun"
   },
   {
     "id": "w_m_207",
@@ -24471,11 +24458,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ч˚ваьгIна",
-    "mazin_lat": "C˚væǵna",
+    "mazin_lat": "C̊wæg'na",
     "mazin_academic": "Ч˚ваьгIна",
-    "mazin_academic_lat": "C˚væǵna",
+    "mazin_academic_lat": "C˚væghna",
     "mazin_ru": "позади, сзади",
-    "lz_lat": "Guġuna"
+    "lz_lat": "Güghüna"
   },
   {
     "id": "w_m_223",
@@ -24484,11 +24471,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ч˚ваьна",
-    "mazin_lat": "C˚væna",
+    "mazin_lat": "C̊wæna",
     "mazin_academic": "Ч˚ваьна",
     "mazin_academic_lat": "C˚væna",
     "mazin_ru": "позади",
-    "lz_lat": "Guġuna"
+    "lz_lat": "Güghüna"
   },
   {
     "id": "w_m_224",
@@ -24501,7 +24488,7 @@
     "mazin_academic": "Куьгьуьл",
     "mazin_academic_lat": "Kühül",
     "mazin_ru": "настроение",
-    "lz_lat": "Guhul"
+    "lz_lat": "Gühül"
   },
   {
     "id": "w_m_225",
@@ -24514,7 +24501,7 @@
     "mazin_academic": "Гуда",
     "mazin_academic_lat": "Guda",
     "mazin_ru": "куцый, с коротким хвостом",
-    "lz_lat": "Gudek"
+    "lz_lat": "Güdek"
   },
   {
     "id": "w_m_226",
@@ -24527,7 +24514,7 @@
     "mazin_academic": "Куьмбе",
     "mazin_academic_lat": "Kümbe",
     "mazin_ru": "буханка",
-    "lz_lat": "Gumbe"
+    "lz_lat": "Gümbe"
   },
   {
     "id": "w_m_228",
@@ -24540,7 +24527,7 @@
     "mazin_academic": "Уьгуьн",
     "mazin_academic_lat": "Ügün",
     "mazin_ru": "жать",
-    "lz_lat": "Gun"
+    "lz_lat": "Gün"
   },
   {
     "id": "w_m_229",
@@ -24553,7 +24540,7 @@
     "mazin_academic": "Кьуйукь раб",
     "mazin_academic_lat": "Q'uyuq' rab",
     "mazin_ru": "большая игла",
-    "lz_lat": "Gunduz"
+    "lz_lat": "Gündüz"
   },
   {
     "id": "w_m_230",
@@ -24566,7 +24553,7 @@
     "mazin_academic": "Гуьней",
     "mazin_academic_lat": "Güney",
     "mazin_ru": "подъем, косогор",
-    "lz_lat": "Gune"
+    "lz_lat": "Güne"
   },
   {
     "id": "w_m_231",
@@ -24579,7 +24566,7 @@
     "mazin_academic": "Гурцал",
     "mazin_academic_lat": "Gurtsal",
     "mazin_ru": "косяк (оконный и дверной)",
-    "lz_lat": "Gurtsel"
+    "lz_lat": "Gürtsel"
   },
   {
     "id": "w_m_234",
@@ -24592,7 +24579,7 @@
     "mazin_academic": "Гъур",
     "mazin_academic_lat": "Ghur",
     "mazin_ru": "понимание",
-    "lz_lat": "Ġavur"
+    "lz_lat": "Ghavur"
   },
   {
     "id": "w_m_235",
@@ -24605,7 +24592,7 @@
     "mazin_academic": "Гъурзи авай",
     "mazin_academic_lat": "Ghurzi avay",
     "mazin_ru": "понимающий",
-    "lz_lat": "Ġavurda avay"
+    "lz_lat": "Ghavurda avay"
   },
   {
     "id": "w_m_236",
@@ -24618,7 +24605,7 @@
     "mazin_academic": "Къазаа",
     "mazin_academic_lat": "Qazā",
     "mazin_ru": "жадность, ярость",
-    "lz_lat": "Ġaza"
+    "lz_lat": "Ghaza"
   },
   {
     "id": "w_m_237",
@@ -24631,7 +24618,7 @@
     "mazin_academic": "Гъай",
     "mazin_academic_lat": "Ghay",
     "mazin_ru": "принесенный",
-    "lz_lat": "Ġayi"
+    "lz_lat": "Ghayi"
   },
   {
     "id": "w_m_238",
@@ -24644,7 +24631,7 @@
     "mazin_academic": "ГъайтIа",
     "mazin_academic_lat": "Ghayt'a",
     "mazin_ru": "если принесет",
-    "lz_lat": "Ġayit'a"
+    "lz_lat": "Ghayit'a"
   },
   {
     "id": "w_m_239",
@@ -24657,7 +24644,7 @@
     "mazin_academic": "Къалаб",
     "mazin_academic_lat": "Qalab",
     "mazin_ru": "волнение (душевное)",
-    "lz_lat": "Ġalab"
+    "lz_lat": "Ghalab"
   },
   {
     "id": "w_m_240",
@@ -24670,7 +24657,7 @@
     "mazin_academic": "Къалаба",
     "mazin_academic_lat": "Qalaba",
     "mazin_ru": "волнение",
-    "lz_lat": "Ġalab"
+    "lz_lat": "Ghalab"
   },
   {
     "id": "w_m_241",
@@ -24683,7 +24670,7 @@
     "mazin_academic": "Къам",
     "mazin_academic_lat": "Qam",
     "mazin_ru": "горе, скорбь",
-    "lz_lat": "Ġam"
+    "lz_lat": "Gham"
   },
   {
     "id": "w_m_242",
@@ -24696,7 +24683,7 @@
     "mazin_academic": "Къамлу",
     "mazin_academic_lat": "Qamlu",
     "mazin_ru": "горестный",
-    "lz_lat": "Ġamlu"
+    "lz_lat": "Ghamlu"
   },
   {
     "id": "w_m_243",
@@ -24709,7 +24696,7 @@
     "mazin_academic": "Къерез",
     "mazin_academic_lat": "Qerez",
     "mazin_ru": "намерение, злое намерение",
-    "lz_lat": "Ġaraz"
+    "lz_lat": "Gharaz"
   },
   {
     "id": "w_m_244",
@@ -24722,7 +24709,7 @@
     "mazin_academic": "Къариб",
     "mazin_academic_lat": "Qarib",
     "mazin_ru": "странный",
-    "lz_lat": "Ġarib"
+    "lz_lat": "Gharib"
   },
   {
     "id": "w_m_245",
@@ -24735,7 +24722,7 @@
     "mazin_academic": "Къаафил",
     "mazin_academic_lat": "Qāfil",
     "mazin_ru": "неосведомленный",
-    "lz_lat": "Ġafil"
+    "lz_lat": "Ghafil"
   },
   {
     "id": "w_m_246",
@@ -24748,7 +24735,7 @@
     "mazin_academic": "Гаваше",
     "mazin_academic_lat": "Gavashe",
     "mazin_ru": "принеси, привези",
-    "lz_lat": "Ġwash"
+    "lz_lat": "Ghwash"
   },
   {
     "id": "w_m_249",
@@ -24761,7 +24748,7 @@
     "mazin_academic": "Гъейзи",
     "mazin_academic_lat": "Gheyzi",
     "mazin_ru": "принесет",
-    "lz_lat": "Ġidi"
+    "lz_lat": "Ghidi"
   },
   {
     "id": "w_m_253",
@@ -24774,7 +24761,7 @@
     "mazin_academic": "Гъе",
     "mazin_academic_lat": "Ghe",
     "mazin_ru": "принесем",
-    "lz_lat": "Ġin"
+    "lz_lat": "Ghin"
   },
   {
     "id": "w_m_254",
@@ -24787,7 +24774,7 @@
     "mazin_academic": "Гъурай",
     "mazin_academic_lat": "Ghuray",
     "mazin_ru": "пусть принесет",
-    "lz_lat": "Ġuray"
+    "lz_lat": "Ghuray"
   },
   {
     "id": "w_m_255",
@@ -24800,7 +24787,7 @@
     "mazin_academic": "Гъуьлаь",
     "mazin_academic_lat": "Ghülæ",
     "mazin_ru": "змея",
-    "lz_lat": "Ġulæġ"
+    "lz_lat": "Ghülægh"
   },
   {
     "id": "w_m_258",
@@ -24813,7 +24800,7 @@
     "mazin_academic": "Къейри",
     "mazin_academic_lat": "Qeyri",
     "mazin_ru": "другой, иной, чужой",
-    "lz_lat": "Ġeyri"
+    "lz_lat": "Gheyri"
   },
   {
     "id": "w_m_261",
@@ -24826,7 +24813,7 @@
     "mazin_academic": "ГъаьцI",
     "mazin_academic_lat": "Ghæts'",
     "mazin_ru": "козленок",
-    "lz_lat": "Ġets'"
+    "lz_lat": "Ghets'"
   },
   {
     "id": "w_m_262",
@@ -24861,24 +24848,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Гьанвилаьй",
-    "mazin_lat": "Hanwilæy",
+    "mazin_lat": "Hanvilæy",
     "mazin_academic": "Гьанвилаьй",
     "mazin_academic_lat": "Hanwilæy",
     "mazin_ru": "потому, поэтому",
     "lz_lat": "Havilæy"
-  },
-  {
-    "id": "w_m_268",
-    "lz": "Гьазаб такурдаз рагьатвилин къадир чир жедач.",
-    "ru": "Кто не увидел тяжесть, тот не будет знать цену покоя.",
-    "cat": "фразы",
-    "ex": "",
-    "mazin": "Гьазаб такурдаз регьатвилин къедир ичир жезач.",
-    "mazin_lat": "Hazab takurdaz rehatwilin qedir icir jezac.",
-    "mazin_academic": "Гьазаб такурдаз регьатвилин къедир ичир жезач.",
-    "mazin_academic_lat": "Hazab takurdaz rehatwilin qedir icir jezac.",
-    "mazin_ru": "Кто не увидел тяжесть, тот не будет знать цену покоя.",
-    "lz_lat": "Hazab takurdaz rahatwilin qadir cir jedac."
   },
   {
     "id": "w_m_269",
@@ -24926,9 +24900,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIейаа",
-    "mazin_lat": "Ħeyā",
+    "mazin_lat": "X'eyā",
     "mazin_academic": "ХIейаа",
-    "mazin_academic_lat": "Ħeyā",
+    "mazin_academic_lat": "Xheyā",
     "mazin_ru": "стыд, скромность",
     "lz_lat": "Haya"
   },
@@ -24939,9 +24913,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIейбат",
-    "mazin_lat": "Ħeybat",
+    "mazin_lat": "X'eybat",
     "mazin_academic": "ХIейбат",
-    "mazin_academic_lat": "Ħeybat",
+    "mazin_academic_lat": "Xheybat",
     "mazin_ru": "грозный вид, величие",
     "lz_lat": "Haybat"
   },
@@ -25004,9 +24978,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIалал",
-    "mazin_lat": "Ħalal",
+    "mazin_lat": "X'alal",
     "mazin_academic": "ХIалал",
-    "mazin_academic_lat": "Ħalal",
+    "mazin_academic_lat": "Xhalal",
     "mazin_ru": "дозволенный, собственный",
     "lz_lat": "Halal"
   },
@@ -25017,9 +24991,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIаьлсун",
-    "mazin_lat": "Ħælsun",
+    "mazin_lat": "X'ælsun",
     "mazin_academic": "ХIаьлсун",
-    "mazin_academic_lat": "Ħælsun",
+    "mazin_academic_lat": "Xhælsun",
     "mazin_ru": "надевать, напялить",
     "lz_lat": "Halsun"
   },
@@ -25030,9 +25004,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIамбал",
-    "mazin_lat": "Ħambal",
+    "mazin_lat": "X'ambal",
     "mazin_academic": "ХIамбал",
-    "mazin_academic_lat": "Ħambal",
+    "mazin_academic_lat": "Xhambal",
     "mazin_ru": "амбал, носильщик",
     "lz_lat": "Hambal"
   },
@@ -25095,9 +25069,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ГьансаьгIтзи",
-    "mazin_lat": "Hansæǵtzi",
+    "mazin_lat": "Hansæg'tzi",
     "mazin_academic": "ГьансаьгIтзи",
-    "mazin_academic_lat": "Hansæǵtzi",
+    "mazin_academic_lat": "Hansæghtzi",
     "mazin_ru": "тотчас",
     "lz_lat": "Hasætda"
   },
@@ -25108,9 +25082,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIаьаьсил ун",
-    "mazin_lat": "Ħǣsil un",
+    "mazin_lat": "X'ǣsil un",
     "mazin_academic": "ХIаьаьсил ун",
-    "mazin_academic_lat": "Ħǣsil un",
+    "mazin_academic_lat": "Xhǣsil un",
     "mazin_ru": "производитель",
     "lz_lat": "Hasil avun"
   },
@@ -25121,9 +25095,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIаьаьсил ун",
-    "mazin_lat": "Ħǣsil un",
+    "mazin_lat": "X'ǣsil un",
     "mazin_academic": "ХIаьаьсил ун",
-    "mazin_academic_lat": "Ħǣsil un",
+    "mazin_academic_lat": "Xhǣsil un",
     "mazin_ru": "производить",
     "lz_lat": "Hasilun"
   },
@@ -25316,11 +25290,11 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Гьуьджает урла",
-    "mazin_lat": "Hüdjayet urla",
+    "mazin_lat": "Hüdjaet urla",
     "mazin_academic": "Гьуьджает урла",
     "mazin_academic_lat": "Hüdjayet urla",
     "mazin_ru": "когда поспорил",
-    "lz_lat": "Hujetayla"
+    "lz_lat": "Hüjetayla"
   },
   {
     "id": "w_m_316",
@@ -25329,11 +25303,11 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Гьуьджает извайна",
-    "mazin_lat": "Hüdjayet izwayna",
+    "mazin_lat": "Hüdjaet izwayna",
     "mazin_academic": "Гьуьджает извайна",
     "mazin_academic_lat": "Hüdjayet izwayna",
     "mazin_ru": "когда спорил",
-    "lz_lat": "Hujetzavayla"
+    "lz_lat": "Hüjetzavayla"
   },
   {
     "id": "w_m_318",
@@ -25346,7 +25320,7 @@
     "mazin_academic": "Гьуьруь",
     "mazin_academic_lat": "Hürü",
     "mazin_ru": "правительство",
-    "lz_lat": "Huri"
+    "lz_lat": "Hüri"
   },
   {
     "id": "w_m_319",
@@ -25359,7 +25333,7 @@
     "mazin_academic": "Гьуьрмет-ту",
     "mazin_academic_lat": "Hürmet-tu",
     "mazin_ru": "уважаемый",
-    "lz_lat": "Hurmetlu"
+    "lz_lat": "Hürmetlu"
   },
   {
     "id": "w_m_320",
@@ -25368,11 +25342,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIуьрс",
-    "mazin_lat": "Ħürs",
+    "mazin_lat": "X'ürs",
     "mazin_academic": "ХIуьрс",
-    "mazin_academic_lat": "Ħürs",
+    "mazin_academic_lat": "Xhürs",
     "mazin_ru": "гнев, раздражение",
-    "lz_lat": "Hurs"
+    "lz_lat": "Hürs"
   },
   {
     "id": "w_m_322",
@@ -25407,9 +25381,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIаькь",
-    "mazin_lat": "Ħæq'",
+    "mazin_lat": "X'æq'",
     "mazin_academic": "ХIаькь",
-    "mazin_academic_lat": "Ħæq'",
+    "mazin_academic_lat": "Xhæq'",
     "mazin_ru": "пот",
     "lz_lat": "Heq'"
   },
@@ -25420,9 +25394,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХIешем",
-    "mazin_lat": "Ħeshem",
+    "mazin_lat": "X'eshem",
     "mazin_academic": "ХIешем",
-    "mazin_academic_lat": "Ħeshem",
+    "mazin_academic_lat": "Xheshem",
     "mazin_ru": "соринка",
     "lz_lat": "Heshem"
   },
@@ -25463,7 +25437,7 @@
     "mazin_academic": "ГелаьчIун",
     "mazin_academic_lat": "Gelæc'un",
     "mazin_ru": "открывать, ударить",
-    "lz_lat": "Gelæġun"
+    "lz_lat": "Gelæghun"
   },
   {
     "id": "w_m_330",
@@ -25489,7 +25463,7 @@
     "mazin_academic": "Тоугъа",
     "mazin_academic_lat": "Tougha",
     "mazin_ru": "товга (вид супа)",
-    "lz_lat": "Davuġa"
+    "lz_lat": "Davugha"
   },
   {
     "id": "w_m_334",
@@ -25502,7 +25476,7 @@
     "mazin_academic": "Дагъар",
     "mazin_academic_lat": "Daghar",
     "mazin_ru": "горы",
-    "lz_lat": "Daġar"
+    "lz_lat": "Daghar"
   },
   {
     "id": "w_m_336",
@@ -25563,9 +25537,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Динж хьун",
-    "mazin_lat": "Dinj xun",
+    "mazin_lat": "Dinj xhun",
     "mazin_academic": "Динж хьун",
-    "mazin_academic_lat": "Dinj xun",
+    "mazin_academic_lat": "Dinj xhun",
     "mazin_ru": "успокаиваться",
     "lz_lat": "Dinj xhun"
   },
@@ -25580,7 +25554,7 @@
     "mazin_academic": "Дуланаджах",
     "mazin_academic_lat": "Dulanadjax",
     "mazin_ru": "жизнь, житье",
-    "lz_lat": "Dulanajaġ"
+    "lz_lat": "Dulanajagh"
   },
   {
     "id": "w_m_349",
@@ -25706,7 +25680,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚ув",
-    "mazin_lat": "J˚uv",
+    "mazin_lat": "J̊uv",
     "mazin_academic": "Ж˚ув",
     "mazin_academic_lat": "J˚uv",
     "mazin_ru": "сам",
@@ -25719,7 +25693,7 @@
     "cat": "местоимения",
     "ex": "",
     "mazin": "Ж˚уьв",
-    "mazin_lat": "J˚üv",
+    "mazin_lat": "J̊üw",
     "mazin_academic": "Ж˚уьв",
     "mazin_academic_lat": "J˚üv",
     "mazin_ru": "я сам / себя",
@@ -25732,7 +25706,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚уа-ж˚укьваз",
-    "mazin_lat": "J˚ua-j˚uq'waz",
+    "mazin_lat": "J̊ua-j̊uq'waz",
     "mazin_academic": "Ж˚уа-ж˚укьваз",
     "mazin_academic_lat": "J˚ua-j˚uq'waz",
     "mazin_ru": "сам себе",
@@ -25775,7 +25749,7 @@
     "mazin_academic": "Чигьен",
     "mazin_academic_lat": "Cihen",
     "mazin_ru": "горящий уголек",
-    "lz_lat": "Juhen"
+    "lz_lat": "Jühen"
   },
   {
     "id": "w_m_378",
@@ -25788,7 +25762,7 @@
     "mazin_academic": "Чуьт",
     "mazin_academic_lat": "Cüt",
     "mazin_ru": "пара",
-    "lz_lat": "Jut"
+    "lz_lat": "Jüt"
   },
   {
     "id": "w_m_381",
@@ -25875,7 +25849,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Иж˚вал",
-    "mazin_lat": "Ij˚val",
+    "mazin_lat": "Ij̊wal",
     "mazin_academic": "Иж˚вал",
     "mazin_academic_lat": "Ij˚val",
     "mazin_ru": "кипение",
@@ -25888,7 +25862,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚вар",
-    "mazin_lat": "J˚var",
+    "mazin_lat": "J̊war",
     "mazin_academic": "Ж˚вар",
     "mazin_academic_lat": "J˚var",
     "mazin_ru": "кручение",
@@ -25914,7 +25888,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚ул",
-    "mazin_lat": "J˚ul",
+    "mazin_lat": "J̊ul",
     "mazin_academic": "Ж˚ул",
     "mazin_academic_lat": "J˚ul",
     "mazin_ru": "осень, полоса",
@@ -25927,7 +25901,7 @@
     "cat": "наречия",
     "ex": "",
     "mazin": "Ж˚уьлуз",
-    "mazin_lat": "J˚üluz",
+    "mazin_lat": "J̊üluz",
     "mazin_academic": "Ж˚уьлуз",
     "mazin_academic_lat": "J˚üluz",
     "mazin_ru": "осенью",
@@ -25940,7 +25914,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚уьлуьн",
-    "mazin_lat": "J˚ülün",
+    "mazin_lat": "J̊ülün",
     "mazin_academic": "Ж˚уьлуьн",
     "mazin_academic_lat": "J˚ülün",
     "mazin_ru": "осенний",
@@ -25953,7 +25927,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚уьр",
-    "mazin_lat": "J˚ür",
+    "mazin_lat": "J̊ür",
     "mazin_academic": "Ж˚уьр",
     "mazin_academic_lat": "J˚ür",
     "mazin_ru": "половина, насилие",
@@ -25966,7 +25940,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Зыртыл",
-    "mazin_lat": "Zyrtyl",
+    "mazin_lat": "Zɨrtɨl",
     "mazin_academic": "Зыртыл",
     "mazin_academic_lat": "Zyrtyl",
     "mazin_ru": "толстый",
@@ -26044,9 +26018,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ИкрахI",
-    "mazin_lat": "Ikraħ",
+    "mazin_lat": "Ikrax'",
     "mazin_academic": "ИкрахI",
-    "mazin_academic_lat": "Ikraħ",
+    "mazin_academic_lat": "Ikraxh",
     "mazin_ru": "отвращение",
     "lz_lat": "Ikrah"
   },
@@ -26057,9 +26031,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ИнахI",
-    "mazin_lat": "Inaħ",
+    "mazin_lat": "Inax'",
     "mazin_academic": "ИнахI",
-    "mazin_academic_lat": "Inaħ",
+    "mazin_academic_lat": "Inaxh",
     "mazin_ru": "вот",
     "lz_lat": "Inhe"
   },
@@ -26083,7 +26057,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Этемвил-ер",
-    "mazin_lat": "Etemwil-yer",
+    "mazin_lat": "Etemvil-er",
     "mazin_academic": "Этемвил-ер",
     "mazin_academic_lat": "Etemwil-yer",
     "mazin_ru": "человечность, доброта",
@@ -26122,11 +26096,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ЙагIун",
-    "mazin_lat": "Yaǵun",
+    "mazin_lat": "Yag'un",
     "mazin_academic": "ЙагIун",
-    "mazin_academic_lat": "Yaǵun",
+    "mazin_academic_lat": "Yaghun",
     "mazin_ru": "ударять, бить",
-    "lz_lat": "Yaġun"
+    "lz_lat": "Yaghun"
   },
   {
     "id": "w_m_426",
@@ -26161,7 +26135,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Уьж˚уьн",
-    "mazin_lat": "Üj˚ün",
+    "mazin_lat": "Üj̊ün",
     "mazin_academic": "Уьж˚уьн",
     "mazin_academic_lat": "Üj˚ün",
     "mazin_ru": "шевелиться",
@@ -26226,7 +26200,7 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Уьж˚узалзи",
-    "mazin_lat": "Üj˚uzalzi",
+    "mazin_lat": "Üj̊uzalzi",
     "mazin_academic": "Уьж˚узалзи",
     "mazin_academic_lat": "Üj˚uzalzi",
     "mazin_ru": "пока ни пошевелился",
@@ -26239,7 +26213,7 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Уьж˚уьр урла",
-    "mazin_lat": "Üj˚ür urla",
+    "mazin_lat": "Üj̊ür urla",
     "mazin_academic": "Уьж˚уьр урла",
     "mazin_academic_lat": "Üj˚ür urla",
     "mazin_ru": "когда пошевелил",
@@ -26252,7 +26226,7 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Уьж˚уьр извайна",
-    "mazin_lat": "Üj˚ür izwayna",
+    "mazin_lat": "Üj̊ür izwayna",
     "mazin_academic": "Уьж˚уьр извайна",
     "mazin_academic_lat": "Üj˚ür izwayna",
     "mazin_ru": "когда шевелил",
@@ -26265,7 +26239,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Уьж˚уьрун",
-    "mazin_lat": "Üj˚ürun",
+    "mazin_lat": "Üj̊ürun",
     "mazin_academic": "Уьж˚уьрун",
     "mazin_academic_lat": "Üj˚ürun",
     "mazin_ru": "шатать, шевелить",
@@ -26330,7 +26304,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Кугьулвил-ер",
-    "mazin_lat": "Kuhulwil-yer",
+    "mazin_lat": "Kuhulvil-er",
     "mazin_academic": "Кугьулвил-ер",
     "mazin_academic_lat": "Kuhulwil-yer",
     "mazin_ru": "лень",
@@ -26356,9 +26330,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "КаьгIабе",
-    "mazin_lat": "Kæǵabe",
+    "mazin_lat": "Kæg'abe",
     "mazin_academic": "КаьгIабе",
-    "mazin_academic_lat": "Kæǵabe",
+    "mazin_academic_lat": "Kæghabe",
     "mazin_ru": "Кааба",
     "lz_lat": "Kæbe"
   },
@@ -26369,11 +26343,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "КцаьгIун",
-    "mazin_lat": "Ktsæǵun",
+    "mazin_lat": "Ktsæg'un",
     "mazin_academic": "КцаьгIун",
-    "mazin_academic_lat": "Ktsæǵun",
+    "mazin_academic_lat": "Ktsæghun",
     "mazin_ru": "трогать",
-    "lz_lat": "Kæġun"
+    "lz_lat": "Kæghun"
   },
   {
     "id": "w_m_457",
@@ -26512,7 +26486,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Кач˚кун",
-    "mazin_lat": "Kac˚kun",
+    "mazin_lat": "Kac̊kun",
     "mazin_academic": "Кач˚кун",
     "mazin_academic_lat": "Kac˚kun",
     "mazin_ru": "зарывать, хоронить",
@@ -26529,7 +26503,7 @@
     "mazin_academic": "Кивизун",
     "mazin_academic_lat": "Kivizun",
     "mazin_ru": "цедить, фильтровать",
-    "lz_lat": "Kuzun"
+    "lz_lat": "Küzun"
   },
   {
     "id": "w_m_472",
@@ -26542,7 +26516,7 @@
     "mazin_academic": "Кук",
     "mazin_academic_lat": "Kuk",
     "mazin_ru": "жирный, упитанный",
-    "lz_lat": "Kuk"
+    "lz_lat": "Kük"
   },
   {
     "id": "w_m_475",
@@ -26555,7 +26529,7 @@
     "mazin_academic": "Куьп",
     "mazin_academic_lat": "Küp",
     "mazin_ru": "красильня",
-    "lz_lat": "Kup"
+    "lz_lat": "Küp"
   },
   {
     "id": "w_m_476",
@@ -26577,9 +26551,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Кхьин",
-    "mazin_lat": "Kxin",
+    "mazin_lat": "Kxhin",
     "mazin_academic": "Кхьин",
-    "mazin_academic_lat": "Kxin",
+    "mazin_academic_lat": "Kxhin",
     "mazin_ru": "писать",
     "lz_lat": "Kxhin"
   },
@@ -26642,9 +26616,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Канхьун",
-    "mazin_lat": "Kanxun",
+    "mazin_lat": "Kanxhun",
     "mazin_academic": "Канхьун",
-    "mazin_academic_lat": "Kanxun",
+    "mazin_academic_lat": "Kanxhun",
     "mazin_ru": "хотеть, любить, влюбиться",
     "lz_lat": "K'anxhun"
   },
@@ -26798,9 +26772,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "КагIат кун",
-    "mazin_lat": "Kaǵat kun",
+    "mazin_lat": "Kag'at kun",
     "mazin_academic": "КагIат кун",
-    "mazin_academic_lat": "Kaǵat kun",
+    "mazin_academic_lat": "Kaghat kun",
     "mazin_ru": "бежать, убегать",
     "lz_lat": "Katun"
   },
@@ -26811,9 +26785,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Уква хьун",
-    "mazin_lat": "Ukwa xun",
+    "mazin_lat": "Ukwa xhun",
     "mazin_academic": "Уква хьун",
-    "mazin_academic_lat": "Ukwa xun",
+    "mazin_academic_lat": "Ukwa xhun",
     "mazin_ru": "чесаться, зудеть",
     "lz_lat": "Kwa xhun"
   },
@@ -26876,11 +26850,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ч˚уьлуь",
-    "mazin_lat": "C˚ülü",
+    "mazin_lat": "C̊ülü",
     "mazin_academic": "Ч˚уьлуь",
     "mazin_academic_lat": "C˚ülü",
     "mazin_ru": "мелкий",
-    "lz_lat": "Kulu"
+    "lz_lat": "Külü"
   },
   {
     "id": "w_m_517",
@@ -26893,7 +26867,7 @@
     "mazin_academic": "Куни",
     "mazin_academic_lat": "Kuni",
     "mazin_ru": "точило, улей",
-    "lz_lat": "Kunu"
+    "lz_lat": "Künü"
   },
   {
     "id": "w_m_518",
@@ -26902,11 +26876,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Уьч˚ур",
-    "mazin_lat": "Üc˚ur",
+    "mazin_lat": "Üc̊ur",
     "mazin_academic": "Уьч˚ур",
     "mazin_academic_lat": "Üc˚ur",
     "mazin_ru": "сарай",
-    "lz_lat": "Kur"
+    "lz_lat": "Kür"
   },
   {
     "id": "w_m_522",
@@ -26932,7 +26906,7 @@
     "mazin_academic": "Къаьгъ",
     "mazin_academic_lat": "Qægh",
     "mazin_ru": "ушко",
-    "lz_lat": "Qaġ"
+    "lz_lat": "Qagh"
   },
   {
     "id": "w_m_527",
@@ -26945,7 +26919,7 @@
     "mazin_academic": "Гахкьун",
     "mazin_academic_lat": "Gaxq'un",
     "mazin_ru": "найти (обратно)",
-    "lz_lat": "Qajġun"
+    "lz_lat": "Qajghun"
   },
   {
     "id": "w_m_528",
@@ -27058,7 +27032,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Къац-у къац-ы",
-    "mazin_lat": "Qats-u qats-y",
+    "mazin_lat": "Qats-u qats-ɨ",
     "mazin_academic": "Къац-у къац-ы",
     "mazin_academic_lat": "Qats-u qats-y",
     "mazin_ru": "зеленый",
@@ -27088,7 +27062,7 @@
     "mazin_academic": "Къачах",
     "mazin_academic_lat": "Qacax",
     "mazin_ru": "разбойник, бандит",
-    "lz_lat": "Qacaġ"
+    "lz_lat": "Qacagh"
   },
   {
     "id": "w_m_542",
@@ -27097,7 +27071,7 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Къач˚ваза",
-    "mazin_lat": "Qac˚vaza",
+    "mazin_lat": "Qac̊waza",
     "mazin_academic": "Къач˚ваза",
     "mazin_academic_lat": "Qac˚vaza",
     "mazin_ru": "возьму, куплю",
@@ -27110,7 +27084,7 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Къач˚вазалзи",
-    "mazin_lat": "Qac˚vazalzi",
+    "mazin_lat": "Qac̊wazalzi",
     "mazin_academic": "Къач˚вазалзи",
     "mazin_academic_lat": "Qac˚vazalzi",
     "mazin_ru": "пока ни взял",
@@ -27123,7 +27097,7 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Къач˚вайзи",
-    "mazin_lat": "Qac˚vayzi",
+    "mazin_lat": "Qac̊wayzi",
     "mazin_academic": "Къач˚вайзи",
     "mazin_academic_lat": "Qac˚vayzi",
     "mazin_ru": "возьмет",
@@ -27136,7 +27110,7 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Къач˚ваз ама",
-    "mazin_lat": "Qac˚vaz ama",
+    "mazin_lat": "Qac̊waz ama",
     "mazin_academic": "Къач˚ваз ама",
     "mazin_academic_lat": "Qac˚vaz ama",
     "mazin_ru": "все еще беру",
@@ -27149,7 +27123,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Къач˚ун",
-    "mazin_lat": "Qac˚un",
+    "mazin_lat": "Qac̊un",
     "mazin_academic": "Къач˚ун",
     "mazin_academic_lat": "Qac˚un",
     "mazin_ru": "брать, покупать",
@@ -27162,24 +27136,11 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Къач˚унатIанна",
-    "mazin_lat": "Qac˚unat'anna",
+    "mazin_lat": "Qac̊unat'anna",
     "mazin_academic": "Къач˚унатIанна",
     "mazin_academic_lat": "Qac˚unat'anna",
     "mazin_ru": "хотя взял",
     "lz_lat": "Qacunat'ani"
-  },
-  {
-    "id": "w_m_548",
-    "lz": "Къачун тавур дуьгуьдикай аш жедач.",
-    "ru": "Из необработанного риса плов не сделаешь.",
-    "cat": "фразы",
-    "ex": "",
-    "mazin": "Катун туур дуьгуьзикаа аш жезач.",
-    "mazin_lat": "Katun tuur dügüzikā ash jezac.",
-    "mazin_academic": "Катун туур дуьгуьзикаа аш жезач.",
-    "mazin_academic_lat": "Katun tuur dügüzikā ash jezac.",
-    "mazin_ru": "Из необработанного риса плов не сделаешь.",
-    "lz_lat": "Qacun tavur dugudikay ash jedac."
   },
   {
     "id": "w_m_549",
@@ -27192,7 +27153,7 @@
     "mazin_academic": "Экъаьгъун",
     "mazin_academic_lat": "Eqæghun",
     "mazin_ru": "накладывать",
-    "lz_lat": "Qyaġun"
+    "lz_lat": "Qyaghun"
   },
   {
     "id": "w_m_550",
@@ -27296,7 +27257,7 @@
     "mazin_academic": "Къиркъайах",
     "mazin_academic_lat": "Qirqayax",
     "mazin_ru": "рак",
-    "lz_lat": "Qirxayaġ"
+    "lz_lat": "Qirxayagh"
   },
   {
     "id": "w_m_562",
@@ -27309,7 +27270,7 @@
     "mazin_academic": "Къвериграй",
     "mazin_academic_lat": "Qwerigray",
     "mazin_ru": "пусть проиграет",
-    "lz_lat": "Quġuray"
+    "lz_lat": "Qughuray"
   },
   {
     "id": "w_m_563",
@@ -27357,7 +27318,7 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Къул ч˚угьун",
-    "mazin_lat": "Qul c˚uhun",
+    "mazin_lat": "Qul c̊uhun",
     "mazin_academic": "Къул ч˚угьун",
     "mazin_academic_lat": "Qul c˚uhun",
     "mazin_ru": "подписать",
@@ -27400,7 +27361,7 @@
     "mazin_academic": "Къухан дагъ",
     "mazin_academic_lat": "Quxan dagh",
     "mazin_ru": "Лысая гора (скалистая гора без травяного покрытия)",
-    "lz_lat": "Quxan daġ"
+    "lz_lat": "Quxan dagh"
   },
   {
     "id": "w_m_573",
@@ -27478,7 +27439,7 @@
     "mazin_academic": "Экъуьн",
     "mazin_academic_lat": "Eqün",
     "mazin_ru": "ходить",
-    "lz_lat": "Qequn"
+    "lz_lat": "Qeqün"
   },
   {
     "id": "w_m_581",
@@ -27829,7 +27790,7 @@
     "mazin_academic": "Кьуьгъваьр",
     "mazin_academic_lat": "Q'üghwær",
     "mazin_ru": "пашня",
-    "lz_lat": "Q'uġwer"
+    "lz_lat": "Q'üghwer"
   },
   {
     "id": "w_m_617",
@@ -27842,7 +27803,7 @@
     "mazin_academic": "КьуьнчI",
     "mazin_academic_lat": "Q'ünc'",
     "mazin_ru": "подмышка",
-    "lz_lat": "Q'uc'"
+    "lz_lat": "Q'üc'"
   },
   {
     "id": "w_m_618",
@@ -27864,9 +27825,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "КьехIаьл",
-    "mazin_lat": "Q'eħæl",
+    "mazin_lat": "Q'ex'æl",
     "mazin_academic": "КьехIаьл",
-    "mazin_academic_lat": "Q'eħæl",
+    "mazin_academic_lat": "Q'exhæl",
     "mazin_ru": "смелый, храбрец",
     "lz_lat": "Q'ehal"
   },
@@ -27942,7 +27903,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Нам-у нам-ы",
-    "mazin_lat": "Nam-u nam-y",
+    "mazin_lat": "Nam-u nam-ɨ",
     "mazin_academic": "Нам-у нам-ы",
     "mazin_academic_lat": "Nam-u nam-y",
     "mazin_ru": "влажный",
@@ -28033,11 +27994,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ЛуьхIлуьхI",
-    "mazin_lat": "Lüħlüħ",
+    "mazin_lat": "Lüx'lüx'",
     "mazin_academic": "ЛуьхIлуьхI",
-    "mazin_academic_lat": "Lüħlüħ",
+    "mazin_academic_lat": "Lüxhlüxh",
     "mazin_ru": "учащенный кашель",
-    "lz_lat": "Luhluh"
+    "lz_lat": "Lühlüh"
   },
   {
     "id": "w_m_642",
@@ -28046,9 +28007,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "МаьхIла",
-    "mazin_lat": "Mæħla",
+    "mazin_lat": "Mæx'la",
     "mazin_academic": "МаьхIла",
-    "mazin_academic_lat": "Mæħla",
+    "mazin_academic_lat": "Mæxhla",
     "mazin_ru": "улица, квартал",
     "lz_lat": "Mahle"
   },
@@ -28063,7 +28024,7 @@
     "mazin_academic": "Малкамут дагъ",
     "mazin_academic_lat": "Malkamut dagh",
     "mazin_ru": "Малкамут гора (гора, визуально похожая на мифическое существо)",
-    "lz_lat": "Malkamut daġ"
+    "lz_lat": "Malkamut dagh"
   },
   {
     "id": "w_m_650",
@@ -28072,9 +28033,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "МаашаллахI",
-    "mazin_lat": "Māshallaħ",
+    "mazin_lat": "Māshallax'",
     "mazin_academic": "МаашаллахI",
-    "mazin_academic_lat": "Māshallaħ",
+    "mazin_academic_lat": "Māshallaxh",
     "mazin_ru": "браво! молодец!",
     "lz_lat": "Manshallah"
   },
@@ -28176,9 +28137,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "МиддаьгI",
-    "mazin_lat": "Middæǵ",
+    "mazin_lat": "Middæg'",
     "mazin_academic": "МиддаьгI",
-    "mazin_academic_lat": "Middæǵ",
+    "mazin_academic_lat": "Middægh",
     "mazin_ru": "кровный враг, недруг",
     "lz_lat": "Midæ"
   },
@@ -28254,9 +28215,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "МуьгIкуьн",
-    "mazin_lat": "Müǵkün",
+    "mazin_lat": "Müg'kün",
     "mazin_academic": "МуьгIкуьн",
-    "mazin_academic_lat": "Müǵkün",
+    "mazin_academic_lat": "Müghkün",
     "mazin_ru": "возможность",
     "lz_lat": "Mumkin"
   },
@@ -28310,7 +28271,7 @@
     "mazin_academic": "Мехтаж",
     "mazin_academic_lat": "Mextaj",
     "mazin_ru": "нужна",
-    "lz_lat": "Muhtej"
+    "lz_lat": "Mühtej"
   },
   {
     "id": "w_m_681",
@@ -28323,7 +28284,7 @@
     "mazin_academic": "Мирхъ",
     "mazin_academic_lat": "Mirqh",
     "mazin_ru": "ржавчина",
-    "lz_lat": "Murqh"
+    "lz_lat": "Mürqh"
   },
   {
     "id": "w_m_683",
@@ -28336,7 +28297,7 @@
     "mazin_academic": "Маьхц",
     "mazin_academic_lat": "Mæxts",
     "mazin_ru": "сарай, хлеб",
-    "lz_lat": "Muxts"
+    "lz_lat": "Müxts"
   },
   {
     "id": "w_m_685",
@@ -28371,9 +28332,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "МигIит",
-    "mazin_lat": "Miǵit",
+    "mazin_lat": "Mig'it",
     "mazin_academic": "МигIит",
-    "mazin_academic_lat": "Miǵit",
+    "mazin_academic_lat": "Mighit",
     "mazin_ru": "труп",
     "lz_lat": "Meyit"
   },
@@ -28414,7 +28375,7 @@
     "mazin_academic": "Ногъв",
     "mazin_academic_lat": "Noghw",
     "mazin_ru": "полова, мякина",
-    "lz_lat": "Naġw"
+    "lz_lat": "Naghw"
   },
   {
     "id": "w_m_696",
@@ -28427,7 +28388,7 @@
     "mazin_academic": "Наагъил",
     "mazin_academic_lat": "Nāghil",
     "mazin_ru": "рассказ",
-    "lz_lat": "Naġil"
+    "lz_lat": "Naghil"
   },
   {
     "id": "w_m_698",
@@ -28475,9 +28436,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "НаьхIс",
-    "mazin_lat": "Næħs",
+    "mazin_lat": "Næx's",
     "mazin_academic": "НаьхIс",
-    "mazin_academic_lat": "Næħs",
+    "mazin_academic_lat": "Næxhs",
     "mazin_ru": "роковой, зловещий",
     "lz_lat": "Næs"
   },
@@ -28488,9 +28449,9 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "Ини хьун",
-    "mazin_lat": "Ini xun",
+    "mazin_lat": "Ini xhun",
     "mazin_academic": "Ини хьун",
-    "mazin_academic_lat": "Ini xun",
+    "mazin_academic_lat": "Ini xhun",
     "mazin_ru": "пропахнуть",
     "lz_lat": "Ni xhun"
   },
@@ -28501,7 +28462,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Никеру никеры",
-    "mazin_lat": "Nikeru nikery",
+    "mazin_lat": "Nikeru nikerɨ",
     "mazin_academic": "Никеру никеры",
     "mazin_academic_lat": "Nikeru nikery",
     "mazin_ru": "поле, пашня",
@@ -28566,9 +28527,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ПахIливан",
-    "mazin_lat": "Paħlivan",
+    "mazin_lat": "Pax'livan",
     "mazin_academic": "ПахIливан",
-    "mazin_academic_lat": "Paħlivan",
+    "mazin_academic_lat": "Paxhlivan",
     "mazin_ru": "борец, силач",
     "lz_lat": "Pahlivan"
   },
@@ -28579,9 +28540,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ПаачахI",
-    "mazin_lat": "Pācaħ",
+    "mazin_lat": "Pācax'",
     "mazin_academic": "ПаачахI",
-    "mazin_academic_lat": "Pācaħ",
+    "mazin_academic_lat": "Pācaxh",
     "mazin_ru": "царь, государь",
     "lz_lat": "Pacah"
   },
@@ -28722,11 +28683,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "РагIдуни",
-    "mazin_lat": "Raǵduni",
+    "mazin_lat": "Rag'duni",
     "mazin_academic": "РагIдуни",
-    "mazin_academic_lat": "Raǵduni",
+    "mazin_academic_lat": "Raghduni",
     "mazin_ru": "сумерки",
-    "lz_lat": "Raġdan"
+    "lz_lat": "Raghdan"
   },
   {
     "id": "w_m_737",
@@ -28735,9 +28696,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "РаьхIмет-ту",
-    "mazin_lat": "Ræħmet-tu",
+    "mazin_lat": "Ræx'met-tu",
     "mazin_academic": "РаьхIмет-ту",
-    "mazin_academic_lat": "Ræħmet-tu",
+    "mazin_academic_lat": "Ræxhmet-tu",
     "mazin_ru": "покойный",
     "lz_lat": "Rahmetlu"
   },
@@ -28817,7 +28778,7 @@
     "mazin_academic": "Регъвер дагъ",
     "mazin_academic_lat": "Reghwer dagh",
     "mazin_ru": "Мельничная гора (гора, где когда-то была мельница)",
-    "lz_lat": "Reġwer daġ"
+    "lz_lat": "Reghwer dagh"
   },
   {
     "id": "w_m_748",
@@ -28826,7 +28787,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Рушару рушары",
-    "mazin_lat": "Rusharu rushary",
+    "mazin_lat": "Rusharu rusharɨ",
     "mazin_academic": "Рушару рушары",
     "mazin_academic_lat": "Rusharu rushary",
     "mazin_ru": "девушка",
@@ -28917,9 +28878,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "СаьгIт-ар",
-    "mazin_lat": "Sæǵt-ar",
+    "mazin_lat": "Sæg't-ar",
     "mazin_academic": "СаьгIт-ар",
-    "mazin_academic_lat": "Sæǵt-ar",
+    "mazin_academic_lat": "Sæght-ar",
     "mazin_ru": "час, часы",
     "lz_lat": "Sæter"
   },
@@ -28934,7 +28895,7 @@
     "mazin_academic": "Сайагъ",
     "mazin_academic_lat": "Sayagh",
     "mazin_ru": "способ, метод",
-    "lz_lat": "Siyaġ"
+    "lz_lat": "Siyagh"
   },
   {
     "id": "w_m_763",
@@ -28986,7 +28947,7 @@
     "mazin_academic": "Сувах",
     "mazin_academic_lat": "Suvax",
     "mazin_ru": "штукатурка",
-    "lz_lat": "Suvaġ"
+    "lz_lat": "Suvagh"
   },
   {
     "id": "w_m_767",
@@ -29008,7 +28969,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚уьж˚варуз",
-    "mazin_lat": "J˚üj˚varuz",
+    "mazin_lat": "J̊üj̊waruz",
     "mazin_academic": "Ж˚уьж˚варуз",
     "mazin_academic_lat": "J˚üj˚varuz",
     "mazin_ru": "невестам",
@@ -29034,7 +28995,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Сес-ер",
-    "mazin_lat": "Ses-yer",
+    "mazin_lat": "Ses-er",
     "mazin_academic": "Сес-ер",
     "mazin_academic_lat": "Ses-yer",
     "mazin_ru": "голос, звук",
@@ -29047,9 +29008,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ТаьгIди",
-    "mazin_lat": "Tæǵdi",
+    "mazin_lat": "Tæg'di",
     "mazin_academic": "ТаьгIди",
-    "mazin_academic_lat": "Tæǵdi",
+    "mazin_academic_lat": "Tæghdi",
     "mazin_ru": "спешный, срочный",
     "lz_lat": "Tadi"
   },
@@ -29060,9 +29021,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ТаьгIдиз",
-    "mazin_lat": "Tæǵdiz",
+    "mazin_lat": "Tæg'diz",
     "mazin_academic": "ТаьгIдиз",
-    "mazin_academic_lat": "Tæǵdiz",
+    "mazin_academic_lat": "Tæghdiz",
     "mazin_ru": "быстро, скоро",
     "lz_lat": "Tadiz"
   },
@@ -29220,7 +29181,7 @@
     "mazin_academic": "Уьткуьн",
     "mazin_academic_lat": "Ütkün",
     "mazin_ru": "ладиться, ладить",
-    "lz_lat": "Tuk'un"
+    "lz_lat": "Tük'ün"
   },
   {
     "id": "w_m_795",
@@ -29259,7 +29220,7 @@
     "mazin_academic": "Тагъма",
     "mazin_academic_lat": "Taghma",
     "mazin_ru": "клеймо",
-    "lz_lat": "T'aġma"
+    "lz_lat": "T'aghma"
   },
   {
     "id": "w_m_799",
@@ -29402,7 +29363,7 @@
     "mazin_academic": "Уткъуьн",
     "mazin_academic_lat": "Utqün",
     "mazin_ru": "тухнуть, затухать",
-    "lz_lat": "Txun"
+    "lz_lat": "Txün"
   },
   {
     "id": "w_m_823",
@@ -29428,7 +29389,7 @@
     "mazin_academic": "Чинихчи",
     "mazin_academic_lat": "Cinixci",
     "mazin_ru": "вор",
-    "lz_lat": "Uġri"
+    "lz_lat": "Ughri"
   },
   {
     "id": "w_m_827",
@@ -29441,7 +29402,7 @@
     "mazin_academic": "Утах",
     "mazin_academic_lat": "Utax",
     "mazin_ru": "общий",
-    "lz_lat": "Utaġ"
+    "lz_lat": "Utagh"
   },
   {
     "id": "w_m_828",
@@ -29454,7 +29415,7 @@
     "mazin_academic": "Уьрагъзач никIер",
     "mazin_academic_lat": "Üraghzac nik'er",
     "mazin_ru": "Пашни на берегу озера (уьрагъ = озеро)",
-    "lz_lat": "Uraġzac nik'er"
+    "lz_lat": "Üraghzac nik'er"
   },
   {
     "id": "w_m_830",
@@ -29467,7 +29428,7 @@
     "mazin_academic": "УчIун",
     "mazin_academic_lat": "Uc'un",
     "mazin_ru": "рушиться",
-    "lz_lat": "Uts'un"
+    "lz_lat": "Üts'ün"
   },
   {
     "id": "w_m_834",
@@ -29480,7 +29441,7 @@
     "mazin_academic": "УчIурай",
     "mazin_academic_lat": "Uc'uray",
     "mazin_ru": "пусть рушится",
-    "lz_lat": "Uts'uray"
+    "lz_lat": "Üts'üray"
   },
   {
     "id": "w_m_835",
@@ -29493,7 +29454,7 @@
     "mazin_academic": "Фаьаькъир",
     "mazin_academic_lat": "Fǣqir",
     "mazin_ru": "несчастный, бедный",
-    "lz_lat": "Faġir"
+    "lz_lat": "Faghir"
   },
   {
     "id": "w_m_838",
@@ -29528,7 +29489,7 @@
     "cat": "места",
     "ex": "",
     "mazin": "Фекьияр булах",
-    "mazin_lat": "Feq'iær bulax",
+    "mazin_lat": "Feq'iyar bulax",
     "mazin_academic": "Фекьияр булах",
     "mazin_academic_lat": "Feq'iær bulax",
     "mazin_ru": "Родник мулл (родник, возле которого собирались имамы)",
@@ -29541,7 +29502,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚уьд",
-    "mazin_lat": "J˚üd",
+    "mazin_lat": "J̊üd",
     "mazin_academic": "Ж˚уьд",
     "mazin_academic_lat": "J˚üd",
     "mazin_ru": "навоз",
@@ -29580,7 +29541,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚уьтIун",
-    "mazin_lat": "J˚üt'un",
+    "mazin_lat": "J̊üt'un",
     "mazin_academic": "Ж˚уьтIун",
     "mazin_academic_lat": "J˚üt'un",
     "mazin_ru": "сосать",
@@ -29870,7 +29831,7 @@
     "mazin_academic": "Уьхуьз ама",
     "mazin_academic_lat": "Üxüz ama",
     "mazin_ru": "все еще хранит",
-    "lz_lat": "Xuzma"
+    "lz_lat": "Xüzma"
   },
   {
     "id": "w_m_876",
@@ -29883,7 +29844,7 @@
     "mazin_academic": "Уьхуьрай",
     "mazin_academic_lat": "Üxüray",
     "mazin_ru": "пусть хранит",
-    "lz_lat": "Xuray"
+    "lz_lat": "Xüray"
   },
   {
     "id": "w_m_878",
@@ -30078,7 +30039,7 @@
     "mazin_academic": "Хъуьркъвенай",
     "mazin_academic_lat": "Qhürqwenay",
     "mazin_ru": "смеялся",
-    "lz_lat": "Qhurena"
+    "lz_lat": "Qhürena"
   },
   {
     "id": "w_m_898",
@@ -30091,7 +30052,7 @@
     "mazin_academic": "ХъуьрхъвенатIанна",
     "mazin_academic_lat": "Qhürqhwenat'anna",
     "mazin_ru": "хотя посмеялся",
-    "lz_lat": "Qhurenat'ani"
+    "lz_lat": "Qhürenat'ani"
   },
   {
     "id": "w_m_900",
@@ -30104,7 +30065,7 @@
     "mazin_academic": "ЦIиницI",
     "mazin_academic_lat": "Ts'inits'",
     "mazin_ru": "мука (некачественная)",
-    "lz_lat": "Qhucen"
+    "lz_lat": "Qhücen"
   },
   {
     "id": "w_m_901",
@@ -30126,9 +30087,9 @@
     "cat": "глаголы",
     "ex": "",
     "mazin": "ХьайтIа",
-    "mazin_lat": "Xayt'a",
+    "mazin_lat": "Xhayt'a",
     "mazin_academic": "ХьайтIа",
-    "mazin_academic_lat": "Xayt'a",
+    "mazin_academic_lat": "Xhayt'a",
     "mazin_ru": "если будет, станет",
     "lz_lat": "Xhayit'a"
   },
@@ -30139,9 +30100,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Хьахь",
-    "mazin_lat": "Xax",
+    "mazin_lat": "Xhaxh",
     "mazin_academic": "Хьахь",
-    "mazin_academic_lat": "Xax",
+    "mazin_academic_lat": "Xhax",
     "mazin_ru": "плесень",
     "lz_lat": "Xhaxh"
   },
@@ -30152,9 +30113,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Хьухь",
-    "mazin_lat": "Xux",
+    "mazin_lat": "Xhuxh",
     "mazin_academic": "Хьухь",
-    "mazin_academic_lat": "Xux",
+    "mazin_academic_lat": "Xhux",
     "mazin_ru": "будь, стать",
     "lz_lat": "Xhuxh"
   },
@@ -30165,9 +30126,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "ХесаьгIт",
-    "mazin_lat": "Xesæǵt",
+    "mazin_lat": "Xesæg't",
     "mazin_academic": "ХесаьгIт",
-    "mazin_academic_lat": "Xesæǵt",
+    "mazin_academic_lat": "Xesæght",
     "mazin_ru": "черта характера, привычка",
     "lz_lat": "Xeset"
   },
@@ -30204,7 +30165,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Циферу циферы",
-    "mazin_lat": "Tsiferu tsifery",
+    "mazin_lat": "Tsiferu tsiferɨ",
     "mazin_academic": "Циферу циферы",
     "mazin_academic_lat": "Tsiferu tsifery",
     "mazin_ru": "туча, облако",
@@ -30247,7 +30208,7 @@
     "mazin_academic": "Цуьрц",
     "mazin_academic_lat": "Tsürts",
     "mazin_ru": "побег, росток",
-    "lz_lat": "Tsurts"
+    "lz_lat": "Tsürts"
   },
   {
     "id": "w_m_923",
@@ -30256,7 +30217,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ч˚уьквал",
-    "mazin_lat": "C˚ükwal",
+    "mazin_lat": "C̊ükwal",
     "mazin_academic": "Ч˚уьквал",
     "mazin_academic_lat": "C˚ükwal",
     "mazin_ru": "перо, перышко",
@@ -30403,7 +30364,7 @@
     "mazin_academic": "ЦIидгъенун",
     "mazin_academic_lat": "Ts'idghenun",
     "mazin_ru": "скользнуть",
-    "lz_lat": "Ts'udġunun"
+    "lz_lat": "Ts'üdghünun"
   },
   {
     "id": "w_m_943",
@@ -30429,7 +30390,7 @@
     "mazin_academic": "ЦIичI˚уд",
     "mazin_academic_lat": "Ts'ic'˚ud",
     "mazin_ru": "девятнадцать",
-    "lz_lat": "Ts'ek'ud"
+    "lz_lat": "Ts'ek'üd"
   },
   {
     "id": "w_m_947",
@@ -30442,7 +30403,7 @@
     "mazin_academic": "ЦIумижид",
     "mazin_academic_lat": "Ts'umijid",
     "mazin_ru": "восемнадцать",
-    "lz_lat": "Ts'emujud"
+    "lz_lat": "Ts'emüjüd"
   },
   {
     "id": "w_m_948",
@@ -30490,7 +30451,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Уьч˚вал",
-    "mazin_lat": "Üc˚val",
+    "mazin_lat": "Üc̊wal",
     "mazin_academic": "Уьч˚вал",
     "mazin_academic_lat": "Üc˚val",
     "mazin_ru": "шов",
@@ -30503,7 +30464,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ч˚вар",
-    "mazin_lat": "C˚var",
+    "mazin_lat": "C̊war",
     "mazin_academic": "Ч˚вар",
     "mazin_academic_lat": "C˚var",
     "mazin_ru": "моча",
@@ -30529,7 +30490,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Цилеж˚",
-    "mazin_lat": "Tsilej˚",
+    "mazin_lat": "Tsilej̊",
     "mazin_academic": "Цилеж˚",
     "mazin_academic_lat": "Tsilej˚",
     "mazin_ru": "селезенка",
@@ -30542,7 +30503,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ж˚уьруь",
-    "mazin_lat": "J˚ürü",
+    "mazin_lat": "J̊ürü",
     "mazin_academic": "Ж˚уьруь",
     "mazin_academic_lat": "J˚ürü",
     "mazin_ru": "черемша",
@@ -30568,11 +30529,11 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ч˚уьл",
-    "mazin_lat": "C˚ül",
+    "mazin_lat": "C̊ül",
     "mazin_academic": "Ч˚уьл",
     "mazin_academic_lat": "C˚ül",
     "mazin_ru": "сноп",
-    "lz_lat": "Tsul"
+    "lz_lat": "Tsül"
   },
   {
     "id": "w_m_966",
@@ -30624,7 +30585,7 @@
     "mazin_academic": "Чуьраьгъ",
     "mazin_academic_lat": "Cürægh",
     "mazin_ru": "светильник",
-    "lz_lat": "Ciraġ"
+    "lz_lat": "Ciragh"
   },
   {
     "id": "w_m_970",
@@ -30650,7 +30611,7 @@
     "mazin_academic": "Чиних урла",
     "mazin_academic_lat": "Cinix urla",
     "mazin_ru": "когда своровал",
-    "lz_lat": "Cunuxayla"
+    "lz_lat": "Cünüxayla"
   },
   {
     "id": "w_m_975",
@@ -30663,7 +30624,7 @@
     "mazin_academic": "Чиних извайла",
     "mazin_academic_lat": "Cinix izwayla",
     "mazin_ru": "когда воровал, крал",
-    "lz_lat": "Cunuxzavayla"
+    "lz_lat": "Cünüxzavayla"
   },
   {
     "id": "w_m_976",
@@ -30676,7 +30637,7 @@
     "mazin_academic": "Чинихунмазна",
     "mazin_academic_lat": "Cinixunmazna",
     "mazin_ru": "как только украл",
-    "lz_lat": "Cunuxnamazdi"
+    "lz_lat": "Cünüxnamazdi"
   },
   {
     "id": "w_m_978",
@@ -30689,7 +30650,7 @@
     "mazin_academic": "Чихин",
     "mazin_academic_lat": "Cixin",
     "mazin_ru": "мыть, стирать",
-    "lz_lat": "Cuxun"
+    "lz_lat": "Cüxün"
   },
   {
     "id": "w_m_979",
@@ -30702,7 +30663,7 @@
     "mazin_academic": "Чихирай",
     "mazin_academic_lat": "Cixiray",
     "mazin_ru": "пусть моет",
-    "lz_lat": "Cuxuray"
+    "lz_lat": "Cüxüray"
   },
   {
     "id": "w_m_980",
@@ -30737,7 +30698,7 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Ч˚уьгьун",
-    "mazin_lat": "C˚ühun",
+    "mazin_lat": "C̊ühun",
     "mazin_academic": "Ч˚уьгьун",
     "mazin_academic_lat": "C˚ühun",
     "mazin_ru": "тянуть",
@@ -30880,9 +30841,9 @@
     "cat": "общее",
     "ex": "",
     "mazin": "Жутум хьун",
-    "mazin_lat": "Jutum xun",
+    "mazin_lat": "Jutum xhun",
     "mazin_academic": "Жутум хьун",
-    "mazin_academic_lat": "Jutum xun",
+    "mazin_academic_lat": "Jutum xhun",
     "mazin_ru": "сохнуть",
     "lz_lat": "Sht'um xhun"
   },
@@ -30923,7 +30884,7 @@
     "mazin_academic": "Шеъ-шуьъ",
     "mazin_academic_lat": "She'-shü'",
     "mazin_ru": "всякая всячина",
-    "lz_lat": "Sheyshuy"
+    "lz_lat": "Sheyshüy"
   },
   {
     "id": "w_m_1011",
@@ -30936,7 +30897,7 @@
     "mazin_academic": "Уькнаьхзи",
     "mazin_academic_lat": "Üknæxzi",
     "mazin_ru": "утром",
-    "lz_lat": "Ekunaqh"
+    "lz_lat": "Ekünaqh"
   },
   {
     "id": "w_m_1012",
@@ -30949,7 +30910,7 @@
     "mazin_academic": "Уькнаьгьан",
     "mazin_academic_lat": "Üknæhan",
     "mazin_ru": "утренний",
-    "lz_lat": "Ekunaqhan"
+    "lz_lat": "Ekünaqhan"
   },
   {
     "id": "w_m_1013",

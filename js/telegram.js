@@ -436,6 +436,21 @@
             }
         },
 
+        createRoomInviteLink(roomCode) {
+            return `https://t.me/LezgiMez/app?startapp=room_${roomCode}`;
+        },
+
+        shareRoomInvite(roomCode) {
+            const user = this.getUser();
+            const name = user ? ([user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Друг') : 'Твой друг';
+            const link = this.createRoomInviteLink(roomCode);
+            const text = `⚔️ ${name} вызывает тебя на онлайн-дуэль в LezgiMez!\n\n` +
+                `🔥 Живая битва в реальном времени: у каждого по 3 жизни.\n` +
+                `🔑 Код комнаты: ${roomCode}\n\n` +
+                `Жми на ссылку, заходи в комнату и сразись прямо сейчас! 🏆`;
+            this.shareUrl(text, link);
+        },
+
         createDuelShareLink(challengeData) {
             const code = this.encodeDuelChallenge(challengeData);
             if (!code) return 'https://t.me/LezgiMez';
@@ -472,15 +487,33 @@
 
         checkIncomingDuel() {
             let duelParam = null;
-            if (tg?.initDataUnsafe?.start_param && tg.initDataUnsafe.start_param.startsWith('duel_')) {
+            if (tg?.initDataUnsafe?.start_param) {
                 duelParam = tg.initDataUnsafe.start_param;
             } else {
                 const urlParams = new URLSearchParams(window.location.search);
-                const queryDuel = urlParams.get('duel') || urlParams.get('startapp');
+                const queryDuel = urlParams.get('room') || urlParams.get('duel') || urlParams.get('startapp');
                 if (queryDuel) duelParam = queryDuel;
             }
 
-            if (duelParam) {
+            if (!duelParam) return;
+
+            // Check if it's a live room invite
+            if (duelParam.startsWith('room_') || duelParam.startsWith('duel_room_') || duelParam.length <= 8) {
+                let code = duelParam.replace(/^(duel_)?room_/, '').trim();
+                setTimeout(() => {
+                    if (typeof window.showIncomingDuelModal === 'function') {
+                        window.showIncomingDuelModal({
+                            isLiveRoom: true,
+                            roomCode: code,
+                            name: 'Друг'
+                        });
+                    }
+                }, 400);
+                return;
+            }
+
+            // Otherwise check legacy encoded challenge
+            if (duelParam.startsWith('duel_') || duelParam.length > 10) {
                 const challenge = this.decodeDuelChallenge(duelParam);
                 if (challenge && challenge.wordIds && challenge.wordIds.length > 0) {
                     setTimeout(() => {

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://telegram.org https://*.telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.telegram.org https://*.telegram.org;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://telegram.org https://*.telegram.org https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.telegram.org https://*.telegram.org https://*.peerjs.com wss://*.peerjs.com;">
     <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="mobile-web-app-capable" content="yes">
@@ -26,9 +26,48 @@
     <meta property="og:description" content="Интерактивный помощник для изучения лезгинского языка.">
     <meta property="og:image" content="./icons/icon.svg">
 
+    <link rel="stylesheet" href="./fonts.css">
     <link rel="stylesheet" href="./output.css">
     <link rel="stylesheet" href="./fa/all.min.css">
     <style>
+        /* ========== ДИЗАЙН-ТОКЕНЫ LEZGIMEZ ========== */
+        :root {
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+            --font-heading: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            --c-primary: #059669;
+            --c-primary-dark: #064e3b;
+            --c-primary-surface: #ecfdf5;
+            --c-surface: #ffffff;
+            --c-bg: #f8fafc;
+            --c-border: #e2e8f0;
+            --c-text-main: #0f172a;
+            --c-text-muted: #64748b;
+            --c-text-sub: #94a3b8;
+            --c-danger: #e11d48;
+            --c-warning: #d97706;
+            --radius-sm: 0.75rem;
+            --radius-md: 1rem;
+            --radius-lg: 1.5rem;
+            --safe-bottom-space: calc(5.5rem + env(safe-area-inset-bottom, 16px));
+        }
+
+        html, body, button, input, select, textarea {
+            font-family: var(--font-sans) !important;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        h1, h2, h3, .font-heading {
+            font-family: var(--font-heading) !important;
+            letter-spacing: -0.02em;
+        }
+
+        .lezgin-text {
+            font-size: inherit !important;
+            line-height: 1.25 !important;
+        }
+
         /* ========== БЛОКИРОВКА ВЫДЕЛЕНИЯ ТЕКСТА ========== */
         body {
             -webkit-user-select: none;
@@ -172,13 +211,571 @@
 
         /* Анимация для модальных окон */
         #word-modal:not(.hidden),
-        #practice-modal:not(.hidden) {
+        #practice-modal:not(.hidden),
+        #duel-menu-modal:not(.hidden),
+        #duel-lobby-modal:not(.hidden),
+        #duel-join-modal:not(.hidden),
+        #duel-matchmaking-modal:not(.hidden),
+        #duel-incoming-modal:not(.hidden),
+        #duel-modal:not(.hidden) {
             animation: fade-in 0.2s ease-out both;
         }
 
         #word-modal:not(.hidden) .modal,
-        #practice-modal:not(.hidden)>div {
+        #practice-modal:not(.hidden)>div,
+        #duel-menu-modal:not(.hidden)>div,
+        #duel-lobby-modal:not(.hidden)>div,
+        #duel-join-modal:not(.hidden)>div,
+        #duel-matchmaking-modal:not(.hidden)>div,
+        #duel-incoming-modal:not(.hidden)>div,
+        #duel-modal:not(.hidden)>div {
             animation: slide-up 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+        }
+
+        /* Radar Pulse Animation for Matchmaking and Lobby */
+        @keyframes radar-pulse {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 0.25; }
+            100% { transform: scale(1.7); opacity: 0; }
+        }
+        .radar-pulse-ring {
+            position: absolute;
+            inset: -8px;
+            border-radius: 9999px;
+            border: 2px solid #10b981;
+            animation: radar-pulse 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+        }
+        .radar-pulse-ring-delayed {
+            animation-delay: 0.75s;
+        }
+
+        /* ========== ДУЭЛЬ СЛОВ И КВИЗ (СТИЛИСТИКА LEZGIMEZ) ========== */
+        #duel-arena-content.hidden,
+        #duel-result-content.hidden,
+        #duel-hud-bar.hidden,
+        #duel-progress-container.hidden,
+        .duel-arena-body.hidden,
+        .duel-result-wrapper.hidden,
+        .duel-hud-bar.hidden,
+        .duel-progress-container.hidden {
+            display: none !important;
+        }
+
+        .duel-modal-wrapper {
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        @media (min-width: 768px) {
+            .duel-modal-wrapper {
+                border-radius: 1.5rem;
+                max-height: 92vh;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+                border: 1px solid #f1f5f9;
+            }
+        }
+
+        /* Top Progress Bar */
+        .duel-progress-container {
+            width: 100%;
+            height: 3px;
+            background: #e2e8f0;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .duel-progress-fill {
+            height: 100%;
+            background: #059669;
+            border-radius: 9999px;
+            transition: width 0.3s ease;
+        }
+
+        /* Arena Header */
+        .duel-header-bar {
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            background: #ffffff;
+            flex-shrink: 0;
+        }
+        .duel-header-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .duel-round-badge {
+            padding: 0.25rem 0.75rem;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 9999px;
+            white-space: nowrap;
+            z-index: 2;
+        }
+        .duel-btn-round-close {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 9999px;
+            background: #f1f5f9;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            z-index: 2;
+        }
+        .duel-btn-round-close:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .duel-btn-round-close:active {
+            transform: scale(0.94);
+        }
+
+        /* HUD: Players & Timer */
+        .duel-hud-bar {
+            padding: 0.65rem 1rem;
+            margin: 0.75rem auto 0;
+            max-width: 28rem;
+            width: calc(100% - 2.5rem);
+            box-sizing: border-box;
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 1.25rem;
+            display: grid !important;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            flex-shrink: 0;
+        }
+        .duel-player-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.2rem;
+            min-width: 0;
+            width: 100%;
+            transition: opacity 0.2s ease;
+        }
+        .duel-player-card.is-rival {
+            align-items: flex-end;
+            text-align: right;
+        }
+        .duel-player-header {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .duel-avatar {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 0.5rem;
+            background: #ecfdf5;
+            color: #059669;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+        .duel-avatar.is-rival {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        .duel-avatar.is-trophy {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        .duel-avatar.is-trophy i {
+            color: #d97706 !important;
+        }
+
+        .duel-player-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 95px;
+        }
+        .duel-player-sub {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .duel-hearts-list {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .duel-heart {
+            font-size: 0.75rem;
+            color: #f43f5e;
+            transition: all 0.2s ease;
+        }
+        .duel-heart.is-empty {
+            color: #e2e8f0;
+            opacity: 0.7;
+        }
+        .duel-score-pill {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #059669;
+            white-space: nowrap;
+        }
+        .duel-score-pill.is-gold {
+            color: #d97706;
+        }
+        .duel-score-pill.is-rival {
+            color: #64748b;
+        }
+
+        /* Central Timer */
+        .duel-timer-widget {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .duel-timer-badge {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #059669;
+            background: #f0fdf4;
+            border: 1px solid #d1fae5;
+            border-radius: 9999px;
+            padding: 0.2rem 0.65rem;
+            min-width: 2.5rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .duel-timer-badge.is-warning {
+            color: #d97706;
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+        .duel-timer-badge.is-critical {
+            color: #e11d48;
+            background: #fff1f2;
+            border-color: #fecdd3;
+            animation: pulse 0.8s infinite;
+        }
+
+        /* Arena Central Content */
+        .duel-arena-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0.75rem 1.25rem 1.25rem;
+            max-width: 28rem;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            gap: 1rem;
+            overflow-y: auto;
+        }
+
+        /* Word Presentation Card (matching LezgiMez practice cards) */
+        .duel-hero-card {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 1.5rem;
+            padding: 1.5rem 1.25rem 1.25rem;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+        .duel-hero-audio-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 0.75rem;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        .duel-hero-audio-btn:hover {
+            background: #ecfdf5;
+            color: #059669;
+            border-color: #a7f3d0;
+        }
+        .duel-hero-audio-btn:active {
+            transform: scale(0.92);
+        }
+        .duel-hero-word {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin: 0.25rem 0 0;
+            cursor: pointer;
+        }
+        .duel-hero-translit {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #94a3b8;
+            margin-top: 0.35rem;
+        }
+        .duel-feedback-banner {
+            min-height: 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+        }
+        .duel-feedback-banner.is-correct {
+            color: #059669;
+        }
+        .duel-feedback-banner.is-wrong {
+            color: #e11d48;
+        }
+
+        /* Quiz Answer Buttons (Native LezgiMez rounded cards) */
+        .duel-options-stack {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+        }
+        .duel-opt-btn {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 1.25rem;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+        .duel-opt-btn:hover:not(:disabled) {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        .duel-opt-btn:active:not(:disabled) {
+            transform: scale(0.985);
+            border-color: #10b981;
+        }
+        .duel-opt-text {
+            flex: 1;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.3;
+        }
+        .duel-opt-status {
+            width: 1.25rem;
+            height: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            transition: all 0.15s ease;
+        }
+        .duel-opt-btn.is-correct {
+            background: #ecfdf5 !important;
+            border-color: #10b981 !important;
+        }
+        .duel-opt-btn.is-correct .duel-opt-text {
+            color: #064e3b !important;
+            font-weight: 700;
+        }
+        .duel-opt-btn.is-correct .duel-opt-status {
+            color: #059669 !important;
+        }
+        .duel-opt-btn.is-wrong {
+            background: #fff1f2 !important;
+            border-color: #f43f5e !important;
+            animation: shake 0.35s ease;
+        }
+        .duel-opt-btn.is-wrong .duel-opt-text {
+            color: #9f1239 !important;
+            font-weight: 700;
+        }
+        .duel-opt-btn.is-wrong .duel-opt-status {
+            color: #e11d48 !important;
+        }
+
+        /* Result Screen (matching LezgiMez stats cards) */
+        .duel-result-wrapper {
+            flex: 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            max-width: 24rem;
+            margin: auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .duel-result-icon-box {
+            width: 4.5rem;
+            height: 4.5rem;
+            border-radius: 1.25rem;
+            background: #fef3c7;
+            color: #d97706;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15);
+        }
+        .duel-result-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+        .duel-result-desc {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 1.25rem;
+            line-height: 1.4;
+        }
+        .duel-stats-bento {
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            border-radius: 1.25rem;
+            padding: 0.875rem 1.25rem;
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        /* Result Screen Action Buttons */
+        .duel-action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            width: 100%;
+        }
+        .duel-btn-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 1.25rem;
+            background-color: #059669;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border-radius: 1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.15s ease;
+        }
+        .duel-btn-primary:hover {
+            background-color: #047857;
+        }
+        .duel-btn-primary:active {
+            transform: scale(0.98);
+        }
+        .duel-btn-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem 1.25rem;
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .duel-btn-secondary:hover {
+            background-color: #e2e8f0;
+            color: #0f172a;
+        }
+        .duel-btn-secondary:active {
+            transform: scale(0.98);
+        }
+        .duel-btn-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            width: 100%;
+            padding: 0.35rem 0.75rem;
+            background: transparent;
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+        .duel-btn-link:hover {
+            color: #475569;
+        }
+        .duel-btn-link:active {
+            transform: scale(0.98);
+        }
+
+        /* Menu Modal & Dialog Buttons */
+        .duel-btn-card {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 1.25rem;
+            color: #1e293b;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        .duel-btn-card:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        .duel-btn-card:active {
+            transform: scale(0.98);
         }
 
         /* Главный контейнер с мягким серо-голубым фоном */
@@ -206,7 +803,7 @@
             border-color: #333 !important;
         }
 
-        /* Анимация нижней навигации — активный индикатор */
+        /* Нижняя навигация */
         .bottom-nav .nav-tab {
             position: relative;
             transition: color 0.2s ease;
@@ -243,6 +840,37 @@
             -webkit-user-select: none;
             -ms-user-select: none;
             touch-action: pan-x pan-y;
+        }
+
+        /* Отключаем scroll anchoring, чтобы браузер самопроизвольно не скроллил контент при вставке/анимации элементов */
+        main,
+        #practice-grammar-view,
+        #grammar-units-grid,
+        #modal-content,
+        #modal-content > div {
+            overflow-anchor: none;
+        }
+
+        /* Гарантированное ограничение высоты модальных окон для предотвращения растягивания и вылета наверх */
+        #word-modal .modal {
+            max-height: 88dvh;
+        }
+        #leaderboard-modal > div {
+            max-height: 90dvh;
+        }
+        #leaderboard-list {
+            max-height: 50dvh;
+        }
+        @media (min-width: 768px) {
+            #word-modal .modal {
+                max-height: 85vh;
+            }
+            #leaderboard-modal > div {
+                max-height: 90vh;
+            }
+            #leaderboard-list {
+                max-height: 50vh;
+            }
         }
 
 
@@ -977,72 +1605,69 @@
             cursor: grabbing;
         }
 
+        /* ========== MINIMALIST SWIPE BADGES ========== */
         .swipe-badge {
             position: absolute;
             z-index: 40;
             pointer-events: none;
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-weight: 800;
-            font-size: 0.95rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            padding: 6px 14px;
-            border-radius: 14px;
-            border-width: 2.5px;
+            gap: 5px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            letter-spacing: 0.02em;
+            padding: 5px 14px;
+            border-radius: 9999px;
+            border-width: 1px;
             opacity: 0;
             will-change: opacity, transform;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: opacity 0.15s ease, transform 0.15s ease;
         }
 
         .swipe-badge-easy {
-            top: 20px;
-            left: 20px;
-            transform: rotate(-10deg);
-            color: #059669;
-            background: rgba(236, 253, 245, 0.92);
-            border-color: #10b981;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+            color: #065f46;
+            background: rgba(236, 253, 245, 0.96);
+            border-color: rgba(52, 211, 153, 0.45);
         }
 
         .swipe-badge-wrong {
-            top: 20px;
-            right: 20px;
-            transform: rotate(10deg);
-            color: #e11d48;
-            background: rgba(255, 241, 242, 0.92);
-            border-color: #f43f5e;
-            box-shadow: 0 4px 14px rgba(244, 63, 94, 0.25);
+            color: #9f1239;
+            background: rgba(255, 241, 242, 0.96);
+            border-color: rgba(251, 113, 133, 0.45);
         }
 
         .swipe-badge-hard {
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #d97706;
-            background: rgba(254, 243, 199, 0.92);
-            border-color: #f59e0b;
-            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+            color: #92400e;
+            background: rgba(254, 243, 199, 0.96);
+            border-color: rgba(245, 158, 11, 0.45);
+        }
+
+        [data-theme="dark"] .swipe-badge {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
         }
 
         [data-theme="dark"] .swipe-badge-easy {
             color: #34d399;
             background: rgba(6, 78, 59, 0.92);
-            border-color: #34d399;
+            border-color: rgba(52, 211, 153, 0.35);
         }
 
         [data-theme="dark"] .swipe-badge-wrong {
             color: #fb7185;
             background: rgba(136, 19, 55, 0.92);
-            border-color: #fb7185;
+            border-color: rgba(251, 113, 133, 0.35);
         }
 
         [data-theme="dark"] .swipe-badge-hard {
             color: #fbbf24;
             background: rgba(120, 53, 15, 0.92);
-            border-color: #fbbf24;
+            border-color: rgba(251, 191, 36, 0.35);
         }
 
         /* ========== SRS BUTTONS BACKGROUNDS & STYLES ========== */
@@ -1100,30 +1725,29 @@
 
         /* ========== SRS REPORT BUTTON ========== */
         .srs-report-btn {
-            width: 44px !important;
-            height: 44px !important;
-            border-radius: 14px !important;
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 12px !important;
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
-            background-color: #fff1f2 !important;
-            color: #e11d48 !important;
-            border: 1px solid #ffe4e6 !important;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            background-color: #f8fafc !important;
+            color: #94a3b8 !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: none !important;
             cursor: pointer !important;
             transition: all 0.15s ease !important;
             flex-shrink: 0 !important;
         }
         .srs-report-btn i {
-            font-size: 20px !important;
+            font-size: 15px !important;
         }
         .srs-report-btn:hover {
-            background-color: #ffe4e6 !important;
-            color: #be123c !important;
+            background-color: #f1f5f9 !important;
+            color: #64748b !important;
         }
         .srs-report-btn:active {
             transform: scale(0.92) !important;
-            background-color: #fecdd3 !important;
         }
         .srs-report-btn.srs-report-sent {
             background-color: #ecfdf5 !important;
@@ -1131,12 +1755,13 @@
             border-color: #d1fae5 !important;
         }
         [data-theme="dark"] .srs-report-btn {
-            background-color: rgba(225, 29, 72, 0.18) !important;
-            border-color: rgba(225, 29, 72, 0.35) !important;
-            color: #fb7185 !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: #94a3b8 !important;
         }
         [data-theme="dark"] .srs-report-btn:hover {
-            background-color: rgba(225, 29, 72, 0.28) !important;
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: #cbd5e1 !important;
         }
         [data-theme="dark"] .srs-report-btn.srs-report-sent {
             background-color: rgba(5, 150, 105, 0.18) !important;
@@ -1279,6 +1904,245 @@
         [data-theme="dark"] .bottom-nav {
             box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.4) !important;
         }
+
+        /* Dark Theme for Duel & Modals */
+        [data-theme="dark"] #duel-menu-modal > div,
+        [data-theme="dark"] #duel-incoming-modal > div {
+            background-color: #18181b !important;
+            color: #f2f2f7 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        [data-theme="dark"] #duel-modal {
+            background-color: rgba(9, 9, 11, 0.85) !important;
+        }
+        [data-theme="dark"] .duel-modal-wrapper {
+            background-color: #121214 !important;
+            color: #f8fafc !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-theme="dark"] .duel-progress-container {
+            background-color: #27272a !important;
+        }
+        [data-theme="dark"] .duel-header-bar {
+            background-color: #18181b !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-theme="dark"] .duel-header-title {
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] .duel-round-badge {
+            background-color: #27272a !important;
+            color: #94a3b8 !important;
+        }
+        [data-theme="dark"] .duel-btn-round-close,
+        [data-theme="dark"] #duel-menu-close-btn,
+        [data-theme="dark"] #duel-incoming-close-btn {
+            background-color: #27272a !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            color: #94a3b8 !important;
+        }
+        [data-theme="dark"] .duel-btn-round-close:hover,
+        [data-theme="dark"] #duel-menu-close-btn:hover,
+        [data-theme="dark"] #duel-incoming-close-btn:hover {
+            background-color: #3f3f46 !important;
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] .duel-hud-bar {
+            background-color: #18181b !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-theme="dark"] .duel-player-name {
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] .duel-heart.is-empty {
+            color: #3f3f46 !important;
+        }
+        [data-theme="dark"] .duel-score-pill {
+            color: #34d399 !important;
+        }
+        [data-theme="dark"] .duel-score-pill.is-gold {
+            color: #fbbf24 !important;
+        }
+        [data-theme="dark"] .duel-score-pill.is-rival {
+            color: #94a3b8 !important;
+        }
+        [data-theme="dark"] .duel-timer-badge {
+            background-color: #27272a !important;
+            color: #34d399 !important;
+            border-color: rgba(5, 150, 105, 0.4) !important;
+        }
+        [data-theme="dark"] .duel-timer-badge.is-warning {
+            background-color: #2e2616 !important;
+            border-color: rgba(245, 158, 11, 0.4) !important;
+            color: #fbbf24 !important;
+        }
+        [data-theme="dark"] .duel-timer-badge.is-critical {
+            background-color: #31141a !important;
+            border-color: rgba(244, 63, 94, 0.4) !important;
+            color: #fb7185 !important;
+        }
+        [data-theme="dark"] .duel-hero-card {
+            background-color: #18181b !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-theme="dark"] .duel-hero-word {
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] .duel-hero-translit {
+            color: #94a3b8 !important;
+        }
+        [data-theme="dark"] .duel-hero-audio-btn {
+            background-color: #27272a !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: #34d399 !important;
+        }
+        [data-theme="dark"] .duel-hero-audio-btn:hover {
+            background-color: #3f3f46 !important;
+        }
+        [data-theme="dark"] .duel-opt-btn {
+            background-color: #18181b !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-theme="dark"] .duel-opt-btn:hover:not(:disabled) {
+            background-color: #202024 !important;
+            border-color: rgba(5, 150, 105, 0.35) !important;
+        }
+        [data-theme="dark"] .duel-opt-text {
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] .duel-opt-status {
+            color: #64748b !important;
+        }
+        [data-theme="dark"] .duel-opt-btn.is-correct {
+            background-color: rgba(6, 78, 59, 0.4) !important;
+            border-color: #059669 !important;
+        }
+        [data-theme="dark"] .duel-opt-btn.is-correct .duel-opt-text {
+            color: #a7f3d0 !important;
+        }
+        [data-theme="dark"] .duel-opt-btn.is-wrong {
+            background-color: rgba(159, 18, 57, 0.35) !important;
+            border-color: #f43f5e !important;
+        }
+        [data-theme="dark"] .duel-opt-btn.is-wrong .duel-opt-text {
+            color: #fecdd3 !important;
+        }
+        [data-theme="dark"] .duel-stats-bento {
+            background-color: #202024 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-theme="dark"] .duel-result-title {
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] .duel-result-desc {
+            color: #94a3b8 !important;
+        }
+        [data-theme="dark"] .duel-btn-card {
+            background-color: #18181b !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] .duel-btn-card:hover {
+            background-color: #202024 !important;
+            border-color: rgba(5, 150, 105, 0.35) !important;
+        }
+        [data-theme="dark"] .duel-btn-primary {
+            background-color: #059669 !important;
+            color: #ffffff !important;
+        }
+        [data-theme="dark"] .duel-btn-primary:hover {
+            background-color: #047857 !important;
+        }
+        [data-theme="dark"] .duel-btn-secondary {
+            background-color: #27272a !important;
+            color: #f1f5f9 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        [data-theme="dark"] .duel-btn-secondary:hover {
+            background-color: #3f3f46 !important;
+        }
+        [data-theme="dark"] .duel-btn-link {
+            color: #94a3b8 !important;
+        }
+        [data-theme="dark"] .duel-btn-link:hover {
+            color: #ffffff !important;
+        }
+        [data-theme="dark"] .duel-btn-card {
+            background-color: #202024 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] .duel-btn-card:hover {
+            border-color: rgba(255, 255, 255, 0.2) !important;
+            background: #27272a !important;
+        }
+        [data-theme="dark"] .duel-btn-card .text-slate-800 {
+            color: #f2f2f7 !important;
+        }
+        [data-theme="dark"] .duel-btn-card .text-slate-400 {
+            color: #94a3b8 !important;
+        }
+        [data-theme="dark"] .duel-icon-box-purple {
+            background: rgba(124, 58, 237, 0.2) !important;
+            color: #a78bfa !important;
+        }
+        [data-theme="dark"] .duel-icon-box-blue {
+            background: rgba(37, 99, 235, 0.2) !important;
+            color: #60a5fa !important;
+        }
+        [data-theme="dark"] .duel-icon-box-amber {
+            background: rgba(217, 119, 6, 0.2) !important;
+            color: #fbbf24 !important;
+        }
+        [data-theme="dark"] .duel-icon-box-rose {
+            background: rgba(225, 29, 72, 0.2) !important;
+            color: #fb7185 !important;
+        }
+        [data-theme="dark"] #duel-incoming-modal .bg-slate-50,
+        [data-theme="dark"] #duel-menu-modal .bg-slate-50 {
+            background-color: #202024 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-theme="dark"] #duel-incoming-modal .text-slate-800,
+        [data-theme="dark"] #duel-menu-modal .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] #duel-incoming-decline-btn {
+            background-color: #27272a !important;
+            color: #cbd5e1 !important;
+        }
+        [data-theme="dark"] #duel-incoming-decline-btn:hover {
+            background-color: #3f3f46 !important;
+        }
+        #vocab-sticky-bar {
+            background-color: rgba(248, 250, 252, 0.85);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+        }
+        [data-theme="dark"] #vocab-sticky-bar {
+            background-color: rgba(18, 18, 18, 0.85) !important;
+        }
+        .vocab-blur-fade {
+            position: absolute;
+            top: 100%;
+            left: -20px;
+            right: -20px;
+            height: 22px;
+            pointer-events: none;
+            z-index: 10;
+            background: linear-gradient(to bottom, rgba(248, 250, 252, 0.95) 0%, rgba(248, 250, 252, 0) 100%);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+        }
+        [data-theme="dark"] .vocab-blur-fade {
+            background: linear-gradient(to bottom, rgba(18, 18, 18, 0.95) 0%, rgba(18, 18, 18, 0) 100%) !important;
+        }
+        .vocab-scroll-mask {
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 24px), transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 24px), transparent 100%);
+        }
     </style>
 </head>
 
@@ -1289,8 +2153,7 @@
             <div class="loader-logo">LezgiMez</div>
             <div class="loader-subtitle">лезги чӀал чирдай апликацӀия</div>
         </div>
-        <div class="loader-spinner" aria-hidden="true"></div>
-        <div id="loader-status" class="mt-6 text-sm font-semibold text-slate-600">Готовим приложение...</div>
+        <div id="loader-status" class="mt-8 text-sm font-semibold text-slate-600">Готовим приложение...</div>
         <div class="mt-4 w-64 h-2 bg-slate-100 rounded-full overflow-hidden" aria-hidden="true">
             <div id="loader-progress-fill" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width:0%"></div>
         </div>
@@ -1300,13 +2163,12 @@
             <div id="loader-step-grammar"><i class="fa-regular fa-circle mr-3 text-slate-300"></i>Грамматика</div>
             <div id="loader-step-audio"><i class="fa-regular fa-circle mr-3 text-slate-300"></i>Озвучка алфавита</div>
         </div>
-        <button id="loader-skip-btn" type="button" class="mt-6 text-xs font-bold text-slate-400 hover:text-emerald-600 transition-colors">Открыть сразу</button>
     </div>
 
     <!-- Desktop Sidebar -->
     <aside class="hidden md:flex flex-col w-56 flex-shrink-0 relative bg-white border-r border-slate-100 z-[60]">
         <div class="h-14 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
-            <span class="font-bold text-2xl tracking-tighter">LezgiAPP <span class="text-emerald-500">β</span></span>
+            <span class="font-bold text-2xl tracking-tighter text-emerald-600 dark:text-emerald-500">LezgiAPP <span class="text-emerald-500">β</span></span>
         </div>
         <div class="flex-1 overflow-y-auto py-6 flex flex-col gap-2 px-4">
             <button data-tab="alphabet" class="nav-tab nav-tab-desktop flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-slate-50 transition-colors">
@@ -1333,7 +2195,7 @@
     <header class="app-header bg-white border-b border-slate-100 sticky top-0 z-50 md:hidden" style="padding-top: var(--tg-safe-area-inset-top, 0px);">
         <div class="max-w-3xl mx-auto px-5 h-14 flex items-center justify-center relative">
             <div class="flex items-center">
-                <span class="font-bold text-2xl tracking-tighter">LezgiAPP <span class="text-emerald-500">β</span></span>
+                <span class="font-bold text-2xl tracking-tighter text-emerald-600 dark:text-emerald-500">LezgiAPP <span class="text-emerald-500">β</span></span>
             </div>
         </div>
     </header>
@@ -1346,11 +2208,11 @@
 
 
         <!-- TAB 1: АЛФАВИТ -->
-        <div id="screen-alphabet" class="app-screen active px-5 pt-6 pb-20">
+        <div id="screen-alphabet" class="app-screen active px-5 pt-6" style="padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 16px));">
             <div class="mb-6">
                 <div class="flex items-center justify-between mb-3">
                     <div>
-                        <h1 class="text-5xl font-bold tracking-tighter text-emerald-900">Алфавит</h1>
+                        <h1 class="text-4xl font-bold tracking-tighter text-emerald-950">Алфавит</h1>
                     </div>
                 </div>
                 <p class="text-sm text-slate-500">Кириллица • Содержит 41 букву</p>
@@ -1364,14 +2226,14 @@
         <!-- TAB 2: СЛОВАРЬ -->
         <div id="screen-vocabulary" class="app-screen flex flex-col h-full px-5 pt-6 pb-0">
             <!-- Fixed header area -->
-            <div class="flex-shrink-0">
-                <div class="mb-5">
+            <div class="flex-shrink-0 relative z-20">
+                <div class="mb-4">
                     <h1 class="text-4xl font-bold tracking-tighter text-emerald-900">Словарь</h1>
                     <p id="vocab-stats" class="text-sm text-slate-500 mt-1"></p>
                 </div>
 
                 <!-- Search + Filter -->
-                <div class="bg-transparent pb-3 -mx-5 px-5">
+                <div class="relative pb-3 -mx-5 px-5">
                     <div class="flex gap-2 items-center">
                         <div class="flex-1 relative flex items-center">
                             <i class="fa-solid fa-search absolute left-4 text-slate-400"></i>
@@ -1401,23 +2263,22 @@
                         class="hidden mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-2xl px-3 py-2">
                     </div>
                 </div>
+
+                <!-- Progressive Blur Fade transition right under the search bar -->
+                <div class="vocab-blur-fade pointer-events-none"></div>
             </div>
 
             <!-- Scrollable results area -->
-            <div class="flex-1 overflow-y-auto -mx-5 px-5 min-h-0"
+            <div class="flex-1 overflow-y-auto -mx-5 px-5 min-h-0 vocab-scroll-mask"
                 style="padding-bottom: calc(6.5rem + env(safe-area-inset-bottom, 16px)); scrollbar-width: none; -ms-overflow-style: none;">
-                <div class="flex items-center justify-between mt-4 mb-3 px-1">
-                    <div class="text-sm text-slate-500">
-                        Найдено <span id="results-count" class="font-semibold text-emerald-700">1465</span>
-                        <span id="demo-badge" class="hidden ml-1 text-amber-600">(демо)</span>
-                        <!-- This will be dynamically shown/hidden -->
-                    </div>
+                <div class="hidden">
+                    <span id="results-count">1465</span>
+                    <span id="demo-badge" class="hidden"></span>
                 </div>
-
-                <div id="vocab-context" class="text-xs sm:text-sm text-slate-600 bg-emerald-50/50 border border-emerald-100 rounded-xl px-3 py-2 mb-3 hidden"></div>
+                <div id="vocab-context" class="hidden"></div>
                 <div id="words-loading" class="mb-4 hidden"></div>
                 <div id="words-grid"
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pb-2">
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pt-3 pb-2">
                     <!-- Populated by JS -->
                 </div>
 
@@ -1427,44 +2288,19 @@
         </div>
 
         <!-- TAB 3: ПРАКТИКА (ГРАММАТИКА) -->
-        <div id="screen-practice" class="app-screen px-5 pt-6 pb-20">
+        <div id="screen-practice" class="app-screen px-5 pt-6" style="padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 16px));">
             <!-- Main Practice View -->
             <div id="practice-main-view" class="md:max-w-5xl md:mx-auto">
                 <div class="mb-5">
-                    <h1 class="text-4xl font-bold tracking-tighter text-slate-900">Практика</h1>
+                    <h1 class="text-4xl font-bold tracking-tighter text-emerald-950">Практика</h1>
                     <p class="text-sm text-slate-500 mt-1">Закрепление слов и правил</p>
                 </div>
 
-                <div class="space-y-4">
-                    <div id="prac-mode-flashcards" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
-                                <i class="fa-solid fa-layer-group"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-lg text-slate-800">Учить слова (Карточки)</h3>
-                                <p class="text-sm text-slate-500 mt-0.5">Интервальное повторение слов</p>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
-                    </div>
-
-                    <div id="prac-mode-duel" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
-                                <i class="fa-solid fa-gamepad"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-lg text-slate-800">Дуэль слов</h3>
-                                <p class="text-sm text-slate-500 mt-0.5">3 жизни — кто сделает меньше ошибок</p>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
-                    </div>
-
+                <!-- Раздел Грамматика (сверху) -->
+                <div>
                     <div id="prac-mode-grammar" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
                         <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
                                 <i class="fa-solid fa-book-open"></i>
                             </div>
                             <div>
@@ -1475,18 +2311,52 @@
                         <i class="fa-solid fa-chevron-right text-slate-300"></i>
                     </div>
                 </div>
+
+                <!-- Тонкая разделительная полоска с просторным отступом -->
+                <div class="py-6">
+                    <div class="border-t border-slate-200/70 dark:border-white/10"></div>
+                </div>
+
+                <!-- Раздел Слов и Игр (внизу) -->
+                <div class="space-y-4">
+                    <div id="prac-mode-flashcards" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">Учить слова</h3>
+                                <p class="text-sm text-slate-500 mt-0.5">Интервальное повторение слов</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </div>
+
+                    <div id="prac-mode-duel" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-gamepad"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">Дуэль</h3>
+                                <p class="text-sm text-slate-500 mt-0.5">3 жизни — кто сделает меньше ошибок</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </div>
+                </div>
             </div>
 
             <!-- Grammar Units View -->
             <div id="practice-grammar-view" class="hidden">
-                <button id="grammar-back-btn" class="hidden md:flex items-center gap-2 text-emerald-600 font-bold mb-6 active:scale-95 transition-transform">
+                <button id="grammar-back-btn" class="flex items-center gap-2 text-emerald-600 font-bold mb-4 active:scale-95 transition-transform cursor-pointer">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>К режимам практики</span>
                 </button>
 
                 <div class="mb-5 flex justify-between items-center">
                     <div>
-                        <h1 class="text-4xl font-bold tracking-tighter text-slate-900">Грамматика</h1>
+                        <h1 class="text-4xl font-bold tracking-tighter text-emerald-950">Грамматика</h1>
                         <p id="grammar-stats" class="text-sm text-slate-500 mt-1">Загрузка юнитов...</p>
                     </div>
                     <button id="grammar-search-toggle" type="button" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors" title="Поиск">
@@ -1518,10 +2388,10 @@
         </div>
 
         <!-- TAB 4: ЕЩЁ -->
-        <div id="screen-more" class="app-screen px-5 pt-6 pb-20">
+        <div id="screen-more" class="app-screen px-5 pt-6" style="padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 16px));">
             <div class="md:max-w-5xl md:mx-auto">
-                <div class="mb-8">
-                    <h1 class="text-5xl font-bold tracking-tighter text-emerald-900">Ещё</h1>
+                <div class="mb-6">
+                    <h1 class="text-4xl font-bold tracking-tighter text-emerald-950">Ещё</h1>
                 </div>
 
                 <div class="space-y-3">
@@ -1547,50 +2417,54 @@
                     </div>
 
                     <!-- Telegram Stars Donation Card -->
-                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base shadow-sm">
                         <div class="font-semibold mb-2 flex items-center gap-x-2">
                             <i class="fa-solid fa-star text-amber-400 text-lg"></i>
                             <span>Поддержать проект</span>
                         </div>
                         <p class="text-slate-600 text-sm mb-4 leading-relaxed">
-                            Если вам нравится приложение LezgiMez, вы можете поддержать нашу работу и оплату серверов добровольным пожертвованием в звёздах Telegram:
+                            Если вам нравится приложение LezgiMez, вы можете поддержать нашу работу добровольным пожертвованием в звёздах Telegram:
                         </p>
-                        <div class="grid grid-cols-5 gap-1.5">
-                            <button type="button" data-donation-amount="50" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" data-donation-amount="50" class="py-3 bg-slate-50 border border-slate-200 hover:border-amber-400 active:bg-amber-50 rounded-2xl flex items-center justify-center gap-1.5 font-bold text-sm active:scale-95 transition-all text-slate-800 cursor-pointer">
                                 <span>50</span>
-                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                                <span class="text-xs text-amber-500"><i class="fa-solid fa-star"></i></span>
                             </button>
-                            <button type="button" data-donation-amount="100" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                            <button type="button" data-donation-amount="100" class="py-3 bg-slate-50 border border-slate-200 hover:border-amber-400 active:bg-amber-50 rounded-2xl flex items-center justify-center gap-1.5 font-bold text-sm active:scale-95 transition-all text-slate-800 cursor-pointer">
                                 <span>100</span>
-                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                                <span class="text-xs text-amber-500"><i class="fa-solid fa-star"></i></span>
                             </button>
-                            <button type="button" data-donation-amount="250" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                            <button type="button" data-donation-amount="250" class="py-3 bg-slate-50 border border-slate-200 hover:border-amber-400 active:bg-amber-50 rounded-2xl flex items-center justify-center gap-1.5 font-bold text-sm active:scale-95 transition-all text-slate-800 cursor-pointer">
                                 <span>250</span>
-                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                                <span class="text-xs text-amber-500"><i class="fa-solid fa-star"></i></span>
                             </button>
-                            <button type="button" data-donation-amount="500" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                            <button type="button" data-donation-amount="500" class="py-3 bg-slate-50 border border-slate-200 hover:border-amber-400 active:bg-amber-50 rounded-2xl flex items-center justify-center gap-1.5 font-bold text-sm active:scale-95 transition-all text-slate-800 cursor-pointer">
                                 <span>500</span>
-                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                                <span class="text-xs text-amber-500"><i class="fa-solid fa-star"></i></span>
                             </button>
-                            <button type="button" data-donation-amount="1000" class="py-2 bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl flex flex-col items-center justify-center font-bold text-sm active:scale-95 transition-all text-slate-700">
+                            <button type="button" data-donation-amount="1000" class="py-3 bg-slate-50 border border-slate-200 hover:border-amber-400 active:bg-amber-50 rounded-2xl flex items-center justify-center gap-1.5 font-bold text-sm active:scale-95 transition-all text-slate-800 cursor-pointer">
                                 <span>1000</span>
-                                <span class="text-[9px] text-amber-500 mt-0.5"><i class="fa-solid fa-star"></i></span>
+                                <span class="text-xs text-amber-500"><i class="fa-solid fa-star"></i></span>
+                            </button>
+                            <button type="button" data-donation-amount="2500" class="py-3 bg-slate-50 border border-slate-200 hover:border-amber-400 active:bg-amber-50 rounded-2xl flex items-center justify-center gap-1.5 font-bold text-sm active:scale-95 transition-all text-slate-800 cursor-pointer">
+                                <span>2500</span>
+                                <span class="text-xs text-amber-500"><i class="fa-solid fa-star"></i></span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Stats Card -->
-                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base">
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base shadow-sm">
                         <div class="flex justify-between items-center py-2">
                             <div class="flex items-center gap-x-3">
-                                <i class="fa-solid fa-check-double w-5 text-emerald-600 text-center"></i>
+                                <i class="fa-solid fa-check-double w-5 text-slate-400 text-center"></i>
                                 <span>Изучено слов</span>
                             </div>
-                            <span id="stats-learned" class="font-semibold">0</span>
+                            <span id="stats-learned" class="font-semibold text-emerald-700">0</span>
                         </div>
                         <div class="flex justify-between items-center py-2 border-t border-slate-50">
                             <div class="flex items-center gap-x-3">
-                                <i class="fa-solid fa-spinner w-5 text-blue-500 text-center"></i>
+                                <i class="fa-solid fa-spinner w-5 text-slate-400 text-center"></i>
                                 <span>В процессе</span>
                             </div>
                             <span id="stats-in-progress" class="font-semibold text-slate-500">0</span>
@@ -1604,21 +2478,21 @@
                         </div>
                         <div class="flex justify-between items-center py-2 border-t border-slate-50">
                             <div class="flex items-center gap-x-3">
-                                <i class="fa-solid fa-star w-5 text-amber-500 text-center"></i>
+                                <i class="fa-solid fa-star w-5 text-slate-400 text-center"></i>
                                 <span>Избранное</span>
                             </div>
-                            <span id="stats-favs" class="font-semibold">0</span>
+                            <span id="stats-favs" class="font-semibold text-amber-600">0</span>
                         </div>
                         <div class="flex justify-between items-center py-2 border-t border-slate-50">
                             <div class="flex items-center gap-x-3">
-                                <i class="fa-solid fa-fire w-5 text-orange-500 text-center"></i>
+                                <i class="fa-solid fa-fire w-5 text-slate-400 text-center"></i>
                                 <span>Пройдено тренировок</span>
                             </div>
                             <span id="stats-quizzes" class="font-semibold">0</span>
                         </div>
                         <div class="flex justify-between items-center py-2 border-t border-slate-50">
                             <div class="flex items-center gap-x-3">
-                                <i class="fa-solid fa-chart-bar w-5 text-blue-500 text-center"></i>
+                                <i class="fa-solid fa-chart-bar w-5 text-slate-400 text-center"></i>
                                 <span>Средний балл тренировок</span>
                             </div>
                             <span id="stats-avg-score" class="font-semibold text-slate-500">—</span>
@@ -1718,9 +2592,9 @@
     </nav>
 
     <div id="word-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-stretch md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
         role="dialog" aria-modal="true" aria-labelledby="modal-word-title">
-        <div class="modal bg-white w-full max-w-2xl h-full md:h-auto md:max-h-[90vh] md:rounded-3xl overflow-hidden flex flex-col">
+        <div class="modal bg-white w-full max-w-xl max-h-[85vh] rounded-t-3xl md:rounded-3xl overflow-hidden flex flex-col shadow-2xl" style="max-height: 88dvh;">
             <div id="modal-content" class="flex flex-col flex-1 min-h-0 overflow-hidden"></div>
         </div>
     </div>
@@ -1783,56 +2657,86 @@
         </div>
     </div>
 
-    <!-- Duel Mode Selection Modal -->
+    <!-- Duel Mode Selection Modal (Minimalist Bottom Sheet) -->
     <div id="duel-menu-modal"
-        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[115] flex flex-col items-center justify-center p-4"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
         role="dialog" aria-modal="true">
-        <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl p-6 relative">
-            <button id="duel-menu-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors absolute top-5 right-5">
-                <i class="fa-solid fa-times text-sm"></i>
+        <div class="modal bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom relative flex flex-col" style="max-height: 88dvh;">
+            <button id="duel-menu-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all absolute top-5 right-5 cursor-pointer" aria-label="Закрыть">
+                <i class="fa-solid fa-times text-xs"></i>
             </button>
 
-            <div class="text-center mb-6 pt-2">
-                <div class="w-16 h-16 bg-rose-50 text-rose-600 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-xs">
-                    ⚔️
+            <div class="text-center mb-6 pt-1">
+                <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">
+                    <i class="fa-solid fa-gamepad"></i>
                 </div>
-                <h2 class="text-2xl font-black text-slate-800">Дуэль слов</h2>
-                <p class="text-xs text-slate-500 mt-1">У каждого по 3 жизни. Побеждает тот, кто сделает меньше ошибок!</p>
+                <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Дуэль</h2>
+                <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">3 жизни • Побеждает тот, кто сделает меньше ошибок</p>
             </div>
 
-            <div class="space-y-3">
-                <!-- Mode 1: Challenge a Telegram friend -->
-                <button id="duel-btn-telegram-friend" class="w-full p-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl flex items-center gap-4 text-left shadow-sm active:scale-[0.98] transition-all">
-                    <div class="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
-                        <i class="fa-brands fa-telegram"></i>
+            <div class="space-y-2.5 pb-2">
+                <!-- Mode 1: Online Random Matchmaking -->
+                <button id="duel-btn-online-match" class="w-full bg-white border border-slate-100 hover:border-emerald-300 active:border-emerald-400 rounded-2xl p-4 flex items-center gap-4 text-left shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-bolt text-xl"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <div class="font-bold text-sm">Бросить вызов другу</div>
-                        <div class="text-xs text-emerald-100 mt-0.5">Сыграй раунд и отправь ссылку другу в чат</div>
+                        <div class="font-bold text-sm text-slate-800 flex items-center gap-2">
+                            <span>С кем-то в сети</span>
+                            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Онлайн</span>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-0.5">Быстрый подбор соперника в реальном времени</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
                 </button>
 
-                <!-- Mode 2: Pass & Play on 1 phone -->
-                <button id="duel-btn-pass-play" class="w-full p-4 bg-white border border-slate-200 hover:border-slate-300 text-slate-800 rounded-2xl flex items-center gap-4 text-left active:scale-[0.98] transition-all">
-                    <div class="w-11 h-11 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
-                        <i class="fa-solid fa-mobile-screen"></i>
+                <!-- Mode 2: Create room & invite friend -->
+                <button id="duel-btn-create-room" class="w-full bg-white border border-slate-100 hover:border-emerald-300 active:border-emerald-400 rounded-2xl p-4 flex items-center gap-4 text-left shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-brands fa-telegram text-emerald-600 text-2xl"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <div class="font-bold text-sm">На одном телефоне (2 игрока)</div>
+                        <div class="font-bold text-sm text-slate-800 flex items-center gap-2">
+                            <span>Пригласить друга</span>
+                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Комната</span>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-0.5">Создать комнату и отправить ссылку в чат</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
+                </button>
+
+                <!-- Mode 3: Join by room code -->
+                <button id="duel-btn-join-code" class="w-full bg-white border border-slate-100 hover:border-emerald-300 active:border-emerald-400 rounded-2xl p-4 flex items-center gap-4 text-left shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-key text-lg"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-bold text-sm text-slate-800">Войти по коду комнаты</div>
+                        <div class="text-xs text-slate-400 mt-0.5">Ввести 4-значный код комнаты от друга</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
+                </button>
+
+                <!-- Mode 4: Pass & Play on 1 phone -->
+                <button id="duel-btn-pass-play" class="w-full bg-white border border-slate-100 hover:border-emerald-300 active:border-emerald-400 rounded-2xl p-4 flex items-center gap-4 text-left shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-mobile-screen text-slate-600 text-xl"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-bold text-sm text-slate-800">На одном телефоне (2 игрока)</div>
                         <div class="text-xs text-slate-400 mt-0.5">Играйте вживую по очереди на 1 экране</div>
                     </div>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
                 </button>
 
-                <!-- Mode 3: Practice vs Smart Bot -->
-                <button id="duel-btn-bot" class="w-full p-4 bg-white border border-slate-200 hover:border-slate-300 text-slate-800 rounded-2xl flex items-center gap-4 text-left active:scale-[0.98] transition-all">
-                    <div class="w-11 h-11 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
-                        <i class="fa-solid fa-robot"></i>
+                <!-- Mode 5: Time Attack (Режим на время) -->
+                <button id="duel-btn-time-attack" class="w-full bg-white border border-slate-100 hover:border-emerald-300 active:border-emerald-400 rounded-2xl p-4 flex items-center gap-4 text-left shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-stopwatch text-slate-600 text-xl"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <div class="font-bold text-sm">Тренировка с ботом</div>
-                        <div class="text-xs text-slate-400 mt-0.5">Быстрый поединок для разминки</div>
+                        <div class="font-bold text-sm text-slate-800">Режим на время</div>
+                        <div class="text-xs text-slate-400 mt-0.5">Одиночный спринт: проверь скорость реакции</div>
                     </div>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
                 </button>
@@ -1840,144 +2744,274 @@
         </div>
     </div>
 
-    <!-- Incoming Challenge Modal -->
-    <div id="duel-incoming-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur-md z-[130] flex flex-col items-center justify-center p-4"
+    <!-- Room Lobby Modal (Waiting for friend) -->
+    <div id="duel-lobby-modal"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
         role="dialog" aria-modal="true">
-        <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl p-6 text-center relative">
-            <button id="duel-incoming-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors absolute top-5 right-5">
-                <i class="fa-solid fa-times text-sm"></i>
+        <div class="modal bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
+            <button id="duel-lobby-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all absolute top-5 right-5 cursor-pointer" aria-label="Закрыть">
+                <i class="fa-solid fa-times text-xs"></i>
             </button>
 
-            <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-xs">
-                ⚔️
+            <!-- Radar / Waiting animation -->
+            <div class="relative w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                <div class="radar-pulse-ring"></div>
+                <div class="radar-pulse-ring radar-pulse-ring-delayed"></div>
+                <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl z-10 shadow-sm">
+                    <i class="fa-solid fa-wifi"></i>
+                </div>
             </div>
-            <h2 class="text-2xl font-black text-slate-800 mb-1">Вызов на дуэль!</h2>
+
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Комната создана!</h2>
+            <p class="text-xs text-slate-500 mt-1 mb-4">Отправьте ссылку другу или назовите код комнаты</p>
+
+            <!-- Room Code Card -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 mb-4">
+                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Код комнаты</div>
+                <div id="duel-lobby-code" class="text-3xl font-extrabold text-emerald-700 tracking-widest font-mono">----</div>
+            </div>
+
+            <!-- Status -->
+            <div class="flex items-center justify-center gap-2 text-xs text-emerald-600 font-semibold mb-5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Ожидаем подключения друга...</span>
+            </div>
+
+            <!-- Actions -->
+            <div class="space-y-2.5">
+                <button id="duel-lobby-tg-btn" class="w-full py-3.5 bg-[#229ED9] hover:bg-[#1f8ec4] active:bg-[#1b7db0] text-white font-bold rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-all cursor-pointer">
+                    <i class="fa-brands fa-telegram text-xl"></i>
+                    <span>Пригласить друга в Telegram</span>
+                </button>
+                <button id="duel-lobby-copy-btn" class="w-full py-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 font-semibold rounded-2xl flex items-center justify-center gap-2 transition-all cursor-pointer">
+                    <i class="fa-solid fa-copy text-sm"></i>
+                    <span id="duel-lobby-copy-text">Скопировать ссылку и код</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join by Code Modal -->
+    <div id="duel-join-modal"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        role="dialog" aria-modal="true">
+        <div class="modal bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
+            <button id="duel-join-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all absolute top-5 right-5 cursor-pointer" aria-label="Закрыть">
+                <i class="fa-solid fa-times text-xs"></i>
+            </button>
+
+            <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">
+                <i class="fa-solid fa-key"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Вход в комнату</h2>
+            <p class="text-xs text-slate-500 mt-1 mb-5">Введите 4-значный код комнаты от вашего друга:</p>
+
+            <div class="mb-5">
+                <input id="duel-join-input" type="text" maxlength="6" placeholder="0000"
+                    class="w-full text-center text-3xl font-mono font-bold tracking-widest py-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-500 focus:bg-white text-slate-800 transition-all uppercase placeholder-slate-300">
+                <p id="duel-join-error" class="hidden text-xs text-rose-500 font-semibold mt-2"></p>
+            </div>
+
+            <div class="space-y-2.5">
+                <button id="duel-join-submit-btn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-2xl shadow-sm active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play text-sm"></i>
+                    <span>Присоединиться к дуэли</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matchmaking Modal (Looking for someone online) -->
+    <div id="duel-matchmaking-modal"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        role="dialog" aria-modal="true">
+        <div class="modal bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
+            <!-- Radar animation -->
+            <div class="relative w-24 h-24 mx-auto my-4 flex items-center justify-center">
+                <div class="radar-pulse-ring"></div>
+                <div class="radar-pulse-ring radar-pulse-ring-delayed"></div>
+                <div class="w-18 h-18 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-3xl z-10 shadow-sm">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Поиск соперника</h2>
+            <p id="duel-matchmaking-status" class="text-xs text-slate-500 mt-1 mb-6">Ищем свободного игрока в сети...</p>
+
+            <button id="duel-matchmaking-cancel-btn" class="w-full py-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-semibold rounded-2xl transition-all cursor-pointer">
+                Отмена поиска
+            </button>
+        </div>
+    </div>
+
+    <!-- Incoming Challenge Modal (Minimalist Bottom Sheet) -->
+    <div id="duel-incoming-modal"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        role="dialog" aria-modal="true">
+        <div class="modal bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
+            <button id="duel-incoming-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all absolute top-5 right-5 cursor-pointer" aria-label="Закрыть">
+                <i class="fa-solid fa-times text-xs"></i>
+            </button>
+
+            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">
+                <i class="fa-solid fa-gamepad"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">Вызов на дуэль!</h2>
             <p class="text-xs text-slate-500 mb-4">Вам бросил вызов реальный соперник</p>
 
             <!-- Challenger Card -->
             <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-center gap-3.5 mb-5 text-left">
-                <div id="duel-incoming-avatar" class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold text-base flex-shrink-0 overflow-hidden">
+                <div id="duel-incoming-avatar" class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold text-base flex-shrink-0 overflow-hidden shadow-sm">
                     Д
                 </div>
                 <div class="min-w-0 flex-1">
                     <div id="duel-incoming-name" class="font-bold text-slate-800 text-sm truncate">Имя друга</div>
                     <div id="duel-incoming-stats" class="text-xs text-emerald-600 font-semibold mt-0.5">10 верных слов • 1 ошибка</div>
-                    <div id="duel-incoming-lives" class="text-xs text-slate-400 mt-0.5">❤️❤️🤍 (2 жизни осталось)</div>
+                    <div id="duel-incoming-lives" class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                        <span class="inline-flex items-center gap-1"><i class="fa-solid fa-heart text-rose-500 text-xs"></i><i class="fa-solid fa-heart text-rose-500 text-xs"></i><i class="fa-solid fa-heart text-slate-200 text-xs"></i></span>
+                        <span>(2 жизни осталось)</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="space-y-2.5">
-                <button id="duel-incoming-accept-btn" class="w-full py-3.5 bg-emerald-600 active:bg-emerald-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all">
-                    <span>Принять вызов и сразиться! 🔥</span>
+            <div class="space-y-2.5 pb-1">
+                <button id="duel-incoming-accept-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-all cursor-pointer">
+                    <span>Принять вызов и сразиться!</span>
                 </button>
-                <button id="duel-incoming-decline-btn" class="w-full py-3 bg-slate-100 active:bg-slate-200 text-slate-600 font-semibold rounded-2xl transition-all">
+                <button id="duel-incoming-decline-btn" class="w-full py-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-semibold rounded-2xl transition-all cursor-pointer">
                     Отклонить
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Word Duel Modal -->
+    <!-- Word Duel / Time Attack Modal -->
     <div id="duel-modal"
-        class="hidden fixed inset-0 bg-white md:bg-black/70 md:backdrop-blur z-[120] flex flex-col md:items-center md:justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-stretch md:items-center justify-center p-0 md:p-6"
         role="dialog" aria-modal="true">
-        <div class="bg-white w-full max-w-xl flex-1 md:flex-initial md:rounded-3xl flex flex-col overflow-hidden shadow-2xl md:max-h-[85vh]">
-            <!-- Arena Header -->
-            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="text-lg">⚔️</span>
-                    <span class="font-bold text-slate-800 text-base" id="duel-header-title">Дуэль слов</span>
-                    <span id="duel-round-badge" class="text-xs px-2 py-0.5 bg-rose-100 text-rose-700 rounded-full font-bold">Раунд 1</span>
-                </div>
-                <button id="duel-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+        <div class="duel-modal-wrapper bg-white w-full max-w-lg h-full md:h-auto md:max-h-[92vh] md:rounded-3xl flex flex-col overflow-hidden shadow-2xl">
+            
+            <!-- Arena Header Bar -->
+            <div class="duel-header-bar">
+                <button id="duel-close-btn" class="duel-btn-round-close" aria-label="Закрыть">
                     <i class="fa-solid fa-times text-sm"></i>
                 </button>
+                <h2 id="duel-header-title" class="duel-header-title">Режим на время</h2>
+                <span id="duel-round-badge" class="duel-round-badge">Раунд 1 / 20</span>
             </div>
 
-            <!-- Score Bar: You vs Rival with 3 Lives -->
-            <div class="px-5 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-                <!-- Player -->
-                <div class="flex items-center gap-2.5">
-                    <div id="duel-player-avatar" class="w-9 h-9 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-xs overflow-hidden">Вы</div>
-                    <div>
-                        <div class="text-xs font-bold text-slate-800" id="duel-player-name">Вы</div>
-                        <div class="flex items-center gap-1.5 mt-0.5">
-                            <span id="duel-player-lives" class="text-xs tracking-tighter" title="Жизни">❤️❤️❤️</span>
-                            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded" id="duel-player-score">0 верно</span>
+            <!-- Top Progress Bar (Rounds 1 to 20) -->
+            <div id="duel-progress-container" class="duel-progress-container">
+                <div id="duel-progress-bar" class="duel-progress-fill" style="width: 5%;"></div>
+            </div>
+
+            <!-- Status HUD Bar: Player, Timer, Rival / Record -->
+            <div id="duel-hud-bar" class="duel-hud-bar">
+                <!-- Player Card -->
+                <div class="duel-player-card" id="duel-player-1-wrap">
+                    <div class="duel-player-header">
+                        <div id="duel-player-avatar" class="duel-avatar">Вы</div>
+                        <div class="duel-player-name" id="duel-player-name">Вы</div>
+                    </div>
+                    <div class="duel-player-sub">
+                        <span id="duel-player-lives" class="duel-hearts-list" title="Жизни"></span>
+                        <span id="duel-player-score" class="duel-score-pill">0 верно</span>
+                    </div>
+                </div>
+
+                <!-- Central Timer -->
+                <div class="duel-timer-widget">
+                    <span id="duel-timer" class="duel-timer-badge">10</span>
+                </div>
+
+                <!-- Rival / Record Card -->
+                <div class="duel-player-card is-rival" id="duel-player-2-wrap">
+                    <div class="duel-player-header">
+                        <div class="duel-player-name" id="duel-rival-name">Рекорд</div>
+                        <div id="duel-rival-avatar" class="duel-avatar is-trophy">
+                            <i class="fa-solid fa-trophy"></i>
                         </div>
                     </div>
-                </div>
-
-                <!-- Timer -->
-                <div class="flex flex-col items-center px-2">
-                    <div id="duel-timer" class="w-10 h-10 rounded-full border-4 border-emerald-500 flex items-center justify-center font-mono font-bold text-emerald-700 text-sm">12</div>
-                </div>
-
-                <!-- Rival -->
-                <div class="flex items-center gap-2.5 flex-row-reverse text-right">
-                    <div id="duel-rival-avatar" class="w-9 h-9 rounded-2xl bg-rose-500 text-white flex items-center justify-center font-bold text-xs shadow-xs overflow-hidden">С</div>
-                    <div>
-                        <div class="text-xs font-bold text-slate-800" id="duel-rival-name">Соперник</div>
-                        <div class="flex items-center gap-1.5 mt-0.5 flex-row-reverse">
-                            <span id="duel-rival-lives" class="text-xs tracking-tighter" title="Жизни соперника">❤️❤️❤️</span>
-                            <span class="text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded" id="duel-rival-score">0 верно</span>
-                        </div>
+                    <div class="duel-player-sub">
+                        <span id="duel-rival-score" class="duel-score-pill is-gold">0 очков</span>
+                        <span id="duel-rival-lives" class="duel-hearts-list" title="Жизни соперника"></span>
                     </div>
+                    <div id="duel-rival-status" class="hidden text-[10px] text-slate-400 font-semibold mt-0.5 text-right">Думает...</div>
                 </div>
             </div>
 
-            <!-- Question Area -->
-            <div id="duel-arena-content" class="flex-1 p-6 flex flex-col justify-between overflow-y-auto">
-                <div class="text-center py-4">
-                    <span class="text-xs uppercase tracking-wider font-bold text-slate-400 mb-1 block" id="duel-turn-indicator">Как переводится слово:</span>
-                    <h2 id="duel-word" class="text-3xl font-extrabold text-slate-800 mb-2">Загрузка...</h2>
-                    <div id="duel-feedback" class="h-6 text-sm font-bold text-emerald-600 transition-opacity"></div>
+            <!-- Arena Playing Area -->
+            <div id="duel-arena-content" class="duel-arena-body">
+                <!-- Word Card -->
+                <div class="duel-hero-card">
+                    <div id="duel-turn-indicator" class="mb-2">
+                        <span class="inline-flex items-center px-3 py-1 bg-slate-100 rounded-full text-xs font-semibold text-slate-600">Как переводится слово:</span>
+                    </div>
+                    <div class="py-1">
+                        <h2 id="duel-word" class="duel-hero-word">Загрузка...</h2>
+                        <div id="duel-word-translit" class="duel-hero-translit"></div>
+                    </div>
+                    <div id="duel-feedback" class="duel-feedback-banner"></div>
                 </div>
 
-                <!-- Options -->
-                <div id="duel-options" class="grid grid-cols-1 gap-2.5 mb-4">
-                    <!-- Populated by JS -->
+                <!-- Answer Buttons (LezgiMez options style) -->
+                <div id="duel-options" class="duel-options-stack">
+                    <!-- Populated dynamically by JS -->
                 </div>
             </div>
 
-            <!-- Victory / Result Screen (hidden by default) -->
-            <div id="duel-result-content" class="hidden flex-1 p-6 flex flex-col items-center justify-center text-center">
-                <div id="duel-result-icon" class="text-6xl mb-3 animate-bounce">🏆</div>
-                <h3 id="duel-result-title" class="text-2xl font-black text-slate-800 mb-1">Победа!</h3>
-                <p id="duel-result-desc" class="text-sm text-slate-500 mb-5">Вы допустили меньше ошибок в дуэли</p>
+            <!-- Victory / Result Screen -->
+            <div id="duel-result-content" class="hidden duel-result-wrapper">
+                <div id="duel-result-icon" class="duel-result-icon-box">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h3 id="duel-result-title" class="duel-result-title">Победа!</h3>
+                <p id="duel-result-desc" class="duel-result-desc">Отличный раунд!</p>
 
-                <!-- Detailed Result Stats Box -->
-                <div class="bg-slate-50 rounded-2xl p-4 w-full max-w-xs mb-5 border border-slate-100 space-y-2.5 text-left">
-                    <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-500"></i> Правильных слов:</span>
-                        <span id="duel-final-correct" class="font-extrabold text-emerald-700">0</span>
+                <!-- Stats Box -->
+                <div class="duel-stats-bento divide-y divide-slate-100">
+                    <div class="flex justify-between items-center py-2.5">
+                        <span class="text-xs text-slate-500 font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-check-double text-emerald-600"></i> Верно
+                        </span>
+                        <span id="duel-final-correct" class="font-bold text-sm text-emerald-600">0</span>
                     </div>
-                    <div class="flex justify-between items-center text-sm border-t border-slate-200/50 pt-2">
-                        <span class="text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-circle-xmark text-rose-500"></i> Ошибок:</span>
-                        <span id="duel-final-mistakes" class="font-extrabold text-rose-600">0 / 3</span>
+                    <div class="flex justify-between items-center py-2.5">
+                        <span class="text-xs text-slate-500 font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-times-circle text-rose-500"></i> Ошибок
+                        </span>
+                        <span id="duel-final-mistakes" class="font-bold text-sm text-rose-600">0 / 3</span>
                     </div>
-                    <div class="flex justify-between items-center text-sm border-t border-slate-200/50 pt-2">
-                        <span class="text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-heart text-red-500"></i> Осталось жизней:</span>
-                        <span id="duel-final-lives" class="font-bold text-xs tracking-tight">❤️❤️❤️</span>
+                    <div class="flex justify-between items-center py-2.5">
+                        <span class="text-xs text-slate-500 font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-heart text-rose-500"></i> Жизни
+                        </span>
+                        <span id="duel-final-lives" class="duel-hearts-list"></span>
                     </div>
                 </div>
 
-                <div class="w-full max-w-xs space-y-2">
-                    <button id="duel-challenge-btn" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 active:from-emerald-700 active:to-teal-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95">
-                        <i class="fa-brands fa-telegram"></i>
-                        <span>Бросить вызов другу в Telegram</span>
+                <!-- Action Buttons in LezgiMez Style -->
+                <div class="duel-action-buttons">
+                    <button id="duel-rematch-btn" class="hidden duel-btn-primary" type="button">
+                        <i class="fa-solid fa-bolt text-amber-300"></i>
+                        <span id="duel-rematch-btn-text">Предложить реванш</span>
                     </button>
-                    <button id="duel-reply-friend-btn" class="hidden w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95">
-                        <i class="fa-brands fa-telegram"></i>
+                    <div id="duel-rematch-status" class="hidden text-xs text-amber-600 font-semibold text-center py-1"></div>
+                    <button id="duel-retry-btn" class="duel-btn-primary" type="button">
+                        <i class="fa-solid fa-rotate-right text-sm"></i>
+                        <span>Сыграть ещё раз</span>
+                    </button>
+                    <button id="duel-challenge-btn" class="duel-btn-secondary" type="button">
+                        <i class="fa-brands fa-telegram text-base text-[#229ED9]"></i>
+                        <span>Бросить вызов другу</span>
+                    </button>
+                    <button id="duel-reply-friend-btn" class="hidden duel-btn-secondary" type="button">
+                        <i class="fa-brands fa-telegram text-base text-[#229ED9]"></i>
                         <span>Отправить ответ другу</span>
                     </button>
-                    <button id="duel-share-btn" class="w-full py-3 bg-slate-100 active:bg-slate-200 text-slate-700 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95">
-                        <i class="fa-solid fa-share-nodes"></i>
+                    <button id="duel-share-btn" class="duel-btn-link" type="button">
+                        <i class="fa-solid fa-share-nodes text-xs"></i>
                         <span>Поделиться счётом</span>
-                    </button>
-                    <button id="duel-retry-btn" class="w-full py-3 bg-slate-100 active:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all active:scale-95">
-                        Сыграть ещё раз
                     </button>
                 </div>
             </div>
@@ -2030,14 +3064,16 @@
         <span>Работаем оффлайн</span>
     </div>
     <div id="custom-app-alert" class="hidden"></div>
-    <script src="./js/utils.js?v=6"></script>
+    <script src="./js/utils.js?v=7"></script>
     <script src="./js/state.js?v=5"></script>
-    <script src="./js/telegram.js?v=6"></script>
-    <script src="./js/ui.js?v=34"></script>
-    <script src="./js/srs.js?v=27"></script>
+    <script src="./js/peerjs.min.js"></script>
+    <script src="./js/duel-network.js?v=1"></script>
+    <script src="./js/telegram.js?v=7"></script>
+    <script src="js/ui.js?v=53"></script>
+    <script src="./js/srs.js?v=39"></script>
     <script src="./js/course.js?v=5"></script>
     <script src="./js/messenger.js?v=5"></script>
-    <script src="./js/app.js?v=5"></script>
+    <script src="./js/app.js?v=8"></script>
 </body>
 
 </html>
