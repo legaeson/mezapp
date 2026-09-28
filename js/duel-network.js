@@ -1,14 +1,15 @@
 /**
  * LezgiMez - Real-time Multiplayer Duel Network
- * Uses WebRTC DataChannel via PeerJS for ultra-low latency direct P2P connection,
- * with zero server setup, room codes, Telegram invite deep linking, and smart online matchmaking.
+ * High-reliability Server Room Relay engine hosted on https://caucasilan.alte.ca
+ * Guarantees instant room joins (e.g. #4700), deterministic matchmaking,
+ * cross-device synchronization, and zero cellular/NAT/CGNAT firewall blockage.
  */
 
 (function () {
     'use strict';
 
-    const PEER_PREFIX = 'lzg-duel-';
-    const MATCH_LOBBY_PREFIX = 'lzg-match-';
+    const API_ENDPOINT = '/api/presence.php';
+    const MATCHMAKING_TIMEOUT_MS = 12000;
 
     const RIVAL_NAMES = [
         { name: 'Мурад М.', photo: '' },
@@ -25,27 +26,57 @@
 
     class DuelNetworkManager {
         constructor() {
-            this.peer = null;
-            this.conn = null;
             this.role = null; // 'host' | 'guest' | 'simulated'
             this.roomCode = null;
             this.opponent = null; // { name, avatar, lives, score, status }
             this.isConnected = false;
-            this.simulatedTimer = null;
+            this.lastEventId = 0;
+            this.roomPollTimer = null;
+            this.matchPollTimer = null;
             this.matchmakingTimeout = null;
+            this.simulatedTimer = null;
+            this.lastSyncedWords = null;
+            this.joinedNotified = false;
+            this.onJoinedCallback = null;
 
             // Callbacks
             this.onReady = null;
             this.onOpponentAnswer = null;
-            this.onRoundSync = null;
+            this._onRoundSync = null;
             this.onOpponentLeft = null;
             this.onRematchRequested = null;
             this.onRematchAccepted = null;
+
+            // Network reliability & Anti-desync
+            this.isPolling = false;
+            this.isMatchPolling = false;
+            this.processedEventIds = new Set();
+            this.pendingSendQueue = [];
+            this.isSending = false;
+            this.hasRematchOffer = false;
+            this.pendingRematchWords = null;
+
+            this.setupLifecycleHandlers();
+        }
+
+        get onRoundSync() {
+            return this._onRoundSync;
+        }
+
+        set onRoundSync(fn) {
+            this._onRoundSync = fn;
+            if (typeof fn === 'function' && Array.isArray(this.lastSyncedWords) && this.lastSyncedWords.length > 0) {
+                try { fn(this.lastSyncedWords); } catch (e) {}
+            }
         }
 
         generateRoomCode() {
             // 4-digit readable numeric code
             return String(Math.floor(1000 + Math.random() * 9000));
+        }
+
+        getClientId() {
+            return window.OnlinePresence?._clientId || ('u_' + Math.random().toString(36).slice(2, 10));
         }
 
         getMyPlayerInfo() {
@@ -57,7 +88,33 @@
             return { name, avatar, isPhoto: Boolean(tgUser?.photo_url) };
         }
 
+        setupLifecycleHandlers() {
+            if (typeof window === 'undefined') return;
+            const handleLeave = () => {
+                if (this.roomCode && this.isConnected && this.role !== 'simulated') {
+                    this.sendRoomLeave();
+                }
+            };
+            window.addEventListener('beforeunload', handleLeave);
+            window.addEventListener('pagehide', handleLeave);
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    if (this.roomCode && this.isConnected && this.role !== 'simulated') {
+                        this.pollImmediate();
+                    }
+                }
+            });
+        }
+
         cleanup() {
+            if (this.roomCode && this.role !== 'simulated') {
+                this.sendRoomLeave();
+            }
+            this.cancelServerMatch();
+
+            if (typeof window !== 'undefined' && window.OnlinePresence) {
+                window.OnlinePresence.setSearching(false);
+            }
             if (this.simulatedTimer) {
                 clearTimeout(this.simulatedTimer);
                 this.simulatedTimer = null;
@@ -66,344 +123,465 @@
                 clearTimeout(this.matchmakingTimeout);
                 this.matchmakingTimeout = null;
             }
-            if (this.conn) {
-                try { this.conn.close(); } catch (e) {}
-                this.conn = null;
+            if (this.matchPollTimer) {
+                clearInterval(this.matchPollTimer);
+                this.matchPollTimer = null;
             }
-            if (this.peer) {
-                try { this.peer.destroy(); } catch (e) {}
-                this.peer = null;
+            if (this.roomPollTimer) {
+                clearInterval(this.roomPollTimer);
+                this.roomPollTimer = null;
             }
+
             this.role = null;
             this.roomCode = null;
             this.opponent = null;
             this.isConnected = false;
+            this.lastEventId = 0;
+            this.lastSyncedWords = null;
+            this.joinedNotified = false;
+            this.onJoinedCallback = null;
+            this.isPolling = false;
+            this.isMatchPolling = false;
+            this.processedEventIds.clear();
+            this.pendingSendQueue = [];
+            this.isSending = false;
+            this.hasRematchOffer = false;
+            this.pendingRematchWords = null;
         }
 
-        ensurePeerJs(callback) {
-            if (typeof Peer !== 'undefined') {
-                callback();
-                return;
-            }
-            // Load local peerjs.min.js or fallback to CDN
-            const script = document.createElement('script');
-            script.src = './js/peerjs.min.js';
-            script.onload = () => callback();
-            script.onerror = () => {
-                const cdn = document.createElement('script');
-                cdn.src = 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
-                cdn.onload = () => callback();
-                cdn.onerror = () => {
-                    console.error('[DuelNetwork] Failed to load PeerJS');
-                    alert('Не удалось загрузить сетевой модуль. Проверьте интернет-соединение.');
-                };
-                document.head.appendChild(cdn);
-            };
-            document.head.appendChild(script);
+        cancelServerMatch() {
+            const clientId = this.getClientId();
+            if (!clientId) return;
+            try {
+                const payload = JSON.stringify({ action: 'match_cancel', id: clientId });
+                if (navigator.sendBeacon) {
+                    const blob = new Blob([payload], { type: 'application/json' });
+                    navigator.sendBeacon(API_ENDPOINT, blob);
+                } else {
+                    fetch(API_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: payload,
+                        keepalive: true
+                    }).catch(() => {});
+                }
+            } catch (e) {}
+        }
+
+        sendRoomLeave() {
+            const clientId = this.getClientId();
+            const roomCode = this.roomCode;
+            if (!clientId || !roomCode) return;
+            try {
+                const payload = JSON.stringify({ action: 'room_leave', roomCode, id: clientId });
+                if (navigator.sendBeacon) {
+                    const blob = new Blob([payload], { type: 'application/json' });
+                    navigator.sendBeacon(API_ENDPOINT, blob);
+                } else {
+                    fetch(API_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: payload,
+                        keepalive: true
+                    }).catch(() => {});
+                }
+            } catch (e) {}
         }
 
         /**
-         * Host creates a room and waits for a friend to join
+         * Host creates a room with code (e.g. 4700) and waits for a friend
          */
-        createRoom(roomCode, onWaiting, onJoined, onError) {
+        async createRoom(roomCode, onWaiting, onJoined, onError) {
             this.cleanup();
             this.role = 'host';
-            this.roomCode = roomCode || this.generateRoomCode();
-            const peerId = PEER_PREFIX + this.roomCode;
-
-            this.ensurePeerJs(() => {
-                try {
-                    this.peer = new Peer(peerId, {
-                        debug: 1,
-                        config: {
-                            iceServers: [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:stun1.l.google.com:19302' }
-                            ]
-                        }
-                    });
-
-                    this.peer.on('open', () => {
-                        if (typeof onWaiting === 'function') onWaiting(this.roomCode);
-                    });
-
-                    this.peer.on('connection', (conn) => {
-                        this.conn = conn;
-                        this.setupConnectionHandlers(onJoined);
-                    });
-
-                    this.peer.on('error', (err) => {
-                        console.error('[DuelNetwork] Host Peer error:', err);
-                        if (err.type === 'unavailable-id') {
-                            // Room already exists, retry with new code
-                            this.createRoom(this.generateRoomCode(), onWaiting, onJoined, onError);
-                        } else {
-                            if (typeof onError === 'function') onError(err);
-                        }
-                    });
-                } catch (e) {
-                    console.error('[DuelNetwork] createRoom exception:', e);
-                    if (typeof onError === 'function') onError(e);
-                }
-            });
-        }
-
-        /**
-         * Guest joins a room by room code
-         */
-        joinRoom(roomCode, onConnecting, onJoined, onError) {
-            this.cleanup();
-            this.role = 'guest';
-            this.roomCode = String(roomCode).trim();
-            const targetPeerId = PEER_PREFIX + this.roomCode;
-            let retryCount = 0;
-
-            this.ensurePeerJs(() => {
-                try {
-                    if (typeof onConnecting === 'function') onConnecting();
-
-                    this.peer = new Peer({
-                        debug: 1,
-                        config: {
-                            iceServers: [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:stun1.l.google.com:19302' }
-                            ]
-                        }
-                    });
-
-                    const attemptConnect = () => {
-                        if (this.isConnected) return;
-                        if (this.conn) {
-                            try { this.conn.close(); } catch (e) {}
-                            this.conn = null;
-                        }
-                        const conn = this.peer.connect(targetPeerId, {
-                            reliable: true
-                        });
-                        this.conn = conn;
-                        this.setupConnectionHandlers(onJoined);
-                    };
-
-                    this.peer.on('open', () => {
-                        attemptConnect();
-                    });
-
-                    this.peer.on('error', (err) => {
-                        console.error('[DuelNetwork] Guest Peer error:', err);
-                        if (this.isConnected) return;
-                        if ((err.type === 'peer-unavailable' || (err.message && err.message.includes('Could not connect'))) && retryCount < 3) {
-                            retryCount++;
-                            console.log(`[DuelNetwork] Retrying connection to ${targetPeerId} (attempt ${retryCount}/3)...`);
-                            setTimeout(() => {
-                                attemptConnect();
-                            }, 1200);
-                            return;
-                        }
-                        if (typeof onError === 'function') onError(err);
-                    });
-                } catch (e) {
-                    console.error('[DuelNetwork] joinRoom exception:', e);
-                    if (typeof onError === 'function') onError(e);
-                }
-            });
-        }
-
-        /**
-         * Matchmaking: search for online opponent or fall back to smart rival
-         */
-        startMatchmaking(onSearching, onMatched, onError) {
-            this.cleanup();
-            if (typeof onSearching === 'function') onSearching();
-
+            this.roomCode = String(roomCode || this.generateRoomCode()).trim().toUpperCase();
+            this.onJoinedCallback = onJoined;
+            const clientId = this.getClientId();
             const myInfo = this.getMyPlayerInfo();
-            const queueSlot = Math.floor(Math.random() * 3); // 0, 1 or 2
-            const queuePeerId = MATCH_LOBBY_PREFIX + queueSlot;
 
-            this.ensurePeerJs(() => {
-                let matched = false;
-
-                // Fallback timeout to simulated online player after 6.5s
-                this.matchmakingTimeout = setTimeout(() => {
-                    if (!matched) {
-                        matched = true;
-                        this.startSimulatedMatch(onMatched);
-                    }
-                }, 6500);
-
-                try {
-                    this.peer = new Peer({
-                        debug: 1,
-                        config: {
-                            iceServers: [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:stun1.l.google.com:19302' }
-                            ]
-                        }
-                    });
-
-                    this.peer.on('open', () => {
-                        // First attempt to connect to current queue slot
-                        const conn = this.peer.connect(queuePeerId, { reliable: true });
-                        this.conn = conn;
-
-                        let connectedToHost = false;
-
-                        conn.on('open', () => {
-                            if (matched) return;
-                            matched = true;
-                            clearTimeout(this.matchmakingTimeout);
-                            this.role = 'guest';
-                            this.setupConnectionHandlers(onMatched);
-                        });
-
-                        setTimeout(() => {
-                            if (!connectedToHost && !matched) {
-                                // If nobody was in slot, become the host of this slot
-                                try { conn.close(); } catch (e) {}
-                                try { this.peer.destroy(); } catch (e) {}
-
-                                this.peer = new Peer(queuePeerId, {
-                                    debug: 1,
-                                    config: {
-                                        iceServers: [
-                                            { urls: 'stun:stun.l.google.com:19302' },
-                                            { urls: 'stun:stun1.l.google.com:19302' }
-                                        ]
-                                    }
-                                });
-
-                                this.peer.on('connection', (incomingConn) => {
-                                    if (matched) return;
-                                    matched = true;
-                                    clearTimeout(this.matchmakingTimeout);
-                                    this.role = 'host';
-                                    this.conn = incomingConn;
-                                    this.setupConnectionHandlers(onMatched);
-                                });
-
-                                this.peer.on('error', () => {
-                                    // If slot error, let timeout handle simulated player
-                                });
-                            }
-                        }, 2500);
-                    });
-
-                    this.peer.on('error', () => {
-                        // Let fallback timeout start simulated match
-                    });
-                } catch (e) {
-                    if (!matched) {
-                        matched = true;
-                        this.startSimulatedMatch(onMatched);
-                    }
-                }
-            });
-        }
-
-        startSimulatedMatch(onMatched) {
-            this.cleanup();
-            this.role = 'simulated';
-            this.isConnected = true;
-
-            const rivalData = RIVAL_NAMES[Math.floor(Math.random() * RIVAL_NAMES.length)];
-            this.opponent = {
-                name: rivalData.name,
-                avatar: rivalData.photo || rivalData.name.charAt(0),
-                isPhoto: Boolean(rivalData.photo),
-                lives: 3,
-                score: 0,
-                status: 'Думает...'
-            };
-
-            if (typeof onMatched === 'function') {
-                onMatched({
-                    opponent: this.opponent,
-                    role: this.role,
-                    roomCode: 'ONLINE'
+            try {
+                const res = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'room_create',
+                        roomCode: this.roomCode,
+                        id: clientId,
+                        player: myInfo
+                    })
                 });
+
+                if (!res.ok) throw new Error('HTTP error ' + res.status);
+                const data = await res.json();
+
+                if (!data.ok) {
+                    if (typeof onError === 'function') onError(data.error || 'Ошибка создания комнаты');
+                    return;
+                }
+
+                if (typeof onWaiting === 'function') {
+                    onWaiting(this.roomCode);
+                }
+
+                // Start polling room to see when friend joins
+                this.startRoomPolling();
+            } catch (err) {
+                console.error('[DuelNetwork] createRoom error:', err);
+                if (typeof onError === 'function') onError(err);
             }
         }
 
-        setupConnectionHandlers(onConnectedCallback) {
-            if (!this.conn) return;
-
+        /**
+         * Guest joins room by 4-digit code (e.g. 4700)
+         */
+        async joinRoom(roomCode, onConnecting, onJoined, onError) {
+            this.cleanup();
+            this.role = 'guest';
+            this.roomCode = String(roomCode).trim().toUpperCase();
+            this.onJoinedCallback = onJoined;
+            const clientId = this.getClientId();
             const myInfo = this.getMyPlayerInfo();
-            let notified = false;
 
-            const notifyConnected = () => {
-                if (notified) return;
-                notified = true;
-                if (typeof onConnectedCallback === 'function') {
-                    onConnectedCallback({
-                        opponent: this.opponent || { name: 'Соперник', avatar: 'С' },
+            if (typeof onConnecting === 'function') {
+                onConnecting();
+            }
+
+            try {
+                const res = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'room_join',
+                        roomCode: this.roomCode,
+                        id: clientId,
+                        player: myInfo
+                    })
+                });
+
+                if (!res.ok) throw new Error('HTTP error ' + res.status);
+                const data = await res.json();
+
+                if (!data.ok) {
+                    if (typeof onError === 'function') onError(data.error || 'Комната не найдена');
+                    return;
+                }
+
+                this.opponent = {
+                    name: data.opponent?.name || 'Друг',
+                    avatar: data.opponent?.avatar || 'Д',
+                    isPhoto: Boolean(data.opponent?.isPhoto),
+                    lives: 3,
+                    score: 0,
+                    status: 'В сети'
+                };
+                this.isConnected = true;
+                this.joinedNotified = true;
+
+                // Start room polling
+                this.startRoomPolling();
+
+                if (typeof onJoined === 'function') {
+                    onJoined({
+                        opponent: this.opponent,
+                        role: 'guest',
+                        roomCode: this.roomCode
+                    });
+                }
+            } catch (err) {
+                console.error('[DuelNetwork] joinRoom error:', err);
+                if (typeof onError === 'function') onError(err);
+            }
+        }
+
+        /**
+         * Random matchmaking: deterministic server coordinator pairs players instantly
+         */
+        async startMatchmaking(onSearching, onMatched, onNoMatch, onError) {
+            this.cleanup();
+            if (typeof window !== 'undefined' && window.OnlinePresence) {
+                window.OnlinePresence.setSearching(true);
+            }
+            if (typeof onSearching === 'function') {
+                onSearching('Ищем свободного игрока в сети...');
+            }
+
+            const clientId = this.getClientId();
+            const myInfo = this.getMyPlayerInfo();
+            let matched = false;
+
+            const handleMatchedSuccess = (roomCode, role, opponentInfo) => {
+                if (matched) return;
+                matched = true;
+                if (this.matchPollTimer) {
+                    clearInterval(this.matchPollTimer);
+                    this.matchPollTimer = null;
+                }
+                if (this.matchmakingTimeout) {
+                    clearTimeout(this.matchmakingTimeout);
+                    this.matchmakingTimeout = null;
+                }
+                if (typeof window !== 'undefined' && window.OnlinePresence) {
+                    window.OnlinePresence.setSearching(false);
+                }
+
+                this.role = role;
+                this.roomCode = roomCode;
+                this.opponent = {
+                    name: opponentInfo?.name || 'Соперник',
+                    avatar: opponentInfo?.avatar || 'С',
+                    isPhoto: Boolean(opponentInfo?.isPhoto),
+                    lives: 3,
+                    score: 0,
+                    status: 'В сети'
+                };
+                this.isConnected = true;
+                this.joinedNotified = true;
+
+                if (typeof onSearching === 'function') {
+                    onSearching(`Соперник найден: ${this.opponent.name}! Начало дуэли...`);
+                }
+
+                // Start polling room events
+                this.startRoomPolling();
+
+                if (typeof onMatched === 'function') {
+                    onMatched({
+                        opponent: this.opponent,
                         role: this.role,
                         roomCode: this.roomCode
                     });
                 }
             };
 
-            const sendHandshake = () => {
-                this.isConnected = true;
-                this.send({
-                    type: 'HANDSHAKE',
-                    player: myInfo,
-                    role: this.role
-                });
-            };
+            // Timeout fallback: honest option to wait or play with AI
+            this.matchmakingTimeout = setTimeout(() => {
+                if (!matched) {
+                    if (typeof onNoMatch === 'function') {
+                        onNoMatch({
+                            keepWaiting: (statusMsg) => {
+                                if (typeof onSearching === 'function') {
+                                    onSearching(statusMsg || 'Ожидание подключения соперника...');
+                                }
+                                this.matchmakingTimeout = setTimeout(() => {
+                                    if (!matched && typeof onNoMatch === 'function') {
+                                        onNoMatch({
+                                            keepWaiting: () => {},
+                                            playAi: () => {
+                                                this.cleanup();
+                                                this.startSimulatedMatch(onMatched);
+                                            }
+                                        });
+                                    }
+                                }, MATCHMAKING_TIMEOUT_MS);
+                            },
+                            playAi: () => {
+                                this.cleanup();
+                                this.startSimulatedMatch(onMatched);
+                            }
+                        });
+                    } else {
+                        this.startSimulatedMatch(onMatched);
+                    }
+                }
+            }, MATCHMAKING_TIMEOUT_MS);
 
-            if (this.conn.open) {
-                sendHandshake();
-            } else {
-                this.conn.on('open', sendHandshake);
+            try {
+                const res = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'match_join',
+                        id: clientId,
+                        player: myInfo
+                    })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.matched && data.roomCode) {
+                        handleMatchedSuccess(data.roomCode, data.role || 'guest', data.opponent);
+                        return;
+                    }
+                }
+
+                // Not matched yet -> poll every 600ms with in-flight guard
+                this.matchPollTimer = setInterval(async () => {
+                    if (matched || this.isMatchPolling) {
+                        if (matched) clearInterval(this.matchPollTimer);
+                        return;
+                    }
+                    this.isMatchPolling = true;
+                    try {
+                        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                        const timeoutId = controller ? setTimeout(() => controller.abort(), 3000) : null;
+                        const pollRes = await fetch(API_ENDPOINT, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'match_poll',
+                                id: clientId
+                            }),
+                            signal: controller ? controller.signal : undefined
+                        });
+                        if (timeoutId) clearTimeout(timeoutId);
+                        if (pollRes.ok) {
+                            const pollData = await pollRes.json();
+                            if (pollData && pollData.matched && pollData.roomCode) {
+                                handleMatchedSuccess(pollData.roomCode, pollData.role || 'host', pollData.opponent);
+                            }
+                        }
+                    } catch (e) {
+                    } finally {
+                        this.isMatchPolling = false;
+                    }
+                }, 600);
+
+            } catch (err) {
+                console.error('[DuelNetwork] Matchmaking error:', err);
+                if (!matched) {
+                    if (typeof onNoMatch === 'function') {
+                        onNoMatch({
+                            keepWaiting: () => {},
+                            playAi: () => this.startSimulatedMatch(onMatched)
+                        });
+                    } else if (typeof onError === 'function') {
+                        onError(err);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Immediate poll on tab activation / visibility change
+         */
+        async pollImmediate() {
+            if (!this.roomCode || this.isPolling) return;
+            this.isPolling = true;
+            const clientId = this.getClientId();
+            try {
+                const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                const timeoutId = controller ? setTimeout(() => controller.abort(), 2800) : null;
+                const res = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'room_poll',
+                        roomCode: this.roomCode,
+                        id: clientId,
+                        since: this.lastEventId
+                    }),
+                    signal: controller ? controller.signal : undefined
+                });
+                if (timeoutId) clearTimeout(timeoutId);
+                if (res.ok) {
+                    const data = await res.json();
+                    this.processPollData(data);
+                }
+            } catch (e) {
+            } finally {
+                this.isPolling = false;
+            }
+        }
+
+        /**
+         * Room polling loop: lightweight HTTP poll every 500ms with in-flight guard & deduplication
+         */
+        startRoomPolling() {
+            if (this.roomPollTimer) clearInterval(this.roomPollTimer);
+            const clientId = this.getClientId();
+
+            this.roomPollTimer = setInterval(async () => {
+                if (!this.roomCode) {
+                    clearInterval(this.roomPollTimer);
+                    return;
+                }
+                if (this.isPolling) return;
+                this.isPolling = true;
+
+                try {
+                    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                    const timeoutId = controller ? setTimeout(() => controller.abort(), 2800) : null;
+
+                    const res = await fetch(API_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'room_poll',
+                            roomCode: this.roomCode,
+                            id: clientId,
+                            since: this.lastEventId
+                        }),
+                        signal: controller ? controller.signal : undefined
+                    });
+                    if (timeoutId) clearTimeout(timeoutId);
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        this.processPollData(data);
+                    }
+                } catch (e) {
+                } finally {
+                    this.isPolling = false;
+                }
+            }, 500);
+        }
+
+        processPollData(data) {
+            if (!data || !data.ok) return;
+
+            if (data.lastId && data.lastId > this.lastEventId) {
+                this.lastEventId = data.lastId;
             }
 
-            this.conn.on('data', (data) => {
-                this.handleIncomingMessage(data, notifyConnected);
-            });
+            // If host was waiting and guest joined
+            if (this.role === 'host' && data.opponent && !this.joinedNotified) {
+                this.opponent = {
+                    name: data.opponent.name || 'Друг',
+                    avatar: data.opponent.avatar || 'Д',
+                    isPhoto: Boolean(data.opponent.isPhoto),
+                    lives: 3,
+                    score: 0,
+                    status: 'В сети'
+                };
+                this.isConnected = true;
+                this.joinedNotified = true;
 
-            const currentConn = this.conn;
+                if (typeof this.onJoinedCallback === 'function') {
+                    this.onJoinedCallback({
+                        opponent: this.opponent,
+                        role: 'host',
+                        roomCode: this.roomCode
+                    });
+                }
+            }
 
-            this.conn.on('close', () => {
-                if (this.conn !== currentConn) return;
-                if (!this.isConnected) return;
+            // Process incoming events with deduplication
+            if (Array.isArray(data.events)) {
+                for (const ev of data.events) {
+                    if (ev.id) {
+                        if (this.processedEventIds.has(ev.id)) continue;
+                        this.processedEventIds.add(ev.id);
+                    }
+                    if (ev.data) {
+                        this.handleIncomingMessage(ev.data);
+                    }
+                }
+            }
+
+            // Opponent left
+            if (data.opponentLeft && this.isConnected) {
                 this.isConnected = false;
                 if (typeof this.onOpponentLeft === 'function') {
                     this.onOpponentLeft();
                 }
-            });
-
-            this.conn.on('error', (err) => {
-                console.warn('[DuelNetwork] Connection error:', err);
-            });
+            }
         }
 
-        handleIncomingMessage(msg, onConnectedCallback) {
+        handleIncomingMessage(msg) {
             if (!msg || !msg.type) return;
 
             switch (msg.type) {
-                case 'HANDSHAKE': {
-                    this.opponent = {
-                        name: msg.player?.name || 'Друг',
-                        avatar: msg.player?.avatar || 'Д',
-                        isPhoto: Boolean(msg.player?.isPhoto),
-                        lives: 3,
-                        score: 0,
-                        status: 'Готов'
-                    };
-
-                    this.send({
-                        type: 'HANDSHAKE_ACK',
-                        player: this.getMyPlayerInfo()
-                    });
-
-                    if (typeof onConnectedCallback === 'function') {
-                        onConnectedCallback();
-                    }
-                    break;
-                }
-
-                case 'HANDSHAKE_ACK': {
+                case 'GUEST_JOINED': {
                     if (msg.player) {
                         this.opponent = {
                             name: msg.player.name || 'Друг',
@@ -414,13 +592,20 @@
                             status: 'Готов'
                         };
                     }
-                    if (typeof onConnectedCallback === 'function') {
-                        onConnectedCallback();
+                    if (this.onJoinedCallback && !this.joinedNotified) {
+                        this.joinedNotified = true;
+                        this.isConnected = true;
+                        this.onJoinedCallback({
+                            opponent: this.opponent,
+                            role: this.role,
+                            roomCode: this.roomCode
+                        });
                     }
                     break;
                 }
 
                 case 'SYNC_WORDS': {
+                    this.lastSyncedWords = msg.wordIds;
                     if (typeof this.onRoundSync === 'function') {
                         this.onRoundSync(msg.wordIds);
                     }
@@ -435,6 +620,8 @@
                 }
 
                 case 'REMATCH_OFFER': {
+                    this.hasRematchOffer = true;
+                    this.pendingRematchWords = msg.wordIds || null;
                     if (typeof this.onRematchRequested === 'function') {
                         this.onRematchRequested();
                     }
@@ -442,35 +629,90 @@
                 }
 
                 case 'REMATCH_ACCEPT': {
+                    this.hasRematchOffer = false;
+                    this.pendingRematchWords = null;
+                    this.lastEventId = 0;
+                    this.processedEventIds.clear();
                     if (typeof this.onRematchAccepted === 'function') {
                         this.onRematchAccepted(msg.wordIds);
+                    }
+                    break;
+                }
+
+                case 'OPPONENT_LEFT': {
+                    if (typeof this.onOpponentLeft === 'function') {
+                        this.onOpponentLeft();
                     }
                     break;
                 }
             }
         }
 
+        /**
+         * Sends message to the room through server relay with retry queue
+         */
         send(data) {
             if (this.role === 'simulated') return;
-            if (this.conn && this.conn.open) {
-                try {
-                    this.conn.send(data);
-                } catch (e) {
-                    console.error('[DuelNetwork] Send error:', e);
-                }
-            } else if (this.conn) {
-                this.conn.once('open', () => {
+            if (!this.roomCode) return;
+
+            this.pendingSendQueue.push(data);
+            this.flushSendQueue();
+        }
+
+        async flushSendQueue() {
+            if (this.isSending || this.pendingSendQueue.length === 0) return;
+            this.isSending = true;
+
+            const clientId = this.getClientId();
+            while (this.pendingSendQueue.length > 0) {
+                const item = this.pendingSendQueue[0];
+                let sent = false;
+
+                for (let attempt = 0; attempt < 3; attempt++) {
                     try {
-                        this.conn.send(data);
-                    } catch (e) {}
-                });
+                        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                        const timeoutId = controller ? setTimeout(() => controller.abort(), 2800) : null;
+
+                        const res = await fetch(API_ENDPOINT, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'room_send',
+                                roomCode: this.roomCode,
+                                id: clientId,
+                                data: item
+                            }),
+                            signal: controller ? controller.signal : undefined
+                        });
+                        if (timeoutId) clearTimeout(timeoutId);
+
+                        if (res.ok) {
+                            const respData = await res.json();
+                            if (respData && respData.ok) {
+                                sent = true;
+                                break;
+                            }
+                        }
+                    } catch (err) {
+                        console.warn('[DuelNetwork] send retry error:', err);
+                    }
+                    await new Promise(r => setTimeout(r, 250 * (attempt + 1)));
+                }
+
+                this.pendingSendQueue.shift();
+                if (!sent) {
+                    console.warn('[DuelNetwork] packet failed after 3 retries:', item);
+                }
             }
+
+            this.isSending = false;
         }
 
         /**
-         * Host broadcasts the synchronized word pool for this duel
+         * Host synchronizes the word pool for this duel
          */
         syncWords(wordIds) {
+            this.lastSyncedWords = wordIds;
             if (this.role === 'host') {
                 this.send({
                     type: 'SYNC_WORDS',
@@ -491,34 +733,58 @@
                 score: score
             });
 
-            // If simulated opponent, schedule their response
             if (this.role === 'simulated') {
                 this.scheduleSimulatedOpponentAnswer(roundIndex);
             }
         }
 
         /**
-         * Simulates a live human opponent answering with human delay and realistic accuracy
+         * Local simulated bot mode
          */
+        startSimulatedMatch(onMatched) {
+            this.cleanup();
+            this.role = 'simulated';
+            this.isConnected = true;
+
+            const rivalData = RIVAL_NAMES[Math.floor(Math.random() * RIVAL_NAMES.length)];
+            this.opponent = {
+                name: rivalData.name,
+                avatar: rivalData.photo || rivalData.name.charAt(0),
+                isPhoto: Boolean(rivalData.photo),
+                lives: 3,
+                score: 0,
+                status: 'ИИ-соперник',
+                isSimulated: true
+            };
+
+            if (typeof onMatched === 'function') {
+                onMatched({
+                    opponent: this.opponent,
+                    role: this.role,
+                    roomCode: 'AI',
+                    isSimulated: true
+                });
+            }
+        }
+
         scheduleSimulatedOpponentAnswer(roundIndex) {
             if (this.simulatedTimer) {
                 clearTimeout(this.simulatedTimer);
             }
 
-            // Natural delay: 2.2s to 5.2s
-            const delay = 2200 + Math.random() * 3000;
+            const delay = 1800 + Math.random() * Math.random() * 4200;
 
             this.simulatedTimer = setTimeout(() => {
                 if (!this.opponent || this.opponent.lives <= 0) return;
 
-                // 82% accuracy
-                const isCorrect = Math.random() < 0.82;
+                const accuracy = 0.70 + Math.random() * 0.18;
+                const isCorrect = Math.random() < accuracy;
                 if (isCorrect) {
                     this.opponent.score++;
-                    this.opponent.status = 'Верно ✅';
+                    this.opponent.status = 'Ответил верно ✅';
                 } else {
                     this.opponent.lives = Math.max(0, this.opponent.lives - 1);
-                    this.opponent.status = 'Ошибка ❌';
+                    this.opponent.status = 'Допустил ошибку ❌';
                 }
 
                 if (typeof this.onOpponentAnswer === 'function') {
@@ -532,12 +798,8 @@
             }, delay);
         }
 
-        /**
-         * Proposes a rematch to the opponent
-         */
         offerRematch() {
             if (this.role === 'simulated') {
-                // Simulated rival accepts after 1.5 seconds
                 setTimeout(() => {
                     if (typeof this.onRematchAccepted === 'function') {
                         this.onRematchAccepted(null);
@@ -545,20 +807,244 @@
                 }, 1200);
                 return;
             }
-            this.send({ type: 'REMATCH_OFFER' });
+            let wordIds = null;
+            if (this.role === 'host' && typeof WORDS !== 'undefined' && Array.isArray(WORDS) && typeof shuffle === 'function') {
+                wordIds = shuffle([...WORDS]).slice(0, 20).map(w => w.id);
+            }
+            this.send({ type: 'REMATCH_OFFER', wordIds: wordIds });
         }
 
-        /**
-         * Accepts rematch offer
-         */
         acceptRematch(newWordIds) {
-            if (this.role === 'simulated') return;
+            if (this.role === 'simulated') {
+                if (typeof this.onRematchAccepted === 'function') {
+                    this.onRematchAccepted(null);
+                }
+                return;
+            }
+            this.hasRematchOffer = false;
+            this.lastEventId = 0;
+            this.processedEventIds.clear();
+            const finalWordIds = this.pendingRematchWords || newWordIds || null;
+            this.pendingRematchWords = null;
             this.send({
                 type: 'REMATCH_ACCEPT',
-                wordIds: newWordIds
+                wordIds: finalWordIds
             });
+        }
+
+        getOnlineStats() {
+            return {
+                online: OnlinePresence.getCount(),
+                searching: OnlinePresence.getSearching()
+            };
         }
     }
 
+    /**
+     * Real Online Presence Tracker
+     */
+    const OnlinePresence = {
+        _clientId: null,
+        _count: 1,
+        _searching: 0,
+        _isSearching: false,
+        _serverActive: false,
+        _localTabs: new Map(),
+        _bc: null,
+        _heartbeatTimer: null,
+
+        init() {
+            try {
+                this._clientId = sessionStorage.getItem('lzg_presence_id');
+                if (!this._clientId) {
+                    this._clientId = 'u_' + Math.random().toString(36).slice(2, 10);
+                    sessionStorage.setItem('lzg_presence_id', this._clientId);
+                }
+            } catch (e) {
+                this._clientId = 'u_' + Math.random().toString(36).slice(2, 10);
+            }
+
+            this.setupBroadcastChannel();
+            this.sendHeartbeat();
+
+            if (!this._heartbeatTimer) {
+                this._heartbeatTimer = setInterval(() => {
+                    this.sendHeartbeat();
+                }, 5500);
+            }
+
+            if (typeof window !== 'undefined') {
+                window.addEventListener('beforeunload', () => this.sendBye());
+                window.addEventListener('focus', () => this.sendHeartbeat());
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'visible') this.sendHeartbeat();
+                });
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => this.updateUI(), { once: true });
+                }
+            }
+        },
+
+        setupBroadcastChannel() {
+            if (typeof BroadcastChannel === 'undefined') return;
+            try {
+                this._bc = new BroadcastChannel('lezgi_presence_channel');
+                this._bc.onmessage = (e) => {
+                    const msg = e.data;
+                    if (!msg || !msg.id || msg.id === this._clientId) return;
+
+                    if (msg.type === 'bye') {
+                        this._localTabs.delete(msg.id);
+                        this.recalcLocal();
+                        return;
+                    }
+
+                    if (msg.type === 'ping') {
+                        this._localTabs.set(msg.id, {
+                            time: Date.now(),
+                            searching: Boolean(msg.searching)
+                        });
+                        this.recalcLocal();
+                    }
+                };
+            } catch (e) {}
+        },
+
+        setSearching(val) {
+            this._isSearching = Boolean(val);
+            this.sendHeartbeat();
+        },
+
+        async sendHeartbeat() {
+            const now = Date.now();
+
+            if (this._bc) {
+                try {
+                    this._bc.postMessage({
+                        type: 'ping',
+                        id: this._clientId,
+                        searching: this._isSearching,
+                        time: now
+                    });
+                } catch (e) {}
+            }
+
+            for (const [id, data] of this._localTabs.entries()) {
+                if (now - data.time > 12000) {
+                    this._localTabs.delete(id);
+                }
+            }
+
+            try {
+                const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
+
+                const res = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: this._clientId,
+                        searching: this._isSearching ? 1 : 0
+                    }),
+                    signal: controller ? controller.signal : undefined
+                });
+
+                if (timeoutId) clearTimeout(timeoutId);
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.ok) {
+                        this._serverActive = true;
+                        this._count = Math.max(1, Number(data.online) || 1);
+                        this._searching = Math.max(0, Number(data.searching) || 0);
+                        this.updateUI();
+                        return;
+                    }
+                }
+            } catch (err) {}
+
+            this._serverActive = false;
+            this.recalcLocal();
+        },
+
+        sendBye() {
+            if (this._bc) {
+                try {
+                    this._bc.postMessage({ type: 'bye', id: this._clientId });
+                } catch (e) {}
+            }
+
+            try {
+                const payload = JSON.stringify({ action: 'presence', id: this._clientId, bye: 1 });
+                if (navigator.sendBeacon) {
+                    const blob = new Blob([payload], { type: 'application/json' });
+                    navigator.sendBeacon(API_ENDPOINT, blob);
+                }
+            } catch (e) {}
+        },
+
+        recalcLocal() {
+            if (this._serverActive) return;
+
+            let localCount = 1;
+            let searchingCount = this._isSearching ? 1 : 0;
+
+            for (const info of this._localTabs.values()) {
+                localCount++;
+                if (info.searching) searchingCount++;
+            }
+
+            this._count = localCount;
+            this._searching = searchingCount;
+            this.updateUI();
+        },
+
+        getCount() {
+            return Math.max(1, this._count || 1);
+        },
+
+        getSearching() {
+            return Math.max(0, this._searching || 0);
+        },
+
+        updateUI() {
+            const count = this.getCount();
+            const searching = this.getSearching();
+
+            const countPlural = typeof pluralize === 'function'
+                ? pluralize(count, 'игрок онлайн', 'игрока онлайн', 'игроков онлайн')
+                : `${count} онлайн`;
+            const inNetworkPlural = count === 1 ? '1 в сети (вы)' : `${count} в сети`;
+            const headerPlural = count === 1 ? '1 онлайн (вы)' : `${count} онлайн`;
+            const searchingPlural = searching === 0
+                ? '0 в поиске'
+                : (typeof pluralize === 'function'
+                    ? pluralize(searching, 'ищет пару', 'ищут пару', 'ищут пару')
+                    : `${searching} в поиске`);
+
+            document.querySelectorAll('.duel-online-count-text').forEach(el => {
+                el.textContent = inNetworkPlural;
+            });
+            document.querySelectorAll('.duel-online-badge-text').forEach(el => {
+                el.textContent = count === 1 ? '1 игрок в сети (вы)' : countPlural;
+            });
+            document.querySelectorAll('.duel-online-header-text').forEach(el => {
+                el.textContent = headerPlural;
+            });
+            document.querySelectorAll('.duel-online-searching-text').forEach(el => {
+                el.textContent = searchingPlural;
+            });
+            document.querySelectorAll('.duel-online-count-number').forEach(el => {
+                el.textContent = String(count);
+            });
+            document.querySelectorAll('.duel-online-searching-number').forEach(el => {
+                el.textContent = String(searching);
+            });
+        }
+    };
+
+    OnlinePresence.init();
+
+    window.OnlinePresence = OnlinePresence;
     window.DuelNetwork = new DuelNetworkManager();
 })();

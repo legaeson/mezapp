@@ -129,20 +129,25 @@
             const progress = Math.round((learned / total) * 100);
 
             const badgeHtml = w.cat ? `<span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full uppercase tracking-wider">${w.cat}</span>` : `<span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full uppercase tracking-wider">Слово</span>`;
+            const isLatin = typeof isLatinEnabled === 'function' && isLatinEnabled();
             const tr = w.lz_lat || (typeof transliterateLezgin === 'function' ? transliterateLezgin(w.lz) : '');
+            const mainWord = isLatin ? (tr || w.lz) : w.lz;
+            const subWord = isLatin ? w.lz : tr;
+
             let metaHtml = '';
-            if (SHOW_PRACTICE_IPA && w.ipa && tr) {
-                metaHtml = `<p class="flashcard-text-sub font-medium text-slate-400 mt-2">${tr} <span class="opacity-50 mx-1">•</span> <span class="ipa-text">[${w.ipa}]</span></p>`;
+            if (SHOW_PRACTICE_IPA && w.ipa && subWord) {
+                metaHtml = `<p class="flashcard-text-sub font-medium text-slate-400 mt-2">${subWord} <span class="opacity-50 mx-1">•</span> <span class="ipa-text">[${w.ipa}]</span></p>`;
             } else if (SHOW_PRACTICE_IPA && w.ipa) {
                 metaHtml = `<p class="flashcard-text-sub font-medium text-slate-400 ipa-text mt-2">[${w.ipa}]</p>`;
-            } else if (tr) {
-                metaHtml = `<p class="flashcard-text-sub font-medium text-slate-400 mt-2">${tr}</p>`;
+            } else if (subWord && subWord !== mainWord) {
+                metaHtml = `<p class="flashcard-text-sub font-medium text-slate-400 mt-2">${subWord}</p>`;
             }
             const formatExampleHTML = (exStr) => {
                 if (!exStr) return '';
                 return exStr.split('//').map(s => s.trim()).filter(Boolean).map(item => {
                     const parts = item.split('|').map(s => s.trim()).filter(Boolean);
-                    const lz = parts[0] || '';
+                    const rawLz = parts[0] || '';
+                    const lz = (isLatin && typeof transliterateLezgin === 'function') ? transliterateLezgin(rawLz) : rawLz;
                     const ru = parts[1] || '';
                     return ru ? `<b>${lz}</b> <span class="text-slate-400 font-normal">— ${ru}</span>` : `<b>${lz}</b>`;
                 }).join('<br>');
@@ -192,7 +197,7 @@
           </div>
           <!-- Зона 2: слово по центру -->
           <div class="flex flex-col items-center justify-center text-center pointer-events-none select-none">
-            <h1 class="flashcard-text-main font-extrabold text-slate-900 tracking-tight lezgin-text break-words leading-tight">${w.lz}</h1>
+            <h1 class="flashcard-text-main font-extrabold text-slate-900 tracking-tight lezgin-text break-words leading-tight">${mainWord}</h1>
             ${metaHtml ? `<div class="mt-1.5">${metaHtml}</div>` : ''}
           </div>
           <!-- Зона 3: подсказка нажатия -->
@@ -457,7 +462,11 @@
             }
             flashcardKeydownHandler = (e) => {
                 if (e.key === 'Escape') {
-                    endPractice();
+                    if (typeof window.handleEscapeKey === 'function') {
+                        window.handleEscapeKey(e);
+                    } else {
+                        endPractice();
+                    }
                     return;
                 }
                 const isFlashcard = document.getElementById('flip-card');
@@ -561,7 +570,7 @@
             qTop.textContent = 'ЧТО ЗНАЧИТ';
             const qWord = document.createElement('div');
             qWord.className = 'text-[42px] font-bold text-emerald-900 lezgin-text mt-3';
-            qWord.textContent = w.lz;
+            qWord.textContent = typeof getLezgiWord === 'function' ? getLezgiWord(w) : w.lz;
             qWrap.append(qTop, qWord);
 
             const optsWrap = document.createElement('div');
@@ -767,6 +776,7 @@
                     history.back();
                 }
             }
+            if (typeof window.syncModalOpenState === "function") window.syncModalOpenState();
         }
         function startPairs() {
             const pool = practiceCategory === 'all' ? WORDS : WORDS.filter(w => w.cat === practiceCategory);
@@ -775,7 +785,7 @@
 
             practiceState = {
                 words: selectedWords,
-                leftItems: shuffle(selectedWords.map(w => ({ id: w.id, text: capitalizeWord(w.lz), type: 'lz' }))),
+                leftItems: shuffle(selectedWords.map(w => ({ id: w.id, text: capitalizeWord(typeof getLezgiWord === 'function' ? getLezgiWord(w) : w.lz), type: 'lz' }))),
                 rightItems: shuffle(selectedWords.map(w => ({ id: w.id, text: capitalizeWord(w.ru), type: 'ru' }))),
                 selectedLeft: null,
                 selectedRight: null,
@@ -1008,7 +1018,7 @@
                 const textWrap = document.createElement('div');
                 const lzDiv = document.createElement('div');
                 lzDiv.className = 'font-bold lezgin-text text-xl text-emerald-900';
-                lzDiv.textContent = opt.lz;
+                lzDiv.textContent = typeof getLezgiWord === 'function' ? getLezgiWord(opt) : opt.lz;
                 const ruDiv = document.createElement('div');
                 ruDiv.className = 'text-sm text-slate-400 mt-0.5';
                 ruDiv.textContent = opt.ru;
@@ -1152,10 +1162,19 @@
         }
 
         function openDuelMenuModal() {
+            if (typeof window.showCustomAlert === 'function') {
+                window.showCustomAlert('Режим в разработке', 'Режим «Дуэль» сейчас находится в разработке. Совсем скоро здесь появится возможность играть и соревноваться с друзьями!');
+                return;
+            } else if (typeof alert === 'function') {
+                alert('Режим «Дуэль» сейчас находится в разработке.');
+                return;
+            }
+            window.OnlinePresence?.updateUI();
             const modal = document.getElementById('duel-menu-modal');
             if (!modal) return;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
         }
 
         function closeDuelMenuModal() {
@@ -1163,6 +1182,7 @@
             if (!modal) return;
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+            if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
         }
 
         function openDuelLobbyModal(roomCode) {
@@ -1173,6 +1193,7 @@
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
+                if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
             }
         }
 
@@ -1181,6 +1202,7 @@
             if (modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
+                if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
             }
             if (cancelledByUser && window.DuelNetwork?.role === 'host') {
                 window.DuelNetwork.cleanup();
@@ -1197,6 +1219,7 @@
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
+                if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
                 setTimeout(() => input?.focus(), 150);
             }
         }
@@ -1206,25 +1229,60 @@
             if (modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
+                if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
             }
         }
 
         function openDuelMatchmakingModal() {
             closeDuelMenuModal();
+            window.OnlinePresence?.setSearching(true);
+
             const modal = document.getElementById('duel-matchmaking-modal');
+            const titleEl = document.getElementById('duel-matchmaking-title');
             const statusEl = document.getElementById('duel-matchmaking-status');
+            const iconEl = document.getElementById('duel-matchmaking-center-icon');
+            const timerBar = document.getElementById('duel-matchmaking-timer-bar');
+            const timerWrap = document.getElementById('duel-matchmaking-timer-wrap');
+            const searchingActions = document.getElementById('duel-matchmaking-searching-actions');
+            const notFoundActions = document.getElementById('duel-matchmaking-not-found-actions');
+
+            if (titleEl) titleEl.textContent = 'Поиск соперника';
             if (statusEl) statusEl.textContent = 'Ищем свободного игрока в сети...';
+            if (iconEl) {
+                iconEl.className = 'w-18 h-18 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-3xl z-10 shadow-sm transition-all';
+                iconEl.innerHTML = '<i class="fa-solid fa-bolt"></i>';
+            }
+            if (searchingActions) searchingActions.classList.remove('hidden');
+            if (notFoundActions) notFoundActions.classList.add('hidden');
+            if (timerWrap) timerWrap.classList.remove('hidden');
+
+            // Reset and start timer bar drain animation
+            if (timerBar) {
+                timerBar.classList.remove('is-searching');
+                timerBar.style.width = '100%';
+                void timerBar.offsetWidth;
+                timerBar.classList.add('is-searching');
+            }
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
+                if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
             }
         }
 
         function closeDuelMatchmakingModal(cancelledByUser = false) {
+            window.OnlinePresence?.setSearching(false);
             const modal = document.getElementById('duel-matchmaking-modal');
+            const timerBar = document.getElementById('duel-matchmaking-timer-bar');
             if (modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
+                if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
+            }
+            // Stop the timer bar animation
+            if (timerBar) {
+                timerBar.classList.remove('is-searching');
+                timerBar.style.width = '100%';
             }
             if (cancelledByUser) {
                 window.DuelNetwork?.cleanup();
@@ -1258,7 +1316,7 @@
                 if (statsEl) statsEl.textContent = `${challenge.correct} ${wordWord} • ${challenge.mistakes} ${mistakeWord}`;
                 if (livesEl) livesEl.innerHTML = `${renderLivesHearts(challenge.livesLeft)} <span class="ml-1 text-xs">(${challenge.livesLeft} из 3 жизней)</span>`;
                 if (avatarEl) {
-                    if (challenge.photo) {
+                    if (challenge.photo && /^https?:\/\//i.test(challenge.photo)) {
                         avatarEl.innerHTML = `<img src="${challenge.photo}" class="w-full h-full object-cover rounded-2xl">`;
                     } else {
                         avatarEl.textContent = (challenge.name || 'Д').charAt(0).toUpperCase();
@@ -1272,6 +1330,7 @@
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
+                if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
             }
         }
 
@@ -1280,6 +1339,7 @@
             if (!modal) return;
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+            if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
         }
 
         function updateDuelLivesUI() {
@@ -1288,12 +1348,34 @@
             const rivalLivesEl = document.getElementById('duel-rival-lives');
             const rivalScoreEl = document.getElementById('duel-rival-score');
 
-            if (playerLivesEl) playerLivesEl.innerHTML = renderLivesHearts(duelState.playerLives);
+            if (playerLivesEl) {
+                if (duelState.mode === 'srs_review') {
+                    playerLivesEl.innerHTML = '';
+                    playerLivesEl.classList.add('hidden');
+                    playerLivesEl.style.display = 'none';
+                } else {
+                    playerLivesEl.classList.remove('hidden');
+                    playerLivesEl.style.display = '';
+                    playerLivesEl.innerHTML = renderLivesHearts(duelState.playerLives);
+                }
+            }
             if (playerScoreEl) playerScoreEl.textContent = `${duelState.playerCorrect} верно`;
 
             const p1Wrap = document.getElementById('duel-player-1-wrap');
             const p2Wrap = document.getElementById('duel-player-2-wrap');
-            if (duelState.mode === 'pass_play' && p1Wrap && p2Wrap) {
+            const hud = document.getElementById('duel-hud-bar');
+
+            if (duelState.mode === 'srs_review') {
+                if (p2Wrap) {
+                    p2Wrap.classList.add('hidden');
+                    p2Wrap.style.display = 'none';
+                }
+                if (hud) hud.classList.add('is-solo');
+                if (p1Wrap) p1Wrap.style.opacity = '1';
+            } else if (duelState.mode === 'pass_play' && p1Wrap && p2Wrap) {
+                if (hud) hud.classList.remove('is-solo');
+                p2Wrap.classList.remove('hidden');
+                p2Wrap.style.display = '';
                 if (duelState.currentTurn === 1) {
                     p1Wrap.style.opacity = '1';
                     p2Wrap.style.opacity = '0.4';
@@ -1302,6 +1384,9 @@
                     p2Wrap.style.opacity = '1';
                 }
             } else if (p1Wrap && p2Wrap) {
+                if (hud) hud.classList.remove('is-solo');
+                p2Wrap.classList.remove('hidden');
+                p2Wrap.style.display = '';
                 p1Wrap.style.opacity = '1';
                 p2Wrap.style.opacity = '1';
             }
@@ -1315,6 +1400,8 @@
                     rivalScoreEl.textContent = `${duelState.playerCorrect} очков`;
                     rivalScoreEl.className = 'duel-score-pill is-gold';
                 }
+            } else if (duelState.mode === 'srs_review') {
+                // Solo mode: no rival elements displayed
             } else {
                 if (rivalLivesEl) rivalLivesEl.innerHTML = renderLivesHearts(duelState.rivalLives);
                 if (rivalScoreEl) {
@@ -1376,6 +1463,9 @@
             } else if (mode === 'time_attack') {
                 rivalName = 'Рекорд';
                 rivalAvatar = '<i class="fa-solid fa-trophy text-amber-500 text-xs"></i>';
+            } else if (mode === 'srs_review') {
+                rivalName = 'SRS';
+                rivalAvatar = '<i class="fa-solid fa-brain text-violet-500 text-xs"></i>';
             }
 
             duelState = {
@@ -1391,7 +1481,7 @@
                 rivalMistakes: (mode === 'friend_play' && challenge) ? challenge.mistakes : 0,
                 words: pool,
                 wordIds: pool.map(w => w.id),
-                timer: mode === 'time_attack' ? 10 : 12,
+                timer: mode === 'time_attack' ? 10 : (mode === 'srs_review' ? 15 : 12),
                 timerInterval: null,
                 answered: false,
                 rivalName: rivalName,
@@ -1407,6 +1497,8 @@
             const headerTitle = document.getElementById('duel-header-title');
 
             if (mode === 'online_live') {
+                const isSimulated = Boolean(challenge?.isSimulated || challenge?.opponent?.isSimulated);
+
                 if (playerNameEl) playerNameEl.textContent = playerName;
                 if (playerAvatarEl) {
                     playerAvatarEl.className = 'duel-avatar';
@@ -1418,19 +1510,31 @@
                 }
                 if (rivalNameEl) rivalNameEl.textContent = rivalName;
                 if (rivalAvatarEl) {
-                    rivalAvatarEl.className = 'duel-avatar is-rival';
-                    if (rivalPhoto) {
+                    if (isSimulated) {
+                        // Honest AI badge: robot icon instead of opponent avatar
+                        rivalAvatarEl.className = 'duel-avatar is-rival';
+                        rivalAvatarEl.innerHTML = '<i class="fa-solid fa-robot text-xs"></i>';
+                    } else if (rivalPhoto && /^https?:\/\//i.test(rivalPhoto)) {
+                        rivalAvatarEl.className = 'duel-avatar is-rival';
                         rivalAvatarEl.innerHTML = `<img src="${rivalPhoto}" class="w-full h-full object-cover">`;
                     } else {
+                        rivalAvatarEl.className = 'duel-avatar is-rival';
                         rivalAvatarEl.textContent = rivalAvatar;
                     }
                 }
                 if (rivalStatusEl) {
                     rivalStatusEl.classList.remove('hidden');
-                    rivalStatusEl.textContent = 'В сети • Думает...';
-                    rivalStatusEl.className = 'text-[10px] text-slate-400 font-semibold mt-0.5 text-right';
+                    if (isSimulated) {
+                        rivalStatusEl.textContent = '🤖 ИИ-режим';
+                        rivalStatusEl.className = 'text-[10px] text-violet-500 font-semibold mt-0.5 text-right';
+                    } else {
+                        rivalStatusEl.textContent = 'В сети • Думает...';
+                        rivalStatusEl.className = 'text-[10px] text-slate-400 font-semibold mt-0.5 text-right';
+                    }
                 }
-                if (headerTitle) headerTitle.textContent = `Дуэль против ${rivalName}`;
+                if (headerTitle) {
+                    headerTitle.textContent = isSimulated ? `Дуэль с ИИ` : `Дуэль против ${rivalName}`;
+                }
 
                 // Setup real-time network listeners
                 if (window.DuelNetwork) {
@@ -1442,10 +1546,19 @@
                         duelState.rivalLives = msg.livesLeft;
                         duelState.rivalCorrect = msg.score;
                         if (rivalStatusEl) {
-                            rivalStatusEl.textContent = msg.isCorrect ? 'Ответил верно ✅' : 'Допустил ошибку ❌';
-                            rivalStatusEl.className = msg.isCorrect
-                                ? 'text-[10px] text-emerald-600 font-semibold mt-0.5 text-right'
-                                : 'text-[10px] text-rose-500 font-semibold mt-0.5 text-right';
+                            if (isSimulated) {
+                                // AI match: show robot icon status
+                                rivalStatusEl.textContent = msg.isCorrect ? '🤖 Ответил верно' : '🤖 Ошибка!';
+                                rivalStatusEl.className = msg.isCorrect
+                                    ? 'text-[10px] text-violet-500 font-semibold mt-0.5 text-right'
+                                    : 'text-[10px] text-rose-400 font-semibold mt-0.5 text-right';
+                            } else {
+                                // Real player
+                                rivalStatusEl.textContent = msg.isCorrect ? 'Ответил верно ✅' : 'Допустил ошибку ❌';
+                                rivalStatusEl.className = msg.isCorrect
+                                    ? 'text-[10px] text-emerald-600 font-semibold mt-0.5 text-right'
+                                    : 'text-[10px] text-rose-500 font-semibold mt-0.5 text-right';
+                            }
                         }
                         updateDuelLivesUI();
 
@@ -1468,7 +1581,8 @@
 
                     window.DuelNetwork.onOpponentLeft = () => {
                         if (duelState.mode === 'online_live') {
-                            alert('Соперник отключился от дуэли.');
+                            duelState.rivalLives = 0;
+                            duelState.opponentLeftSurrender = true;
                             endDuelGame();
                         }
                     };
@@ -1476,15 +1590,20 @@
                     window.DuelNetwork.onRematchRequested = () => {
                         const rematchStatus = document.getElementById('duel-rematch-status');
                         if (rematchStatus) {
-                            rematchStatus.textContent = `${duelState.rivalName} предлагает реванш! Нажмите «Сыграть ещё раз»`;
+                            rematchStatus.textContent = `${duelState.rivalName} предлагает реванш! Нажмите «Принять реванш»`;
                             rematchStatus.classList.remove('hidden');
+                        }
+                        const rematchBtnText = document.getElementById('duel-rematch-btn-text');
+                        if (rematchBtnText) {
+                            rematchBtnText.textContent = 'Принять реванш! ⚔️';
                         }
                     };
 
                     window.DuelNetwork.onRematchAccepted = (newWordIds) => {
                         const newChallenge = {
                             opponent: challenge?.opponent || { name: duelState.rivalName, avatar: duelState.rivalAvatar },
-                            wordIds: newWordIds
+                            wordIds: newWordIds,
+                            isSimulated: isSimulated
                         };
                         startDuelGame('online_live', newChallenge);
                     };
@@ -1519,6 +1638,18 @@
                     rivalAvatarEl.innerHTML = '<i class="fa-solid fa-trophy text-white text-sm"></i>';
                 }
                 if (headerTitle) headerTitle.textContent = 'Режим на время';
+            } else if (mode === 'srs_review') {
+                if (rivalStatusEl) rivalStatusEl.classList.add('hidden');
+                if (playerNameEl) playerNameEl.textContent = playerName;
+                if (playerAvatarEl) {
+                    playerAvatarEl.className = 'duel-avatar';
+                    if (user?.photo_url) {
+                        playerAvatarEl.innerHTML = `<img src="${user.photo_url}" class="w-full h-full object-cover">`;
+                    } else {
+                        playerAvatarEl.textContent = playerAvatar;
+                    }
+                }
+                if (headerTitle) headerTitle.textContent = 'Повторение';
             } else {
                 if (rivalStatusEl) rivalStatusEl.classList.add('hidden');
                 if (playerNameEl) playerNameEl.textContent = playerName;
@@ -1549,16 +1680,52 @@
             const hud = document.getElementById('duel-hud-bar');
             const progress = document.getElementById('duel-progress-container');
             const roundBadge = document.getElementById('duel-round-badge');
+            const p2Wrap = document.getElementById('duel-player-2-wrap');
+            const headerBar = document.querySelector('.duel-header-bar');
+            const closeBtn = document.getElementById('duel-close-btn');
+            const timerWidget = document.querySelector('.duel-timer-widget');
+            const timerEl = document.getElementById('duel-timer');
+
+            if (mode === 'srs_review') {
+                if (headerBar) { headerBar.classList.add('hidden'); headerBar.style.display = 'none'; }
+                if (closeBtn) { closeBtn.classList.add('hidden'); closeBtn.style.display = 'none'; }
+                if (headerTitle) { headerTitle.classList.add('hidden'); headerTitle.style.display = 'none'; }
+                if (roundBadge) { roundBadge.classList.add('hidden'); roundBadge.style.display = 'none'; }
+                if (timerWidget) { timerWidget.classList.add('hidden'); timerWidget.style.display = 'none'; }
+                if (timerEl) { timerEl.classList.add('hidden'); timerEl.style.display = 'none'; }
+            } else {
+                if (headerBar) { headerBar.classList.remove('hidden'); headerBar.style.display = ''; }
+                if (closeBtn) { closeBtn.classList.remove('hidden'); closeBtn.style.display = ''; }
+                if (headerTitle) { headerTitle.classList.remove('hidden'); headerTitle.style.display = ''; }
+                if (roundBadge) { roundBadge.classList.remove('hidden'); roundBadge.style.display = ''; }
+                if (timerWidget) { timerWidget.classList.remove('hidden'); timerWidget.style.display = ''; }
+                if (timerEl) { timerEl.classList.remove('hidden'); timerEl.style.display = ''; }
+            }
 
             if (hud) {
                 hud.classList.remove('hidden');
-                hud.style.display = 'grid';
+                if (mode === 'srs_review') {
+                    hud.classList.add('is-solo');
+                    hud.style.display = 'flex';
+                } else {
+                    hud.classList.remove('is-solo');
+                    hud.style.display = 'grid';
+                }
+            }
+            if (p2Wrap) {
+                if (mode === 'srs_review') {
+                    p2Wrap.classList.add('hidden');
+                    p2Wrap.style.display = 'none';
+                } else {
+                    p2Wrap.classList.remove('hidden');
+                    p2Wrap.style.display = '';
+                }
             }
             if (progress) {
                 progress.classList.remove('hidden');
                 progress.style.display = 'block';
             }
-            if (roundBadge) {
+            if (roundBadge && mode !== 'srs_review') {
                 roundBadge.classList.remove('hidden');
             }
             if (arena) {
@@ -1571,29 +1738,48 @@
             }
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            modal.style.display = 'flex';
+            if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
 
             nextDuelRound();
         }
 
         function closeDuelModal() {
             clearInterval(duelState.timerInterval);
+            const headerBar = document.querySelector('.duel-header-bar');
+            const closeBtn = document.getElementById('duel-close-btn');
+            const headerTitle = document.getElementById('duel-header-title');
+            const roundBadge = document.getElementById('duel-round-badge');
+            const timerWidget = document.querySelector('.duel-timer-widget');
+            const timerEl = document.getElementById('duel-timer');
+            if (headerBar) { headerBar.classList.remove('hidden'); headerBar.style.display = ''; }
+            if (closeBtn) { closeBtn.classList.remove('hidden'); closeBtn.style.display = ''; }
+            if (headerTitle) { headerTitle.classList.remove('hidden'); headerTitle.style.display = ''; }
+            if (roundBadge) { roundBadge.classList.remove('hidden'); roundBadge.style.display = ''; }
+            if (timerWidget) { timerWidget.classList.remove('hidden'); timerWidget.style.display = ''; }
+            if (timerEl) { timerEl.classList.remove('hidden'); timerEl.style.display = ''; }
             const modal = document.getElementById('duel-modal');
             if (!modal) return;
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+            modal.style.display = 'none';
+            if (typeof window.syncModalOpenState === 'function') window.syncModalOpenState();
         }
 
         function nextDuelRound() {
             clearInterval(duelState.timerInterval);
 
-            // Game over condition
-            if (duelState.playerLives <= 0 || (duelState.mode === 'pass_play' && duelState.rivalLives <= 0) || duelState.currentRound >= duelState.words.length) {
+            // Game over condition (in srs_review, player lives are not tracked/depleted)
+            const isGameOver = (duelState.mode !== 'srs_review' && duelState.playerLives <= 0) ||
+                               (duelState.mode === 'pass_play' && duelState.rivalLives <= 0) ||
+                               (duelState.currentRound >= duelState.words.length);
+            if (isGameOver) {
                 endDuelGame();
                 return;
             }
 
             duelState.answered = false;
-            duelState.timer = duelState.mode === 'time_attack' ? 10 : 12;
+            duelState.timer = duelState.mode === 'time_attack' ? 10 : (duelState.mode === 'srs_review' ? 15 : 12);
 
             const progressBar = document.getElementById('duel-progress-bar');
             const roundBadge = document.getElementById('duel-round-badge');
@@ -1612,7 +1798,14 @@
             }
 
             if (roundBadge) {
-                roundBadge.textContent = `Раунд ${duelState.currentRound + 1} / ${duelState.words.length}`;
+                if (duelState.mode === 'srs_review') {
+                    roundBadge.classList.add('hidden');
+                    roundBadge.style.display = 'none';
+                } else {
+                    roundBadge.classList.remove('hidden');
+                    roundBadge.style.display = '';
+                    roundBadge.textContent = `Раунд ${duelState.currentRound + 1} / ${duelState.words.length}`;
+                }
             }
 
             if (turnIndicator) {
@@ -1632,14 +1825,16 @@
                 feedbackEl.className = 'duel-feedback-banner';
             }
 
+            const isLatin = typeof isLatinEnabled === 'function' && isLatinEnabled();
+            const tr = currentWord.lz_lat || (typeof transliterateLezgin === 'function' ? transliterateLezgin(currentWord.lz) : '');
+
             if (wordEl) {
-                wordEl.textContent = currentWord.lz;
+                wordEl.textContent = isLatin ? (tr || currentWord.lz) : currentWord.lz;
             }
 
-            // Pronunciation transliteration
+            // Pronunciation transliteration / Cyrillic subtext
             if (translitEl) {
-                const tr = currentWord.lz_lat || (typeof transliterateLezgin === 'function' ? transliterateLezgin(currentWord.lz) : '');
-                translitEl.textContent = tr || '';
+                translitEl.textContent = isLatin ? currentWord.lz : (tr || '');
             }
 
             const others = WORDS.filter(w => w.id !== currentWord.id && (w.ru || '').toLowerCase() !== (currentWord.ru || '').toLowerCase());
@@ -1665,34 +1860,42 @@
             if (duelState.mode === 'online_live') {
                 const rivalStatusEl = document.getElementById('duel-rival-status');
                 if (rivalStatusEl) {
-                    rivalStatusEl.textContent = 'В сети • Думает...';
-                    rivalStatusEl.className = 'text-[10px] text-slate-400 font-semibold mt-0.5 text-right';
+                    const isSimulatedRound = Boolean(duelState.challengeData?.isSimulated || duelState.challengeData?.opponent?.isSimulated);
+                    if (isSimulatedRound) {
+                        rivalStatusEl.textContent = '🤖 Думает...';
+                        rivalStatusEl.className = 'text-[10px] text-violet-400 font-semibold mt-0.5 text-right';
+                    } else {
+                        rivalStatusEl.textContent = 'В сети • Думает...';
+                        rivalStatusEl.className = 'text-[10px] text-slate-400 font-semibold mt-0.5 text-right';
+                    }
                 }
             }
 
             updateDuelLivesUI();
 
-            // Timer countdown
-            duelState.timerInterval = setInterval(() => {
-                duelState.timer--;
-                if (timerEl) {
-                    timerEl.textContent = String(Math.max(0, duelState.timer));
-                    if (duelState.timer <= 3) {
-                        timerEl.className = 'duel-timer-badge is-critical';
-                    } else if (duelState.timer <= 5) {
-                        timerEl.className = 'duel-timer-badge is-warning';
-                    } else {
-                        timerEl.className = 'duel-timer-badge';
+            // Timer countdown (disabled in srs_review)
+            if (duelState.mode !== 'srs_review') {
+                duelState.timerInterval = setInterval(() => {
+                    duelState.timer--;
+                    if (timerEl) {
+                        timerEl.textContent = String(Math.max(0, duelState.timer));
+                        if (duelState.timer <= 3) {
+                            timerEl.className = 'duel-timer-badge is-critical';
+                        } else if (duelState.timer <= 5) {
+                            timerEl.className = 'duel-timer-badge is-warning';
+                        } else {
+                            timerEl.className = 'duel-timer-badge';
+                        }
                     }
-                }
 
-                if (duelState.timer <= 0) {
-                    clearInterval(duelState.timerInterval);
-                    if (!duelState.answered) {
-                        handleDuelTimeout(currentWord.id);
+                    if (duelState.timer <= 0) {
+                        clearInterval(duelState.timerInterval);
+                        if (!duelState.answered) {
+                            handleDuelTimeout(currentWord.id);
+                        }
                     }
-                }
-            }, 1000);
+                }, 1000);
+            }
         }
 
         function handleDuelAnswer(selectedId, correctId, clickedBtn) {
@@ -1723,7 +1926,13 @@
                     feedbackEl.className = 'duel-feedback-banner is-correct';
                 }
 
-                reviewSrsCard(correctId, SRS_RATING.Good);
+                if (duelState.mode === 'srs_review') {
+                    reviewSrsCard(correctId, SRS_RATING.Good);
+                    if (!duelState.srsSessionMastered) duelState.srsSessionMastered = 0;
+                    duelState.srsSessionMastered++;
+                } else {
+                    reviewSrsCard(correctId, SRS_RATING.Good);
+                }
                 if (!PROGRESS.learned.includes(correctId)) {
                     PROGRESS.learned.push(correctId);
                     saveProgress();
@@ -1731,7 +1940,9 @@
             } else {
                 vibrateError();
                 if (isPlayer1) {
-                    duelState.playerLives--;
+                    if (duelState.mode !== 'srs_review') {
+                        duelState.playerLives--;
+                    }
                     duelState.playerMistakes++;
                 } else {
                     duelState.rivalLives--;
@@ -1752,10 +1963,18 @@
 
                 const livesLeft = isPlayer1 ? duelState.playerLives : duelState.rivalLives;
                 if (feedbackEl) {
-                    feedbackEl.innerHTML = `<i class="fa-solid fa-heart text-rose-500"></i> <span>Ошибка! Осталось ${Math.max(0, livesLeft)} из 3 жизней</span>`;
+                    if (duelState.mode === 'srs_review') {
+                        feedbackEl.innerHTML = `<i class="fa-solid fa-rotate-right text-rose-500"></i> <span>Ошибка! Слово вернётся на повторение</span>`;
+                    } else {
+                        feedbackEl.innerHTML = `<i class="fa-solid fa-heart text-rose-500"></i> <span>Ошибка! Осталось ${Math.max(0, livesLeft)} из 3 жизней</span>`;
+                    }
                     feedbackEl.className = 'duel-feedback-banner is-wrong';
                 }
-                reviewSrsCard(correctId, SRS_RATING.Hard);
+                if (duelState.mode === 'srs_review') {
+                    reviewSrsCard(correctId, SRS_RATING.Again);
+                } else {
+                    reviewSrsCard(correctId, SRS_RATING.Hard);
+                }
             }
 
             updateDuelLivesUI();
@@ -1804,8 +2023,17 @@
             const livesLeft = isPlayer1 ? duelState.playerLives : duelState.rivalLives;
             const feedbackEl = document.getElementById('duel-feedback');
             if (feedbackEl) {
-                feedbackEl.innerHTML = `<i class="fa-solid fa-clock text-rose-500"></i> <span>Время вышло! Осталось ${Math.max(0, livesLeft)} из 3 жизней</span>`;
+                if (duelState.mode === 'srs_review') {
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-clock text-rose-500"></i> <span>Время вышло! Слово вернётся в очередь. Осталось ${Math.max(0, livesLeft)} из 3</span>`;
+                } else {
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-clock text-rose-500"></i> <span>Время вышло! Осталось ${Math.max(0, livesLeft)} из 3 жизней</span>`;
+                }
                 feedbackEl.className = 'duel-feedback-banner is-wrong';
+            }
+
+            // SRS update on timeout
+            if (duelState.mode === 'srs_review') {
+                reviewSrsCard(correctId, SRS_RATING.Again);
             }
 
             updateDuelLivesUI();
@@ -1865,6 +2093,25 @@
 
             const challengeBtn = document.getElementById('duel-challenge-btn');
             const replyBtn = document.getElementById('duel-reply-friend-btn');
+            const rematchBtn = document.getElementById('duel-rematch-btn');
+            const rematchStatus = document.getElementById('duel-rematch-status');
+            const retryBtn = document.getElementById('duel-retry-btn');
+            const shareBtn = document.getElementById('duel-share-btn');
+            const finishBtn = document.getElementById('duel-finish-btn');
+
+            if (finishBtn) {
+                finishBtn.classList.add('hidden');
+                finishBtn.style.display = 'none';
+            }
+            if (retryBtn) {
+                retryBtn.innerHTML = '<i class="fa-solid fa-rotate-right text-sm"></i><span>Сыграть ещё раз</span>';
+                retryBtn.classList.remove('hidden');
+                retryBtn.style.display = 'flex';
+            }
+            if (shareBtn) {
+                shareBtn.classList.remove('hidden');
+                shareBtn.style.display = 'flex';
+            }
 
             const hud = document.getElementById('duel-hud-bar');
             const progress = document.getElementById('duel-progress-container');
@@ -1893,20 +2140,22 @@
 
             const correctWordStr = (typeof pluralize === 'function')
                 ? pluralize(duelState.playerCorrect, 'слово', 'слова', 'слов')
-                : (duelState.playerCorrect === 1 ? `${duelState.playerCorrect} слово` : `${duelState.playerCorrect} слов`);
+                : (duelState.playerCorrect === 1 ? `1 слово` : `${duelState.playerCorrect} слов`);
             if (finalCorrectEl) finalCorrectEl.textContent = correctWordStr;
             if (finalMistakesEl) finalMistakesEl.textContent = `${duelState.playerMistakes} / 3`;
             if (finalLivesEl) finalLivesEl.innerHTML = renderLivesHearts(duelState.playerLives);
 
-            const rematchBtn = document.getElementById('duel-rematch-btn');
-            const rematchStatus = document.getElementById('duel-rematch-status');
-            if (rematchStatus) rematchStatus.classList.add('hidden');
+            if (rematchStatus) {
+                rematchStatus.classList.add('hidden');
+                rematchStatus.style.display = 'none';
+            }
 
             if (duelState.mode === 'online_live') {
-                if (challengeBtn) challengeBtn.classList.add('hidden');
-                if (replyBtn) replyBtn.classList.add('hidden');
+                if (challengeBtn) { challengeBtn.classList.add('hidden'); challengeBtn.style.display = 'none'; }
+                if (replyBtn) { replyBtn.classList.add('hidden'); replyBtn.style.display = 'none'; }
                 if (rematchBtn) {
                     rematchBtn.classList.remove('hidden');
+                    rematchBtn.style.display = 'flex';
                     const rematchText = document.getElementById('duel-rematch-btn-text');
                     if (rematchText) rematchText.textContent = 'Предложить реванш';
                 }
@@ -1916,16 +2165,21 @@
                 const myCorrect = duelState.playerCorrect;
                 const rivalCorrect = duelState.rivalCorrect;
 
-                const iWon = duelState.rivalLives <= 0 || (duelState.playerLives > 0 && (myMistakes < rivalMistakes || (myMistakes === rivalMistakes && myCorrect > rivalCorrect)));
-                const rivalWon = duelState.playerLives <= 0 || (duelState.rivalLives > 0 && (myMistakes > rivalMistakes || (myMistakes === rivalMistakes && myCorrect < rivalCorrect)));
+                const surrenderWin = Boolean(duelState.opponentLeftSurrender);
+                const iWon = surrenderWin || duelState.rivalLives <= 0 || (duelState.playerLives > 0 && (myMistakes < rivalMistakes || (myMistakes === rivalMistakes && myCorrect > rivalCorrect)));
+                const rivalWon = !surrenderWin && (duelState.playerLives <= 0 || (duelState.rivalLives > 0 && (myMistakes > rivalMistakes || (myMistakes === rivalMistakes && myCorrect < rivalCorrect))));
 
                 if (iWon) {
                     vibrateComplete();
                     if (iconEl) iconEl.innerHTML = '<i class="fa-solid fa-trophy text-amber-500 text-3xl"></i>';
                     if (titleEl) titleEl.textContent = `Победа над ${duelState.rivalName}!`;
-                    if (descEl) descEl.textContent = duelState.rivalLives <= 0 
-                        ? `Соперник потерял все 3 жизни (нокаут)! Вы ответили верно на ${correctWordStr}!`
-                        : `Вы ответили на ${correctWordStr} (${myMistakes} ош.), а ${duelState.rivalName} на ${rivalCorrect} слов (${rivalMistakes} ош.)!`;
+                    if (descEl) {
+                        descEl.textContent = surrenderWin
+                            ? `Соперник покинул дуэль. Вам присуждена безоговорочная техническая победа!`
+                            : (duelState.rivalLives <= 0 
+                                ? `Соперник потерял все 3 жизни (нокаут)! Вы ответили верно на ${correctWordStr}!`
+                                : `Вы ответили на ${correctWordStr} (${myMistakes} ош.), а ${duelState.rivalName} на ${rivalCorrect} слов (${rivalMistakes} ош.)!`);
+                    }
                     for (let i = 0; i < 25; i++) createCelebrationParticle();
                 } else if (rivalWon) {
                     if (iconEl) iconEl.innerHTML = '<i class="fa-solid fa-heart-crack text-rose-500 text-3xl"></i>';
@@ -1939,6 +2193,7 @@
                     if (descEl) descEl.textContent = `Одинаковый результат: ${myCorrect} слов и ${myMistakes} ошибок!`;
                 }
 
+                const safeRivalName = String(duelState.rivalName || 'Соперник').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
                 const statsBento = document.querySelector('.duel-stats-bento');
                 if (statsBento) {
                     statsBento.innerHTML = `
@@ -1950,7 +2205,7 @@
                         </div>
                         <div class="flex justify-between items-center py-2.5">
                             <span class="text-xs text-slate-500 font-semibold flex items-center gap-2">
-                                <span class="w-5 h-5 rounded-lg bg-blue-100 text-blue-700 text-xs font-bold flex items-center justify-center">С</span> ${duelState.rivalName}
+                                <span class="w-5 h-5 rounded-lg bg-blue-100 text-blue-700 text-xs font-bold flex items-center justify-center">С</span> ${safeRivalName}
                             </span>
                             <span class="font-bold text-sm text-slate-800">${duelState.rivalCorrect} слов (${duelState.rivalMistakes} ош.)</span>
                         </div>
@@ -2048,7 +2303,7 @@
                         </div>
                     `;
                 }
-            } else {
+            } else if (duelState.mode === 'time_attack') {
                 // Time Attack (Режим на время)
                 if (challengeBtn) challengeBtn.classList.add('hidden');
                 if (replyBtn) replyBtn.classList.add('hidden');
@@ -2060,7 +2315,7 @@
                             <span class="text-xs text-slate-500 font-semibold flex items-center gap-2">
                                 <i class="fa-solid fa-check-double text-emerald-600"></i> Верно
                             </span>
-                            <span id="duel-final-correct" class="font-bold text-sm text-emerald-600">${duelState.playerCorrect} ${correctWordStr}</span>
+                            <span id="duel-final-correct" class="font-bold text-sm text-emerald-600">${correctWordStr}</span>
                         </div>
                         <div class="flex justify-between items-center py-2.5">
                             <span class="text-xs text-slate-500 font-semibold flex items-center gap-2">
@@ -2087,18 +2342,89 @@
                     vibrateComplete();
                     if (iconEl) iconEl.innerHTML = '<i class="fa-solid fa-trophy text-amber-500 text-3xl"></i>';
                     if (titleEl) titleEl.textContent = 'Новый рекорд!';
-                    if (descEl) descEl.textContent = `Вы установили личный рекорд: ${duelState.playerCorrect} ${correctWordStr}! Предыдущий: ${prevBest}.`;
+                    if (descEl) descEl.textContent = `Вы установили личный рекорд: ${correctWordStr}! Предыдущий: ${prevBest}.`;
                     for (let i = 0; i < 25; i++) createCelebrationParticle();
                 } else if (duelState.playerLives <= 0) {
                     if (iconEl) iconEl.innerHTML = '<i class="fa-solid fa-heart-crack text-rose-500 text-3xl"></i>';
                     if (titleEl) titleEl.textContent = 'Жизни закончились!';
-                    if (descEl) descEl.textContent = `Вы допустили 3 ошибки. Правильно переведено ${duelState.playerCorrect} ${correctWordStr}. Рекорд: ${prevBest}.`;
+                    if (descEl) descEl.textContent = `Вы допустили 3 ошибки. Правильно переведено ${correctWordStr}. Рекорд: ${prevBest}.`;
                 } else {
                     vibrateComplete();
                     if (iconEl) iconEl.innerHTML = '<i class="fa-solid fa-star text-amber-500 text-3xl"></i>';
                     if (titleEl) titleEl.textContent = 'Отличный результат!';
-                    if (descEl) descEl.textContent = `Правильно переведено: ${duelState.playerCorrect} ${correctWordStr}. Рекорд: ${prevBest}.`;
+                    if (descEl) descEl.textContent = `Правильно переведено: ${correctWordStr}. Рекорд: ${prevBest}.`;
                     for (let i = 0; i < 20; i++) createCelebrationParticle();
+                }
+            } else {
+                // SRS Review result screen (srs_review mode & fallback)
+                if (rematchBtn) { rematchBtn.classList.add('hidden'); rematchBtn.style.display = 'none'; }
+                if (rematchStatus) { rematchStatus.classList.add('hidden'); rematchStatus.style.display = 'none'; }
+                if (challengeBtn) { challengeBtn.classList.add('hidden'); challengeBtn.style.display = 'none'; }
+                if (replyBtn) { replyBtn.classList.add('hidden'); replyBtn.style.display = 'none'; }
+                if (shareBtn) { shareBtn.classList.add('hidden'); shareBtn.style.display = 'none'; }
+
+                if (retryBtn) {
+                    retryBtn.classList.remove('hidden');
+                    retryBtn.style.display = 'flex';
+                    retryBtn.innerHTML = '<i class="fa-solid fa-rotate-right text-sm"></i><span>Повторить ещё раз</span>';
+                }
+                if (finishBtn) {
+                    finishBtn.classList.remove('hidden');
+                    finishBtn.style.display = 'flex';
+                }
+
+                const mastered = duelState.srsSessionMastered || 0;
+                const masteredWordStr = (typeof pluralize === 'function')
+                    ? pluralize(mastered, 'слово', 'слова', 'слов')
+                    : (mastered === 1 ? '1 слово' : `${mastered} слов`);
+                const mistakesWordStr = (typeof pluralize === 'function')
+                    ? pluralize(duelState.playerMistakes, 'слово', 'слова', 'слов')
+                    : (duelState.playerMistakes === 1 ? '1 слово' : `${duelState.playerMistakes} слов`);
+
+                const statsBento = document.querySelector('.duel-stats-bento');
+                if (statsBento) {
+                    statsBento.innerHTML = `
+                        <div class="flex justify-between items-center py-2.5">
+                            <span class="text-xs text-slate-500 font-semibold flex items-center gap-2">
+                                <i class="fa-solid fa-brain text-violet-600"></i> Освоено
+                            </span>
+                            <span id="duel-final-correct" class="font-bold text-sm text-violet-700">${masteredWordStr}</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2.5">
+                            <span class="text-xs text-slate-500 font-semibold flex items-center gap-2">
+                                <i class="fa-solid fa-rotate-right text-rose-500"></i> Вернётся в очередь
+                            </span>
+                            <span id="duel-final-mistakes" class="font-bold text-sm text-rose-600">${mistakesWordStr}</span>
+                        </div>
+                    `;
+                }
+
+                const totalWords = duelState.words.length;
+                if (mastered >= totalWords * 0.8) {
+                    vibrateComplete();
+                    if (iconEl) iconEl.innerHTML = '<i class="fa-solid fa-brain text-violet-500 text-3xl"></i>';
+                    if (titleEl) titleEl.textContent = 'Отлично!';
+                    if (descEl) descEl.textContent = `Освоено ${masteredWordStr} из ${totalWords}. SRS-карточки обновлены — следующее повторение запланировано автоматически.`;
+                    for (let i = 0; i < 20; i++) createCelebrationParticle();
+                } else {
+                    vibrateComplete();
+                    if (iconEl) iconEl.innerHTML = '<i class="fa-solid fa-check-double text-emerald-500 text-3xl"></i>';
+                    if (titleEl) titleEl.textContent = 'Сессия завершена!';
+                    if (descEl) descEl.textContent = `Освоено ${masteredWordStr}. Слова с ошибками вернутся для повторения. Так работает интервальное обучение!`;
+                    for (let i = 0; i < 15; i++) createCelebrationParticle();
+                }
+
+                // Update subtitle on practice screen
+                const subtitle = document.getElementById('prac-review-subtitle');
+                if (subtitle) {
+                    const snapshot = getLearningSnapshot();
+                    const dueCount = snapshot.due.length + snapshot.fresh.length;
+                    const cardsStr = (typeof pluralize === 'function')
+                        ? pluralize(dueCount, 'карточка', 'карточки', 'карточек')
+                        : `${dueCount} карточек`;
+                    subtitle.textContent = dueCount > 0
+                        ? `${cardsStr} к повторению`
+                        : 'Всё повторено — отличная работа!';
                 }
             }
         }
@@ -2116,4 +2442,93 @@
         window.startDuelGame = startDuelGame;
         window.closeDuelModal = closeDuelModal;
         window.pendingChallenge = () => pendingChallenge;
+
+        // =========================================================
+        // startSrsReview — SRS-based quiz mode (Повторение)
+        // =========================================================
+        let isSrsReviewStarting = false;
+        function startSrsReview() {
+            if (isSrsReviewStarting) return;
+            isSrsReviewStarting = true;
+            setTimeout(() => { isSrsReviewStarting = false; }, 600);
+
+            try {
+                if (typeof WORDS === 'undefined' || !WORDS || WORDS.length === 0) {
+                    alert('Словарь ещё загружается. Пожалуйста, подождите пару секунд.');
+                    return;
+                }
+
+                if (typeof PROGRESS === 'undefined' || !PROGRESS) {
+                    window.PROGRESS = { favorites: [], learned: [], stats: { quizzes: 0, scoreSum: 0 }, srs: {}, streak: { current: 1, lastDate: null, max: 1 } };
+                }
+                if (!PROGRESS.srs || typeof PROGRESS.srs !== 'object' || Array.isArray(PROGRESS.srs)) {
+                    PROGRESS.srs = {};
+                }
+
+                const now = Date.now();
+                const pool = WORDS;
+                const srs = PROGRESS.srs;
+
+                // 1. Overdue cards (sorted oldest first — most urgent)
+                const due = pool
+                    .filter(w => srs[w.id] && srs[w.id].next <= now && (srs[w.id].ivl || 0) > 0)
+                    .sort((a, b) => (srs[a.id]?.next || 0) - (srs[b.id]?.next || 0));
+
+                // 2. Weak cards (more errors than successes, or low ease)
+                const weak = pool.filter(w => {
+                    if (due.find(d => d.id === w.id)) return false;
+                    const card = srs[w.id];
+                    return card && ((card.errors || 0) > (card.success || 0) || (card.ease || 2.5) <= 1.8);
+                });
+
+                // 3. New / unseen cards
+                const fresh = shuffle(pool.filter(w => {
+                    if (due.find(d => d.id === w.id)) return false;
+                    if (weak.find(d => d.id === w.id)) return false;
+                    return !srs[w.id] || (srs[w.id].ivl || 0) === 0;
+                }));
+
+                const SESSION_SIZE = 20;
+
+                // Priority fill: due → weak → fresh
+                let sessionWords = [
+                    ...due.slice(0, SESSION_SIZE),
+                    ...weak.slice(0, SESSION_SIZE),
+                    ...fresh
+                ].slice(0, SESSION_SIZE);
+
+                if (sessionWords.length < 4) {
+                    sessionWords = shuffle([...pool]).slice(0, SESSION_SIZE);
+                } else {
+                    sessionWords = shuffle(sessionWords);
+                }
+
+                // Update subtitle badge on practice screen
+                const subtitle = document.getElementById('prac-review-subtitle');
+                if (subtitle) {
+                    const dueCount = due.length + weak.slice(0, SESSION_SIZE).length;
+                    const cardsStr = (typeof pluralize === 'function')
+                        ? pluralize(dueCount, 'карточка', 'карточки', 'карточек')
+                        : `${dueCount} карточек`;
+                    subtitle.textContent = dueCount > 0
+                        ? `${cardsStr} к повторению`
+                        : 'Всё повторено — отличная работа!';
+                }
+
+                // Launch using the duel arena with srs_review mode
+                if (typeof startDuelGame === 'function') {
+                    startDuelGame('srs_review', { wordIds: sessionWords.map(w => w.id) });
+                } else {
+                    console.error('[LezgiMez] startDuelGame is not available');
+                }
+            } catch (err) {
+                console.error('[LezgiMez] Error in startSrsReview:', err);
+                if (typeof startDuelGame === 'function') {
+                    startDuelGame('srs_review');
+                }
+            }
+        }
+
+        window.startSrsReview = startSrsReview;
+
 

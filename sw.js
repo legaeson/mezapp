@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.2.51';
+const CACHE_VERSION = '2.2.88';
 const CACHE_NAME = `lezgimez-pwa-v${CACHE_VERSION}`;
 
 const ALPHABET_AUDIO_FILES = [
@@ -6,6 +6,13 @@ const ALPHABET_AUDIO_FILES = [
   'к', 'к1', 'къ', 'кь', 'л', 'м', 'н', 'п', 'п1', 'р', 'с', 'т',
   'т1', 'у', 'уь', 'ф', 'х', 'хъ', 'хь', 'ц', 'ц1', 'ч', 'ч1',
   'ш', 'э', 'ю', 'я'
+];
+
+const READING_AUDIO_FILES = [
+  'kval', 'svas', 'qvan', 'qved', 'gvechi', 'tval', 'cval', 'hva',
+  'zun', 'vun', 'van', 'kan', 'chin', 'cin', 'insan', 'qvan_nasal',
+  'twar', 't1war', 'ahwar', 'zver', 'qhver', 't1vet1',
+  'kitab', 'tuhun', 'avay', 'fenay', 'rikyay'
 ];
 
 const CRITICAL_ASSETS = [
@@ -19,6 +26,7 @@ const CRITICAL_ASSETS = [
   './js/peerjs.min.js',
   './js/duel-network.js',
   './js/telegram.js',
+  './js/reading-data.js',
   './js/srs.js',
   './js/ui.js',
   './js/course.js',
@@ -41,10 +49,31 @@ const NON_CRITICAL_ASSETS = [
   './fa/all.min.css',
   './fa/webfonts/fa-solid-900.woff2',
   './fa/webfonts/fa-regular-400.woff2',
-  './fa/webfonts/fa-brands-400.woff2'
+  './fa/webfonts/fa-brands-400.woff2',
+  './fonts/inter-cyrillic-400.woff2',
+  './fonts/inter-cyrillic-500.woff2',
+  './fonts/inter-cyrillic-600.woff2',
+  './fonts/inter-cyrillic-700.woff2',
+  './fonts/inter-cyrillic-800.woff2',
+  './fonts/inter-cyrillic-ext-400.woff2',
+  './fonts/inter-cyrillic-ext-500.woff2',
+  './fonts/inter-cyrillic-ext-600.woff2',
+  './fonts/inter-cyrillic-ext-700.woff2',
+  './fonts/inter-cyrillic-ext-800.woff2',
+  './fonts/inter-latin-400.woff2',
+  './fonts/inter-latin-500.woff2',
+  './fonts/inter-latin-600.woff2',
+  './fonts/inter-latin-700.woff2',
+  './fonts/inter-latin-800.woff2',
+  './fonts/inter-latin-ext-400.woff2',
+  './fonts/inter-latin-ext-500.woff2',
+  './fonts/inter-latin-ext-600.woff2',
+  './fonts/inter-latin-ext-700.woff2',
+  './fonts/inter-latin-ext-800.woff2'
 ];
 
 const AUDIO_ASSETS = ALPHABET_AUDIO_FILES.map(letter => `./audio/alphabet/${letter}.mp3`);
+const READING_AUDIO_ASSETS = READING_AUDIO_FILES.map(name => `./audio/reading/${name}.mp3`);
 
 async function cacheAssets(cache, assets) {
   await Promise.allSettled(
@@ -56,7 +85,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(CRITICAL_ASSETS);
-    await cacheAssets(cache, [...NON_CRITICAL_ASSETS, ...AUDIO_ASSETS]);
+    await cacheAssets(cache, [...NON_CRITICAL_ASSETS, ...AUDIO_ASSETS, ...READING_AUDIO_ASSETS]);
     await self.skipWaiting();
   })());
 });

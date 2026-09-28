@@ -449,10 +449,19 @@
             // Practice modes
             document.getElementById('prac-mode-grammar')?.addEventListener('click', showGrammarList);
             document.getElementById('grammar-back-btn')?.addEventListener('click', hideGrammarList);
+            document.getElementById('prac-mode-alphabet')?.addEventListener('click', () => typeof showAlphabetPracticeView === 'function' && showAlphabetPracticeView());
+            document.getElementById('alphabet-practice-back-btn')?.addEventListener('click', () => typeof hideAlphabetPracticeView === 'function' && hideAlphabetPracticeView());
+            document.getElementById('prac-mode-review')?.addEventListener('click', () => typeof startSrsReview === 'function' && startSrsReview());
             document.getElementById('course-unit-back-btn')?.addEventListener('click', showCourseMainView);
 
-            // Duel Mode Select & Modals
-            document.getElementById('prac-mode-duel')?.addEventListener('click', () => typeof openDuelMenuModal === 'function' ? openDuelMenuModal() : (typeof startDuelGame === 'function' && startDuelGame('friend_create')));
+            // Duel Mode Select & Modals (Under Development)
+            document.getElementById('prac-mode-duel')?.addEventListener('click', () => {
+                if (typeof window.showCustomAlert === 'function') {
+                    window.showCustomAlert('Режим в разработке', 'Режим «Дуэль» сейчас находится в разработке. Совсем скоро здесь появится возможность играть и соревноваться с друзьями!');
+                } else {
+                    alert('Режим «Дуэль» сейчас находится в разработке.');
+                }
+            });
             document.getElementById('duel-menu-close-btn')?.addEventListener('click', () => typeof closeDuelMenuModal === 'function' && closeDuelMenuModal());
             document.getElementById('duel-menu-modal')?.addEventListener('click', (e) => {
                 if (e.target.id === 'duel-menu-modal' && typeof closeDuelMenuModal === 'function') closeDuelMenuModal();
@@ -462,24 +471,76 @@
             document.getElementById('duel-btn-online-match')?.addEventListener('click', () => {
                 if (typeof openDuelMatchmakingModal === 'function') openDuelMatchmakingModal();
                 window.DuelNetwork?.startMatchmaking(
-                    () => {
+                    (customStatus) => {
                         const statusEl = document.getElementById('duel-matchmaking-status');
-                        if (statusEl) statusEl.textContent = 'Ищем свободного игрока в сети...';
+                        if (statusEl) statusEl.textContent = customStatus || 'Ищем свободного игрока в сети...';
                     },
                     (matchInfo) => {
                         if (typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal();
                         if (typeof startDuelGame === 'function') {
-                            startDuelGame('online_live', { opponent: matchInfo.opponent, isHost: matchInfo.role === 'host' });
+                            startDuelGame('online_live', {
+                                opponent: matchInfo.opponent,
+                                isHost: matchInfo.role === 'host',
+                                isSimulated: Boolean(matchInfo.isSimulated)
+                            });
+                        }
+                    },
+                    (handlers) => {
+                        // Real honest handler: no opponent found in the network!
+                        const titleEl = document.getElementById('duel-matchmaking-title');
+                        const statusEl = document.getElementById('duel-matchmaking-status');
+                        const iconEl = document.getElementById('duel-matchmaking-center-icon');
+                        const timerWrap = document.getElementById('duel-matchmaking-timer-wrap');
+                        const searchingActions = document.getElementById('duel-matchmaking-searching-actions');
+                        const notFoundActions = document.getElementById('duel-matchmaking-not-found-actions');
+
+                        if (titleEl) titleEl.textContent = 'Соперник не найден';
+                        if (statusEl) statusEl.textContent = 'В сети пока нет игроков в поиске. Вы можете сыграть с ИИ-ботом или продолжить ожидание.';
+                        if (iconEl) {
+                            iconEl.className = 'w-18 h-18 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center text-3xl z-10 shadow-sm';
+                            iconEl.innerHTML = '<i class="fa-solid fa-user-slash text-2xl"></i>';
+                        }
+                        if (timerWrap) timerWrap.classList.add('hidden');
+                        if (searchingActions) searchingActions.classList.add('hidden');
+                        if (notFoundActions) notFoundActions.classList.remove('hidden');
+
+                        // Action 1: User explicitly chooses to play with AI
+                        const playAiBtn = document.getElementById('duel-match-play-ai-btn');
+                        if (playAiBtn) {
+                            playAiBtn.onclick = () => {
+                                if (typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal();
+                                handlers?.playAi?.();
+                            };
+                        }
+
+                        // Action 2: User chooses to keep waiting in the room
+                        const keepWaitingBtn = document.getElementById('duel-match-keep-waiting-btn');
+                        if (keepWaitingBtn) {
+                            keepWaitingBtn.onclick = () => {
+                                if (titleEl) titleEl.textContent = 'Ожидание соперника...';
+                                if (statusEl) statusEl.textContent = 'Вы находитесь в очереди. Как только реальный игрок нажмёт поиск, игра начнётся!';
+                                if (iconEl) {
+                                    iconEl.className = 'w-18 h-18 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl z-10 shadow-sm';
+                                    iconEl.innerHTML = '<i class="fa-solid fa-hourglass-half text-2xl animate-pulse"></i>';
+                                }
+                                if (searchingActions) searchingActions.classList.remove('hidden');
+                                if (notFoundActions) notFoundActions.classList.add('hidden');
+                                handlers?.keepWaiting?.('Ожидание подключения соперника...');
+                            };
                         }
                     },
                     (err) => {
                         console.error('[Duel] Matchmaking error:', err);
-                        if (typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal();
-                        alert('Ошибка поиска. Попробуйте ещё раз.');
+                        if (typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal(true);
+                        alert('Ошибка сетевого подключения. Попробуйте ещё раз.');
                     }
                 );
             });
+
             document.getElementById('duel-matchmaking-cancel-btn')?.addEventListener('click', () => {
+                if (typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal(true);
+            });
+            document.getElementById('duel-match-not-found-close-btn')?.addEventListener('click', () => {
                 if (typeof closeDuelMatchmakingModal === 'function') closeDuelMatchmakingModal(true);
             });
             document.getElementById('duel-matchmaking-modal')?.addEventListener('click', (e) => {
@@ -592,9 +653,8 @@
 
             // 4. Other duel modes
             document.getElementById('duel-btn-pass-play')?.addEventListener('click', () => typeof startDuelGame === 'function' && startDuelGame('pass_play'));
-            const handleStartTimeAttack = () => typeof startDuelGame === 'function' && startDuelGame('time_attack');
-            document.getElementById('duel-btn-time-attack')?.addEventListener('click', handleStartTimeAttack);
-            document.getElementById('duel-btn-bot')?.addEventListener('click', handleStartTimeAttack);
+            // duel-btn-bot launches time_attack as a solo fallback (unchanged)
+            document.getElementById('duel-btn-bot')?.addEventListener('click', () => typeof startDuelGame === 'function' && startDuelGame('time_attack'));
 
             // Incoming challenge modal buttons
             document.getElementById('duel-incoming-close-btn')?.addEventListener('click', () => typeof closeIncomingDuelModal === 'function' && closeIncomingDuelModal());
@@ -632,22 +692,37 @@
                 }
                 if (typeof closeDuelModal === 'function') closeDuelModal();
             });
+            const handleOnlineRematch = () => {
+                const rematchText = document.getElementById('duel-rematch-btn-text');
+                if (window.DuelNetwork?.hasRematchOffer) {
+                    if (rematchText) rematchText.textContent = 'Принятие реванша...';
+                    let fallbackWordIds = null;
+                    if (typeof WORDS !== 'undefined' && Array.isArray(WORDS) && typeof shuffle === 'function') {
+                        fallbackWordIds = shuffle([...WORDS]).slice(0, 20).map(w => w.id);
+                    }
+                    window.DuelNetwork?.acceptRematch(fallbackWordIds);
+                } else {
+                    if (rematchText) rematchText.textContent = 'Ожидание соперника...';
+                    window.DuelNetwork?.offerRematch();
+                }
+            };
+
             document.getElementById('duel-retry-btn')?.addEventListener('click', () => {
                 const mode = window.lastDuelResult?.mode || 'time_attack';
                 if (mode === 'online_live') {
-                    // Start rematch or offer rematch
-                    const rematchText = document.getElementById('duel-rematch-btn-text');
-                    if (rematchText) rematchText.textContent = 'Ожидание ответа...';
-                    window.DuelNetwork?.offerRematch();
+                    handleOnlineRematch();
+                } else if (mode === 'srs_review') {
+                    if (typeof startSrsReview === 'function') startSrsReview();
                 } else {
                     const challenge = mode === 'friend_play' && typeof window.pendingChallenge === 'function' ? window.pendingChallenge() : null;
                     if (typeof startDuelGame === 'function') startDuelGame(mode, challenge);
                 }
             });
+            document.getElementById('duel-finish-btn')?.addEventListener('click', () => {
+                if (typeof closeDuelModal === 'function') closeDuelModal();
+            });
             document.getElementById('duel-rematch-btn')?.addEventListener('click', () => {
-                const rematchText = document.getElementById('duel-rematch-btn-text');
-                if (rematchText) rematchText.textContent = 'Ожидание соперника...';
-                window.DuelNetwork?.offerRematch();
+                handleOnlineRematch();
             });
             document.getElementById('duel-challenge-btn')?.addEventListener('click', () => {
                 if (window.lastDuelResult && typeof window.TelegramApp?.shareFriendChallenge === 'function') {
@@ -685,14 +760,13 @@
             });
 
             document.getElementById('prac-mode-flashcards')?.addEventListener('click', startFlashcards);
-            document.getElementById('prac-mode-quiz')?.addEventListener('click', startQuiz);
+            document.getElementById('prac-mode-review')?.addEventListener('click', () => typeof startSrsReview === 'function' && startSrsReview());
             document.getElementById('prac-mode-pairs')?.addEventListener('click', startPairs);
             document.getElementById('prac-mode-odd')?.addEventListener('click', startOddWord);
             document.getElementById('prac-mode-srs')?.addEventListener('click', startFlashcards); // SRS mode also uses flashcards
 
-            // Modals backdrops
-            document.getElementById('word-modal')?.addEventListener('click', (e) => { if (e.target.id === 'word-modal') closeModal(); });
-            document.getElementById('practice-modal')?.addEventListener('click', (e) => { if (e.target.id === 'practice-modal') endPractice(); });
+                        // Setup modals backdrops & click containment
+            setupModalBackdrops();
             document.addEventListener('click', (e) => {
                 const trigger = e.target.closest('button, [role="button"], a, input, textarea, select');
                 if (trigger) lastDialogTrigger = trigger;
@@ -707,6 +781,16 @@
             // Settings & actions
             document.getElementById('add-to-home-btn')?.addEventListener('click', showInstallInstructions);
             document.getElementById('theme-toggle-card')?.addEventListener('click', toggleTheme);
+
+            const latinToggle = document.getElementById('latin-mode-toggle');
+            if (latinToggle) {
+                latinToggle.checked = typeof isLatinEnabled === 'function' && isLatinEnabled();
+                latinToggle.addEventListener('change', (e) => {
+                    if (typeof setLatinEnabled === 'function') {
+                        setLatinEnabled(e.target.checked);
+                    }
+                });
+            }
 
             // Initial data load and UI render
             initTheme();
@@ -750,10 +834,82 @@
             });
         }
 
+                // Setup modals backdrops, isolation & ghost click prevention
+        function setupModalBackdrops() {
+            function bindBackdrop(modalId, closeFn) {
+                const modal = document.getElementById(modalId);
+                if (!modal) return;
+
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        if (typeof window.activateGhostClickShield === 'function') {
+                            window.activateGhostClickShield(350);
+                        }
+                        if (typeof closeFn === 'function') closeFn();
+                    }
+                });
+
+                const card = modal.querySelector('.modal, .duel-modal-wrapper, .practice-modal-wrapper') || modal.firstElementChild;
+                if (card) {
+                    card.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
+                }
+            }
+
+            bindBackdrop('word-modal', () => typeof closeModal === 'function' && closeModal());
+            bindBackdrop('practice-modal', () => typeof endPractice === 'function' && endPractice());
+            bindBackdrop('leaderboard-modal', () => typeof closeLeaderboardModal === 'function' && closeLeaderboardModal());
+            bindBackdrop('duel-menu-modal', () => typeof closeDuelMenuModal === 'function' && closeDuelMenuModal());
+            bindBackdrop('duel-lobby-modal', () => typeof closeDuelLobbyModal === 'function' && closeDuelLobbyModal());
+            bindBackdrop('duel-join-modal', () => typeof closeDuelJoinModal === 'function' && closeDuelJoinModal());
+            bindBackdrop('duel-matchmaking-modal', () => typeof closeDuelMatchmakingModal === 'function' && closeDuelMatchmakingModal(true));
+            bindBackdrop('duel-incoming-modal', () => typeof closeIncomingDuelModal === 'function' && closeIncomingDuelModal());
+            bindBackdrop('duel-modal', () => typeof closeDuelModal === 'function' && closeDuelModal());
+            bindBackdrop('feedback-modal', () => typeof closeFeedbackModal === 'function' && closeFeedbackModal());
+
+            // Close buttons shield activation
+            const closeButtons = [
+                { id: 'leaderboard-close-btn', fn: () => typeof closeLeaderboardModal === 'function' && closeLeaderboardModal() },
+                { id: 'duel-menu-close-btn', fn: () => typeof closeDuelMenuModal === 'function' && closeDuelMenuModal() },
+                { id: 'duel-lobby-close-btn', fn: () => typeof closeDuelLobbyModal === 'function' && closeDuelLobbyModal() },
+                { id: 'duel-join-close-btn', fn: () => typeof closeDuelJoinModal === 'function' && closeDuelJoinModal() },
+                { id: 'duel-incoming-close-btn', fn: () => typeof closeIncomingDuelModal === 'function' && closeIncomingDuelModal() },
+                { id: 'feedback-close-btn', fn: () => typeof closeFeedbackModal === 'function' && closeFeedbackModal() }
+            ];
+
+            closeButtons.forEach(({ id, fn }) => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        if (typeof window.activateGhostClickShield === 'function') {
+                            window.activateGhostClickShield(350);
+                        }
+                        fn();
+                    });
+                }
+            });
+
+            // Leaderboard tabs
+            document.getElementById('leaderboard-tab-words')?.addEventListener('click', () => {
+                if (typeof renderLeaderboard === 'function') renderLeaderboard('words');
+            });
+            document.getElementById('leaderboard-tab-streak')?.addEventListener('click', () => {
+                if (typeof renderLeaderboard === 'function') renderLeaderboard('streak');
+            });
+        }
+
         // Keyboard shortcuts
         function initKeyboard() {
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
+                    if (typeof window.handleEscapeKey === 'function') {
+                        if (window.handleEscapeKey(e)) return;
+                    }
                     const wordModal = document.getElementById('word-modal');
                     const practiceModal = document.getElementById('practice-modal');
                     if (isElementVisible(wordModal)) {

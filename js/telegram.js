@@ -48,9 +48,17 @@
 
         setupBackButton() {
             if (!tg || !tg.BackButton) return;
+            if (typeof tg.isVersionAtLeast === 'function' && !tg.isVersionAtLeast('6.1')) return;
             
             const handleBackAction = () => {
                 try {
+                    if (typeof window.handleEscapeKey === 'function') {
+                        const handled = window.handleEscapeKey();
+                        if (handled) {
+                            this.updateBackButton?.();
+                            return;
+                        }
+                    }
                     // 1. Word / Alphabet / Theory modal
                     const modal = document.getElementById('word-modal');
                     if (modal && !modal.classList.contains('hidden')) {
@@ -103,6 +111,19 @@
                         return;
                     }
 
+                    // 4.1 Alphabet & Reading View (in Practice tab)
+                    const alphaView = document.getElementById('practice-alphabet-view');
+                    if (alphaView && !alphaView.classList.contains('hidden')) {
+                        const headerWrap = document.getElementById('reading-phonetics-header-wrap');
+                        if (headerWrap && headerWrap.style.display === 'none' && typeof window.renderReadingPhoneticsHub === 'function') {
+                            window.renderReadingPhoneticsHub();
+                        } else if (typeof window.hideAlphabetPracticeView === 'function') {
+                            window.hideAlphabetPracticeView();
+                        }
+                        this.updateBackButton?.();
+                        return;
+                    }
+
                     // 5. Duel modals
                     const duelModal = document.getElementById('duel-modal');
                     if (duelModal && !duelModal.classList.contains('hidden')) {
@@ -149,6 +170,8 @@
             // Automatic show/hide based on open sub-views and modals
             const updateBackButtonState = () => {
                 try {
+                    if (!tg || !tg.BackButton) return;
+                    if (typeof tg.isVersionAtLeast === 'function' && !tg.isVersionAtLeast('6.1')) return;
                     const modal = document.getElementById('word-modal');
                     const srsView = document.getElementById('practice-modal');
                     const courseUnitView = document.getElementById('course-unit-view');
@@ -158,11 +181,14 @@
                     const duelIncomingModal = document.getElementById('duel-incoming-modal');
                     const feedbackModal = document.getElementById('feedback-modal');
                     
+                    const alphaView = document.getElementById('practice-alphabet-view');
                     const isSubViewOpen = 
-                        (modal && !modal.classList.contains('hidden')) || 
-                        (srsView && !srsView.classList.contains('hidden')) || 
+                        (typeof window.hasAnyOpenModal === 'function' && window.hasAnyOpenModal()) ||
+                        (alphaView && !alphaView.classList.contains('hidden')) ||
                         (courseUnitView && !courseUnitView.classList.contains('hidden')) ||
                         (grammarView && !grammarView.classList.contains('hidden')) ||
+                        (modal && !modal.classList.contains('hidden')) || 
+                        (srsView && !srsView.classList.contains('hidden')) || 
                         (duelModal && !duelModal.classList.contains('hidden')) ||
                         (duelMenuModal && !duelMenuModal.classList.contains('hidden')) ||
                         (duelIncomingModal && !duelIncomingModal.classList.contains('hidden')) ||
@@ -285,6 +311,7 @@
 
         showBackButton(onClickCallback) {
             if (!tg?.BackButton) return;
+            if (typeof tg.isVersionAtLeast === 'function' && !tg.isVersionAtLeast('6.1')) return;
             try {
                 tg.BackButton.show();
                 if (typeof onClickCallback === 'function') {
@@ -295,6 +322,7 @@
 
         hideBackButton() {
             if (!tg?.BackButton) return;
+            if (typeof tg.isVersionAtLeast === 'function' && !tg.isVersionAtLeast('6.1')) return;
             try {
                 tg.BackButton.hide();
             } catch (e) {}
@@ -306,7 +334,7 @@
 
         getCloudItem(key) {
             return new Promise((resolve) => {
-                if (!tg?.CloudStorage?.getItem) {
+                if (!tg?.CloudStorage?.getItem || (typeof tg.isVersionAtLeast === 'function' && !tg.isVersionAtLeast('6.9'))) {
                     return resolve(null);
                 }
                 let resolved = false;
@@ -340,7 +368,7 @@
 
         setCloudItem(key, value) {
             return new Promise((resolve) => {
-                if (!tg?.CloudStorage?.setItem) {
+                if (!tg?.CloudStorage?.setItem || (typeof tg.isVersionAtLeast === 'function' && !tg.isVersionAtLeast('6.9'))) {
                     return resolve(false);
                 }
                 let resolved = false;
@@ -585,7 +613,15 @@
                 }
                 if (avatarEl) {
                     if (user.photo_url) {
-                        avatarEl.innerHTML = `<img src="${user.photo_url}" alt="${fullName}" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-user\\'></i>'">`;
+                        const img = document.createElement('img');
+                        img.src = user.photo_url;
+                        img.alt = fullName;
+                        img.className = 'w-full h-full object-cover rounded-2xl';
+                        img.onerror = function () {
+                            avatarEl.innerHTML = '<i class="fa-solid fa-user"></i>';
+                        };
+                        avatarEl.innerHTML = '';
+                        avatarEl.appendChild(img);
                     } else {
                         const initial = (user.first_name || user.username || 'T').charAt(0).toUpperCase();
                         avatarEl.innerHTML = `<span>${initial}</span>`;

@@ -13,101 +13,9 @@
                 .normalize('NFC');
         }
 
-        // -------------------------------------------------------------
-        // ЛЕЗГИНСКАЯ ТРАНСЛИТЕРАЦИЯ — ПРАКТИЧЕСКАЯ СИСТЕМА
-        // -------------------------------------------------------------
-        const REPLACEMENTS_MAP = {
-            "чӀ˚в": "c'˚w", "ЧӀ˚в": "C'˚w", "чӀ˚": "c'˚", "ЧӀ˚": "C'˚",
-            "чh˚": "ch̊", "Чh˚": "Ch̊", "ч˚в": "c̊w", "Ч˚в": "C̊w", "ч˚": "c̊", "Ч˚": "C̊",
-            "ж˚в": "j̊w", "Ж˚в": "J̊w", "ж˚": "j̊", "Ж˚": "J̊",
-            "дж˚": "dj̊", "Дж˚": "Dj̊",
-            "ш˚": "sh̊", "Ш˚": "Sh̊",
-            "ф˚": "f̊", "Ф˚": "F̊",
+        const VOWELS_AND_SIGNS = new Set('аеёиоуыэюяАЕЁИОУЫЭЮЯъьЪЬaeyioɨuAEYIOƗUāǣĀǢæœəÆŒƏ'.split(''));
 
-            "къв": "qw", "Къв": "Qw", "кӀв": "k'w", "КӀв": "K'w", "кьв": "q'w", "Кьв": "Q'w",
-            "гъв": "ghw", "Гъв": "Ghw", "гв": "gw", "Гв": "Gw",
-            "тӀв": "t'w", "ТӀв": "T'w", "тв": "tw", "Тв": "Tw",
-            "цӀв": "ts'w", "ЦӀв": "Ts'w", "цв": "tsw", "Цв": "Tsw",
-            "хъв": "qhw", "Хъв": "Qhw", "хьв": "xhw", "Хьв": "Xhw", "хв": "xw", "Хв": "Xw",
-            "уьв": "üw", "Уьв": "Üw",
-            "зв": "zw", "Зв": "Zw", "св": "sw", "Св": "Sw", "кв": "kw", "Кв": "Kw",
-
-            "гъ": "gh", "Гъ": "Gh", "ГЪ": "GH",
-            "гь": "h", "Гь": "H", "ГЬ": "H",
-            "гӀ": "g'", "ГӀ": "G'",
-            "къ": "q", "Къ": "Q", "КЪ": "Q",
-            "кь": "q'", "Кь": "Q'", "КЬ": "Q'",
-            "кӀ": "k'", "КӀ": "K'",
-            "хъ": "qh", "Хъ": "Qh", "ХЪ": "QH",
-            "хь": "xh", "Хь": "Xh", "ХЬ": "XH",
-            "хӀ": "x'", "ХӀ": "X'",
-            "пӀ": "p'", "ПӀ": "P'",
-            "тӀ": "t'", "ТӀ": "T'",
-            "цӀ": "ts'", "ЦӀ": "Ts'",
-            "чӀ": "c'", "ЧӀ": "C'",
-            "дж": "dj", "Дж": "Dj", "ДЖ": "DJ",
-
-            "уь": "ü", "Уь": "Ü", "УЬ": "Ü",
-            "аь": "æ", "Аь": "Æ", "АЬ": "Æ",
-            "оь": "ö", "Оь": "Ö", "ОЬ": "Ö",
-
-            "щ": "shch", "Щ": "Shch",
-            "ш": "sh", "Ш": "Sh",
-            "ц": "ts", "Ц": "Ts",
-            "ч": "c", "Ч": "C"
-        };
-
-        const SINGLE_LETTERS_MAP = {
-            "а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ё": "yo", "ж": "j",
-            "з": "z", "и": "i", "й": "y", "к": "k", "л": "l", "м": "m", "н": "n", "о": "o",
-            "п": "p", "р": "r", "с": "s", "т": "t", "у": "u", "ф": "f", "х": "x", "ы": "ɨ",
-            "э": "e", "ю": "yu", "я": "ya", "ъ": "'", "ь": "",
-
-            "А": "A", "Б": "B", "В": "V", "Г": "G", "Д": "D", "Е": "E", "Ё": "Yo", "Ж": "J",
-            "З": "Z", "И": "I", "Й": "Y", "К": "K", "Л": "L", "М": "M", "Н": "N", "О": "O",
-            "П": "P", "Р": "R", "С": "S", "Т": "T", "У": "U", "Ф": "F", "Х": "X", "Ы": "Ɨ",
-            "Э": "E", "Ю": "Yu", "Я": "Ya", "Ъ": "'", "Ь": ""
-        };
-
-        const LONG_VOWELS_MAP = { "аа": "ā", "Аа": "Ā", "АА": "Ā" };
-        const MAZIN_LONG_VOWELS_MAP = { "аьаь": "ǣ", "Аьаь": "Ǣ", "АЬАЬ": "Ǣ" };
-
-        function _escapeRegExp(str) {
-            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-
-        function _makePattern(mapping) {
-            const keys = Object.keys(mapping).sort((a, b) => b.length - a.length);
-            return new RegExp(keys.map(k => _escapeRegExp(k)).join('|'), 'g');
-        }
-
-        const SPECIAL_PATTERN = _makePattern(REPLACEMENTS_MAP);
-        const LETTER_PATTERN = _makePattern(SINGLE_LETTERS_MAP);
-        const LONG_PATTERN = _makePattern(LONG_VOWELS_MAP);
-        const MAZIN_LONG_PATTERN = _makePattern(MAZIN_LONG_VOWELS_MAP);
-
-        function _replaceWithDict(text, pattern, mapping) {
-            return text.replace(pattern, m => mapping[m]);
-        }
-
-        function normalizePalochka(text) {
-            if (!text) return text;
-            let t = text.replace(/([а-яА-ЯёЁӀӏ][\u0300-\u036f˚]*)[1lLIi|ӏІі]/gu, '$1Ӏ');
-            t = t.replace(/(^|[\s\b])[1lLIi|ӏІі](?=[а-яА-ЯёЁ])/gu, '$1Ӏ');
-            const palMap = {'1':'Ӏ','l':'Ӏ','L':'Ӏ','|':'Ӏ','I':'Ӏ','i':'Ӏ','ӏ':'Ӏ','І':'Ӏ','і':'Ӏ'};
-            return t.replace(/[1lLIi|ӏІі]/g, m => palMap[m] || m);
-        }
-
-        const VOWELS_AND_SIGNS_SET = new Set([
-            'а','е','ё','и','о','у','ы','э','ю','я',
-            'А','Е','Ё','И','О','У','Ы','Э','Ю','Я',
-            'ъ','ь','Ъ','Ь',
-            'ā','ǣ','Ā','Ǣ',
-            'a','e','i','o','u','y','ɨ','ü','ö','æ',
-            'A','E','I','O','U','Y','Ɨ','Ü','Ö','Æ'
-        ]);
-
-        function _isLetter(ch) {
+        function isLetterChar(ch) {
             return ch && ch.toLowerCase() !== ch.toUpperCase();
         }
 
@@ -118,12 +26,12 @@
                 const char = text[i];
                 if (char === 'я' || char === 'Я') {
                     let prevIdx = i - 1;
-                    if (prevIdx >= 0 && (text[prevIdx] === 'Ӏ' || text[prevIdx] === 'ӏ' || text[prevIdx] === "'")) {
+                    while (prevIdx >= 0 && (text[prevIdx] === 'Ӏ' || text[prevIdx] === 'ӏ' || text[prevIdx] === '\'' || text[prevIdx] === '1')) {
                         prevIdx--;
                     }
-                    let prevChar = prevIdx >= 0 ? text[prevIdx] : '';
-                    if (!prevChar || !_isLetter(prevChar) || VOWELS_AND_SIGNS_SET.has(prevChar)) {
-                        res += (char === 'Я' ? 'Ya' : 'ya');
+                    const prevChar = prevIdx >= 0 ? text[prevIdx] : '';
+                    if (!prevChar || !isLetterChar(prevChar) || VOWELS_AND_SIGNS.has(prevChar)) {
+                        res += (char === 'Я' ? 'Ja' : 'ja');
                     } else {
                         res += (char === 'Я' ? 'Æ' : 'æ');
                     }
@@ -134,20 +42,121 @@
             return res;
         }
 
-        function transliterateLezgi(text, mazin = false) {
+        // -------------------------------------------------------------
+        // ЛЕЗГИНСКАЯ ТРАНСЛИТЕРАЦИЯ (КИРИЛЛИЦА -> ЛАТИНИЦА)
+        // -------------------------------------------------------------
+        const CYR_TO_LAT_MAPPING = [
+            ["чӀ", "ch'"], ["ЧӀ", "Ch'"],
+            ["дж", "dzh"], ["Дж", "Dzh"], ["ДЖ", "DZH"],
+            ["дз", "dz"],  ["Дз", "Dz"],  ["ДЗ", "DZ"],
+            ["цӀ", "c'"],  ["ЦӀ", "C'"],
+            ["кӀ", "k'"],  ["КӀ", "K'"],
+            ["пӀ", "p'"],  ["ПӀ", "P'"],
+            ["тӀ", "t'"],  ["ТӀ", "T'"],
+            ["кь", "q'"],  ["Кь", "Q'"],  ["КЬ", "Q'"],
+            ["къ", "q"],   ["Къ", "Q"],   ["КЪ", "Q"],
+            ["хъ", "qh"],  ["Хъ", "Qh"],  ["ХЪ", "QH"],
+            ["гъ", "gh"],  ["Гъ", "Gh"],  ["ГЪ", "GH"],
+            ["гь", "h"],   ["Гь", "H"],   ["ГЬ", "H"],
+            ["хӀ", "h"],   ["ХӀ", "H"],
+            ["хь", "h"],   ["Хь", "H"],   ["ХЬ", "H"],
+
+            ["аь", "æ"],   ["Аь", "Æ"],   ["АЬ", "Æ"],
+            ["оь", "œ"],   ["Оь", "Œ"],   ["ОЬ", "Œ"],
+            ["уь", "y"],   ["Уь", "Y"],   ["УЬ", "Y"],
+
+            ["ч", "ch"],   ["Ч", "Ch"],
+            ["ш", "sh"],   ["Ш", "Sh"],
+            ["ж", "zh"],   ["Ж", "Zh"],
+            ["щ", "shch"], ["Щ", "Shch"],
+
+            ["ю", "ju"],   ["Ю", "Ju"],
+            ["ё", "jo"],   ["Ё", "Jo"],
+
+            ["а", "a"], ["А", "A"],
+            ["б", "b"], ["Б", "B"],
+            ["в", "w"], ["В", "W"],
+            ["г", "g"], ["Г", "G"],
+            ["д", "d"], ["Д", "D"],
+            ["е", "e"], ["Е", "E"],
+            ["э", "e"], ["Э", "E"],
+            ["з", "z"], ["З", "Z"],
+            ["и", "i"], ["И", "I"],
+            ["к", "k"], ["К", "K"],
+            ["л", "l"], ["Л", "L"],
+            ["м", "m"], ["М", "M"],
+            ["н", "n"], ["Н", "N"],
+            ["о", "o"], ["О", "O"],
+            ["п", "p"], ["П", "P"],
+            ["р", "r"], ["Р", "R"],
+            ["с", "s"], ["С", "S"],
+            ["т", "t"], ["Т", "T"],
+            ["у", "u"], ["У", "U"],
+            ["ф", "f"], ["Ф", "F"],
+            ["х", "x"], ["Х", "X"],
+            ["ц", "c"], ["Ц", "C"],
+            ["ы", "ə"], ["Ы", "Ə"],
+
+            ["ъ", ""],  ["Ъ", ""],
+            ["ь", ""],  ["Ь", ""],
+            ["Ӏ", ""]
+        ];
+
+        function cyrillicToLatin(text) {
             if (!text) return '';
-            let t = normalizePalochka(text);
-            if (mazin) {
-                t = _replaceWithDict(t, MAZIN_LONG_PATTERN, MAZIN_LONG_VOWELS_MAP);
-            }
-            t = _replaceWithDict(t, LONG_PATTERN, LONG_VOWELS_MAP);
+
+            // 1. Нормализуем варианты палочек (I, l, 1, Ӏ) после смычных согласных
+            let t = text.replace(/(?<=[кптцчхКПТЦЧХ])[I1l!|]/g, 'Ӏ');
+
+            // 2. Буква «Й»: всегда -> 'j' / 'J'
+            t = t.replace(/й/g, 'j').replace(/Й/g, 'J');
+
+            // 3. Позиционная замена «Я»:
+            // В начале слова, после гласных и знаков -> ja / Ja
+            // После согласных -> æ / Æ
             t = replaceYa(t);
-            t = _replaceWithDict(t, SPECIAL_PATTERN, REPLACEMENTS_MAP);
-            t = _replaceWithDict(t, LETTER_PATTERN, SINGLE_LETTERS_MAP);
-            return t.replace(/Ӏ/g, "'");
+
+            // 4. Полный словарь подстановок (по убыванию длины)
+            for (let i = 0; i < CYR_TO_LAT_MAPPING.length; i++) {
+                const [cyr, lat] = CYR_TO_LAT_MAPPING[i];
+                t = t.split(cyr).join(lat);
+            }
+
+            return t;
+        }
+
+        function transliterateLezgi(text, mazin = false) {
+            return cyrillicToLatin(text);
         }
 
         const transliterateLezgin = transliterateLezgi;
+
+        function getLezgiWord(w) {
+            if (!w) return '';
+            const isLat = typeof isLatinEnabled === 'function' && isLatinEnabled();
+            if (typeof w === 'string') {
+                return isLat && typeof transliterateLezgi === 'function' ? transliterateLezgi(w) : w;
+            }
+            if (isLat) {
+                return w.lz_lat || (typeof transliterateLezgi === 'function' ? transliterateLezgi(w.lz) : w.lz);
+            }
+            return w.lz;
+        }
+
+        if (typeof window !== 'undefined') {
+            window.getLezgiWord = getLezgiWord;
+            window.transliterateLezgi = transliterateLezgi;
+            window.transliterateLezgin = transliterateLezgin;
+        }
+        if (typeof module !== 'undefined' && module.exports) {
+            module.exports = {
+                cyrillicToLatin,
+                replaceYa,
+                getLezgiWord,
+                transliterateLezgi,
+                transliterateLezgin
+            };
+        }
 
         function levenshteinDistance(s1, s2) {
             if (!s1) return s2 ? s2.length : 0;

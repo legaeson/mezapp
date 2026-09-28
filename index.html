@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="light">
+<html lang="ru" data-theme="light" class="bg-slate-100 dark:bg-zinc-950">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://telegram.org https://*.telegram.org https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.telegram.org https://*.telegram.org https://*.peerjs.com wss://*.peerjs.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://telegram.org https://*.telegram.org https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.telegram.org https://*.telegram.org https://*.peerjs.com wss://*.peerjs.com;">
     <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="mobile-web-app-capable" content="yes">
@@ -33,7 +33,8 @@
         /* ========== ДИЗАЙН-ТОКЕНЫ LEZGIMEZ ========== */
         :root {
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
-            --font-heading: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             --c-primary: #059669;
             --c-primary-dark: #064e3b;
             --c-primary-surface: #ecfdf5;
@@ -58,12 +59,36 @@
             text-rendering: optimizeLegibility;
         }
 
-        h1, h2, h3, .font-heading {
-            font-family: var(--font-heading) !important;
+        h1, h2, h3, h4, h5, h6, .font-heading {
+            font-family: var(--font-sans) !important;
+        }
+
+        h1 {
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        h2 {
+            font-weight: 700;
             letter-spacing: -0.02em;
         }
 
+        h3 {
+            font-weight: 700;
+            letter-spacing: -0.015em;
+        }
+
+        h4, h5, h6 {
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .font-black {
+            font-weight: 800 !important;
+        }
+
         .lezgin-text {
+            font-family: var(--font-sans) !important;
             font-size: inherit !important;
             line-height: 1.25 !important;
         }
@@ -80,6 +105,15 @@
             -moz-user-select: text;
             -ms-user-select: text;
             user-select: text;
+        }
+
+        [role="button"], button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+        [role="button"]:focus, [role="button"]:focus-visible,
+        #theme-toggle-card:focus, #theme-toggle-card:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
         }
 
         /* ========== АНИМАЦИИ ========== */
@@ -249,6 +283,30 @@
             animation-delay: 0.75s;
         }
 
+        /* Matchmaking search timer bar: drains over 12 seconds */
+        @keyframes matchmaking-drain {
+            from { width: 100%; }
+            to   { width: 0%; }
+        }
+        #duel-matchmaking-timer-bar.is-searching {
+            animation: matchmaking-drain 12s linear forwards;
+        }
+
+        /* Online Presence Badges */
+        .duel-online-badge {
+            transition: all 0.2s ease;
+        }
+        [data-theme="dark"] .duel-online-badge {
+            background-color: rgba(6, 78, 59, 0.28) !important;
+            border-color: rgba(16, 185, 129, 0.35) !important;
+            color: #6ee7b7 !important;
+        }
+        [data-theme="dark"] .duel-online-header-badge {
+            background-color: #18181b !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: #cbd5e1 !important;
+        }
+
         /* ========== ДУЭЛЬ СЛОВ И КВИЗ (СТИЛИСТИКА LEZGIMEZ) ========== */
         #duel-arena-content.hidden,
         #duel-result-content.hidden,
@@ -257,7 +315,18 @@
         .duel-arena-body.hidden,
         .duel-result-wrapper.hidden,
         .duel-hud-bar.hidden,
-        .duel-progress-container.hidden {
+        .duel-progress-container.hidden,
+        .duel-header-bar.hidden,
+        .duel-timer-widget.hidden,
+        #duel-round-badge.hidden,
+        #duel-player-lives.hidden,
+        .duel-action-buttons .hidden,
+        #duel-rematch-btn.hidden,
+        #duel-retry-btn.hidden,
+        #duel-challenge-btn.hidden,
+        #duel-reply-friend-btn.hidden,
+        #duel-share-btn.hidden,
+        #duel-finish-btn.hidden {
             display: none !important;
         }
 
@@ -268,14 +337,6 @@
             width: 100%;
             height: 100%;
             position: relative;
-        }
-        @media (min-width: 768px) {
-            .duel-modal-wrapper {
-                border-radius: 1.5rem;
-                max-height: 92vh;
-                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
-                border: 1px solid #f1f5f9;
-            }
         }
 
         /* Top Progress Bar */
@@ -362,6 +423,24 @@
             gap: 0.75rem;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
             flex-shrink: 0;
+        }
+        .duel-hud-bar.is-solo {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+        .duel-hud-bar.is-solo .duel-player-card {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .duel-hud-bar.is-solo .duel-timer-widget,
+        .duel-hud-bar.is-solo #duel-player-lives,
+        .duel-hud-bar.is-solo #duel-player-2-wrap,
+        #duel-player-2-wrap.hidden {
+            display: none !important;
         }
         .duel-player-card {
             display: flex;
@@ -456,7 +535,7 @@
             flex-shrink: 0;
         }
         .duel-timer-badge {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+            font-family: var(--font-mono);
             font-weight: 800;
             font-size: 1.15rem;
             color: #059669;
@@ -853,24 +932,13 @@
 
         /* Гарантированное ограничение высоты модальных окон для предотвращения растягивания и вылета наверх */
         #word-modal .modal {
-            max-height: 88dvh;
+            max-height: 50dvh;
         }
         #leaderboard-modal > div {
             max-height: 90dvh;
         }
         #leaderboard-list {
             max-height: 50dvh;
-        }
-        @media (min-width: 768px) {
-            #word-modal .modal {
-                max-height: 85vh;
-            }
-            #leaderboard-modal > div {
-                max-height: 90vh;
-            }
-            #leaderboard-list {
-                max-height: 50vh;
-            }
         }
 
 
@@ -1055,13 +1123,11 @@
             padding-bottom: 0;
         }
 
-        @media (max-width: 767px) {
-            .app-screen {
-                padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 16px)) !important;
-            }
-            #screen-vocabulary {
-                padding-bottom: 0 !important;
-            }
+        .app-screen {
+            padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 16px)) !important;
+        }
+        #screen-vocabulary {
+            padding-bottom: 0 !important;
         }
 
 
@@ -1255,7 +1321,7 @@
         }
 
         .grammar-content .grammar-code {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-family: var(--font-mono);
             font-size: 0.85em;
             color: #047857;
             background: #ecfeff;
@@ -1298,13 +1364,6 @@
             background: rgba(42, 42, 42, 0.95) !important;
             border-color: var(--border-color) !important;
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        @media (min-width: 768px) {
-            [data-theme="dark"] .bottom-nav {
-                background: var(--bg-body) !important;
-                box-shadow: none !important;
-            }
         }
 
         [data-theme="dark"] .bg-white,
@@ -1827,30 +1886,6 @@
             }
         }
 
-        @media (min-width: 768px) {
-            .flashcard-text-main {
-                font-size: 3rem !important; /* text-5xl on desktop */
-                line-height: 1.1 !important;
-            }
-            .flashcard-text-sub {
-                font-size: 1.125rem !important; /* text-lg on desktop */
-                line-height: 1.75rem !important;
-            }
-            #flip-card {
-                height: 380px !important;
-            }
-            .practice-card-container {
-                max-width: 100% !important;
-                padding: 1.5rem !important;
-            }
-            .practice-modal-wrapper {
-                width: 100% !important;
-                max-width: 480px !important;
-                height: auto !important;
-                min-height: auto !important;
-            }
-        }
-
         [data-theme="dark"] .bg-emerald-50\/40,
         [data-theme="dark"] .bg-emerald-50\/50 {
             background-color: rgba(26, 46, 36, 0.7) !important;
@@ -2143,10 +2178,199 @@
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 24px), transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 24px), transparent 100%);
         }
+
+        /* Mobile container for all devices */
+        .app-mobile-container {
+            width: 100% !important;
+            max-width: 430px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        /* iOS style toggle switch */
+        .ios-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 28px;
+        }
+        .ios-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .ios-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #cbd5e1;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 9999px;
+        }
+        .ios-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #ffffff;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        .ios-switch input:checked + .ios-slider {
+            background-color: #059669;
+        }
+        .ios-switch input:checked + .ios-slider:before {
+            transform: translateX(20px);
+        }
+        [data-theme="dark"] .ios-slider {
+            background-color: #3f3f46;
+        }
+        [data-theme="dark"] .ios-switch input:checked + .ios-slider {
+            background-color: #10b981;
+        }
+
+        /* ========================================================
+           MODAL ISOLATION & SCROLL LOCK
+           ======================================================== */
+        body.modal-open {
+            overflow: hidden !important;
+            touch-action: none !important;
+            overscroll-behavior: none !important;
+        }
+
+        /* Background elements MUST be completely untappable and unclickable */
+        body.modal-open main,
+        body.modal-open header.app-header,
+        body.modal-open nav.bottom-nav,
+        body.modal-open aside {
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+
+        /* Hard lock on the scrollable main container */
+        body.modal-open main {
+            overflow: hidden !important;
+            touch-action: none !important;
+        }
+
+        /* The open modal sits on top, receives all clicks and touches */
+        [role="dialog"] {
+            overscroll-behavior: contain !important;
+            touch-action: pan-y !important;
+        }
+        [role="dialog"]:not(.hidden) {
+            pointer-events: auto !important;
+        }
+
+        /* Modal dialog container and inner cards */
+        [role="dialog"]:not(.hidden) .modal,
+        [role="dialog"]:not(.hidden) .duel-modal-wrapper,
+        [role="dialog"]:not(.hidden) .practice-modal-wrapper {
+            pointer-events: auto !important;
+            overscroll-behavior: contain !important;
+        }
+
+        /* ========================================================
+           READING & PHONETICS MINI-APP ENHANCEMENTS
+           ======================================================== */
+        .reading-grid-2,
+        .grid-cols-2 {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+
+        .border-2 {
+            border-width: 2px !important;
+        }
+
+        .w-13 { width: 3.25rem !important; }
+        .h-13 { height: 3.25rem !important; }
+        .w-14 { width: 3.5rem !important; }
+        .h-14 { height: 3.5rem !important; }
+        .p-3\.5 { padding: 0.875rem !important; }
+        .p-4\.5 { padding: 1.125rem !important; }
+
+        /* Missing Tailwind color palette utilities */
+        .bg-sky-50 { background-color: #f0f9ff !important; }
+        .text-sky-600 { color: #0284c7 !important; }
+        .bg-sky-500 { background-color: #0ea5e9 !important; }
+        .border-sky-100 { border-color: #e0f2fe !important; }
+        .text-sky-400 { color: #38bdf8 !important; }
+
+        .bg-amber-50 { background-color: #fffbeb !important; }
+        .text-amber-600 { color: #d97706 !important; }
+        .bg-amber-500 { background-color: #f59e0b !important; }
+        .border-amber-100 { border-color: #fef3c7 !important; }
+        .text-amber-400 { color: #fbbf24 !important; }
+
+        .bg-violet-50 { background-color: #f5f3ff !important; }
+        .text-violet-600 { color: #7c3aed !important; }
+        .bg-violet-500 { background-color: #8b5cf6 !important; }
+        .border-violet-100 { border-color: #ede9fe !important; }
+        .text-violet-400 { color: #a78bfa !important; }
+
+        .bg-rose-50 { background-color: #fff1f2 !important; }
+        .text-rose-600 { color: #e11d48 !important; }
+        .bg-rose-500 { background-color: #f43f5e !important; }
+        .border-rose-100 { border-color: #ffe4e6 !important; }
+        .text-rose-400 { color: #fb7185 !important; }
+
+        .bg-indigo-50 { background-color: #eef2ff !important; }
+        .text-indigo-600 { color: #4f46e5 !important; }
+        .bg-indigo-500 { background-color: #6366f1 !important; }
+        .border-indigo-100 { border-color: #e0e7ff !important; }
+        .text-indigo-400 { color: #818cf8 !important; }
+
+        .choice-indicator {
+            width: 1.5rem !important;
+            height: 1.5rem !important;
+            min-width: 1.5rem !important;
+            min-height: 1.5rem !important;
+            border-radius: 9999px !important;
+            border-width: 2px !important;
+            border-style: solid !important;
+            border-color: #cbd5e1 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-sizing: border-box !important;
+            transition: all 0.15s ease !important;
+        }
+
+        [data-theme="dark"] .choice-indicator {
+            border-color: #475569 !important;
+        }
+
+        .choice-indicator.is-correct {
+            background-color: #10b981 !important;
+            border-color: #10b981 !important;
+            color: #ffffff !important;
+        }
+
+        .choice-indicator.is-wrong {
+            background-color: #f43f5e !important;
+            border-color: #f43f5e !important;
+            color: #ffffff !important;
+        }
+
+        .reading-letter-choice {
+            padding: 1.25rem 1rem !important;
+            min-height: 4.25rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 h-[100dvh] overflow-hidden flex flex-col md:flex-row antialiased loading" ontouchstart="">
+<body class="bg-slate-50 text-slate-800 h-[100dvh] overflow-hidden flex flex-col antialiased loading app-mobile-container relative shadow-2xl border-x border-slate-200/80 dark:border-white/10">
 
     <div id="app-loader" role="status" aria-live="polite" aria-label="Загрузка приложения LezgiMez">
         <div class="loader-logo-wrap">
@@ -2165,8 +2389,8 @@
         </div>
     </div>
 
-    <!-- Desktop Sidebar -->
-    <aside class="hidden md:flex flex-col w-56 flex-shrink-0 relative bg-white border-r border-slate-100 z-[60]">
+    <!-- Desktop Sidebar (отключена для мобильного отображения везде) -->
+    <aside class="hidden" style="display: none !important;">
         <div class="h-14 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
             <span class="font-bold text-2xl tracking-tighter text-emerald-600 dark:text-emerald-500">LezgiAPP <span class="text-emerald-500">β</span></span>
         </div>
@@ -2192,8 +2416,8 @@
     </aside>
 
     <!-- Top Header -->
-    <header class="app-header bg-white border-b border-slate-100 sticky top-0 z-50 md:hidden" style="padding-top: var(--tg-safe-area-inset-top, 0px);">
-        <div class="max-w-3xl mx-auto px-5 h-14 flex items-center justify-center relative">
+    <header class="app-header bg-white border-b border-slate-100 sticky top-0 z-50 w-full" style="padding-top: var(--tg-safe-area-inset-top, 0px);">
+        <div class="w-full px-5 h-14 flex items-center justify-center relative">
             <div class="flex items-center">
                 <span class="font-bold text-2xl tracking-tighter text-emerald-600 dark:text-emerald-500">LezgiAPP <span class="text-emerald-500">β</span></span>
             </div>
@@ -2209,16 +2433,11 @@
 
         <!-- TAB 1: АЛФАВИТ -->
         <div id="screen-alphabet" class="app-screen active px-5 pt-6" style="padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 16px));">
-            <div class="mb-6">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h1 class="text-4xl font-bold tracking-tighter text-emerald-950">Алфавит</h1>
-                    </div>
-                </div>
-                <p class="text-sm text-slate-500">Кириллица • Содержит 41 букву</p>
+            <div class="mb-5">
+                <h1 class="text-4xl font-bold tracking-tighter text-emerald-900">Алфавит</h1>
             </div>
 
-            <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3" id="alphabet-grid">
+            <div class="grid grid-cols-4 gap-3" id="alphabet-grid">
                 <!-- Populated by JS -->
             </div>
         </div>
@@ -2229,7 +2448,6 @@
             <div class="flex-shrink-0 relative z-20">
                 <div class="mb-4">
                     <h1 class="text-4xl font-bold tracking-tighter text-emerald-900">Словарь</h1>
-                    <p id="vocab-stats" class="text-sm text-slate-500 mt-1"></p>
                 </div>
 
                 <!-- Search + Filter -->
@@ -2278,7 +2496,7 @@
                 <div id="vocab-context" class="hidden"></div>
                 <div id="words-loading" class="mb-4 hidden"></div>
                 <div id="words-grid"
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pt-3 pb-2">
+                    class="grid grid-cols-1 gap-4 pt-3 pb-2">
                     <!-- Populated by JS -->
                 </div>
 
@@ -2290,10 +2508,16 @@
         <!-- TAB 3: ПРАКТИКА (ГРАММАТИКА) -->
         <div id="screen-practice" class="app-screen px-5 pt-6" style="padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 16px));">
             <!-- Main Practice View -->
-            <div id="practice-main-view" class="md:max-w-5xl md:mx-auto">
-                <div class="mb-5">
-                    <h1 class="text-4xl font-bold tracking-tighter text-emerald-950">Практика</h1>
-                    <p class="text-sm text-slate-500 mt-1">Закрепление слов и правил</p>
+            <div id="practice-main-view">
+                <div class="mb-5 flex items-center justify-between">
+                    <div>
+                        <h1 class="text-4xl font-bold tracking-tighter text-emerald-900">Практика</h1>
+                        <p class="text-sm text-slate-500 mt-1">Закрепление слов и правил</p>
+                    </div>
+                    <div class="duel-online-header-badge hidden items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-100 shadow-sm text-xs font-semibold text-slate-700">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="duel-online-header-text">24 онлайн</span>
+                    </div>
                 </div>
 
                 <!-- Раздел Грамматика (сверху) -->
@@ -2321,7 +2545,7 @@
                 <div class="space-y-4">
                     <div id="prac-mode-flashcards" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
                         <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
                                 <i class="fa-solid fa-layer-group"></i>
                             </div>
                             <div>
@@ -2332,14 +2556,42 @@
                         <i class="fa-solid fa-chevron-right text-slate-300"></i>
                     </div>
 
-                    <div id="prac-mode-duel" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
+                    <!-- Режим «Повторение» (SRS-викторина) -->
+                    <div id="prac-mode-review" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
                         <div class="flex items-center gap-4">
                             <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">Повторение</h3>
+                                <p id="prac-review-subtitle" class="text-sm text-slate-500 mt-0.5">Интервальное повторение с таймером</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </div>
+
+                    <!-- Режим «Отработка алфавита» -->
+                    <div id="prac-mode-alphabet" class="bg-white border border-slate-100 active:border-emerald-200 rounded-3xl p-5 flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">Чтение и звуки</h3>
+                                <p class="text-sm text-slate-500 mt-0.5">Научитесь автоматически читать слова и правила</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </div>
+
+                    <div id="prac-mode-duel" class="bg-slate-50/70 border border-slate-200/60 rounded-3xl p-5 flex items-center justify-between cursor-pointer opacity-80 hover:bg-slate-100/70 transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
                                 <i class="fa-solid fa-gamepad"></i>
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg text-slate-800">Дуэль</h3>
-                                <p class="text-sm text-slate-500 mt-0.5">3 жизни — кто сделает меньше ошибок</p>
+                                <h3 class="font-bold text-lg text-slate-500">Дуэль</h3>
+                                <p class="text-sm text-slate-400 mt-0.5">Режим временно недоступен</p>
                             </div>
                         </div>
                         <i class="fa-solid fa-chevron-right text-slate-300"></i>
@@ -2349,14 +2601,9 @@
 
             <!-- Grammar Units View -->
             <div id="practice-grammar-view" class="hidden">
-                <button id="grammar-back-btn" class="flex items-center gap-2 text-emerald-600 font-bold mb-4 active:scale-95 transition-transform cursor-pointer">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <span>К режимам практики</span>
-                </button>
-
                 <div class="mb-5 flex justify-between items-center">
                     <div>
-                        <h1 class="text-4xl font-bold tracking-tighter text-emerald-950">Грамматика</h1>
+                        <h1 class="text-4xl font-bold tracking-tighter text-emerald-900">Грамматика</h1>
                         <p id="grammar-stats" class="text-sm text-slate-500 mt-1">Загрузка юнитов...</p>
                     </div>
                     <button id="grammar-search-toggle" type="button" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors" title="Поиск">
@@ -2381,17 +2628,27 @@
                     </div>
                 </div>
 
-                <div id="grammar-units-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pb-4">
+                <div id="grammar-units-grid" class="grid grid-cols-1 gap-3 pb-4">
                     <!-- Populated by JS -->
                 </div>
+            </div>
+
+            <!-- Reading & Phonetics View («Чтение и звуки») -->
+            <div id="practice-alphabet-view" class="hidden">
+                <div id="reading-phonetics-header-wrap" class="mb-5">
+                    <h1 id="alphabet-practice-title" class="text-4xl font-bold tracking-tighter text-emerald-900 dark:text-emerald-400">Чтение и звуки</h1>
+                    <p id="alphabet-practice-subtitle" class="text-sm text-slate-500 dark:text-slate-400 mt-1">Орфоэпия</p>
+                </div>
+
+                <div id="alphabet-practice-exercise" class="min-h-[350px]"></div>
             </div>
         </div>
 
         <!-- TAB 4: ЕЩЁ -->
         <div id="screen-more" class="app-screen px-5 pt-6" style="padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 16px));">
-            <div class="md:max-w-5xl md:mx-auto">
+            <div>
                 <div class="mb-6">
-                    <h1 class="text-4xl font-bold tracking-tighter text-emerald-950">Ещё</h1>
+                    <h1 class="text-4xl font-bold tracking-tighter text-emerald-900">Ещё</h1>
                 </div>
 
                 <div class="space-y-3">
@@ -2415,6 +2672,33 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Settings Card (скрыто: тема автоматически синхронизируется с устройством, латиница скрыта) -->
+                    <!--
+                    <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base shadow-sm">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
+                            <i class="fa-solid fa-gear text-[11px] text-emerald-600"></i>
+                            <span>Настройки</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div id="theme-toggle-card" role="button" tabindex="0" class="flex items-center justify-between py-1 cursor-pointer active:opacity-75 transition-opacity outline-none select-none">
+                                <div class="flex items-center gap-3.5 min-w-0 pr-3">
+                                    <div id="theme-icon-badge" class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shrink-0 transition-all">
+                                        <i id="theme-icon" class="fa-solid fa-moon"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div id="theme-label" class="font-bold text-slate-800 text-base leading-tight">Тёмная тема</div>
+                                        <div id="theme-sub" class="text-xs text-slate-400 mt-1 truncate">Тёмное оформление интерфейса</div>
+                                    </div>
+                                </div>
+                                <label class="ios-switch shrink-0 pointer-events-none" title="Тёмная тема">
+                                    <input type="checkbox" id="theme-toggle-switch">
+                                    <span class="ios-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    -->
 
                     <!-- Telegram Stars Donation Card -->
                     <div class="bg-white border border-slate-100 rounded-3xl p-5 text-base shadow-sm">
@@ -2551,9 +2835,9 @@
                 </div>
             </div>
             <!-- Course Unit View: theory + start exercises -->
-            <div id="course-unit-view" class="hidden md:max-w-5xl md:mx-auto">
+            <div id="course-unit-view" class="hidden">
                 <button id="course-unit-back-btn"
-                    class="hidden md:flex items-center gap-2 text-emerald-600 font-bold mb-6 active:scale-95 transition-transform">
+                    class="flex items-center gap-2 text-emerald-600 font-bold mb-6 active:scale-95 transition-transform">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>К модулям</span>
                 </button>
@@ -2565,7 +2849,7 @@
 
     <!-- Bottom Navigation -->
     <nav
-        class="bottom-nav fixed bottom-0 left-0 right-0 max-w-3xl mx-auto border-t border-slate-100 z-50 safe-bottom bg-white transition-colors md:hidden">
+        class="bottom-nav fixed bottom-0 left-0 right-0 app-mobile-container border-t border-slate-100 z-50 safe-bottom bg-white transition-colors">
         <div class="grid grid-cols-4 text-sm w-full">
             <button data-tab="alphabet" id="tab-alphabet"
                 class="nav-tab py-2 text-emerald-600 active transition-colors">
@@ -2592,26 +2876,26 @@
     </nav>
 
     <div id="word-modal"
-        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-end justify-center p-0"
         role="dialog" aria-modal="true" aria-labelledby="modal-word-title">
-        <div class="modal bg-white w-full max-w-xl max-h-[85vh] rounded-t-3xl md:rounded-3xl overflow-hidden flex flex-col shadow-2xl" style="max-height: 88dvh;">
+        <div class="modal bg-white w-full app-mobile-container max-h-[50dvh] rounded-t-3xl rounded-b-none overflow-hidden flex flex-col shadow-2xl safe-bottom">
             <div id="modal-content" class="flex flex-col flex-1 min-h-0 overflow-hidden"></div>
         </div>
     </div>
 
     <!-- Practice Modal (full screen) -->
-    <div id="practice-modal" class="hidden fixed inset-0 bg-white md:bg-black/70 md:backdrop-blur z-[110] flex flex-col md:items-center md:justify-center p-0 md:p-6" role="dialog"
+    <div id="practice-modal" class="hidden fixed inset-0 bg-white z-[110] flex flex-col items-center justify-center p-0" role="dialog"
         aria-modal="true">
-        <div class="practice-modal-wrapper w-full h-full md:max-h-[90vh] md:max-w-5xl md:bg-white md:rounded-3xl overflow-hidden flex flex-col md:shadow-2xl">
-            <div id="practice-content" class="flex-1 overflow-auto md:bg-slate-50 md:rounded-b-3xl md:rounded-t-3xl"></div>
+        <div class="practice-modal-wrapper w-full h-full app-mobile-container bg-white overflow-hidden flex flex-col">
+            <div id="practice-content" class="flex-1 overflow-auto bg-slate-50"></div>
         </div>
     </div>
 
     <!-- Leaderboard Modal -->
     <div id="leaderboard-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-end justify-center p-0"
         role="dialog" aria-modal="true">
-        <div class="bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in">
+        <div class="bg-white w-full app-mobile-container rounded-t-3xl rounded-b-none max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in safe-bottom">
             <!-- Header -->
             <div class="p-5 pb-3 border-b border-slate-100 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
@@ -2659,9 +2943,9 @@
 
     <!-- Duel Mode Selection Modal (Minimalist Bottom Sheet) -->
     <div id="duel-menu-modal"
-        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-end justify-center p-0"
         role="dialog" aria-modal="true">
-        <div class="modal bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom relative flex flex-col" style="max-height: 88dvh;">
+        <div class="modal bg-white w-full app-mobile-container rounded-t-3xl rounded-b-none overflow-hidden shadow-2xl p-6 pb-8 safe-bottom relative flex flex-col" style="max-height: 88dvh;">
             <button id="duel-menu-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all absolute top-5 right-5 cursor-pointer" aria-label="Закрыть">
                 <i class="fa-solid fa-times text-xs"></i>
             </button>
@@ -2671,6 +2955,10 @@
                     <i class="fa-solid fa-gamepad"></i>
                 </div>
                 <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Дуэль</h2>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-xs font-bold text-emerald-700 mt-1.5 mb-1 duel-online-badge">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="duel-online-badge-text">24 игрока онлайн</span>
+                </div>
                 <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">3 жизни • Побеждает тот, кто сделает меньше ошибок</p>
             </div>
 
@@ -2681,9 +2969,15 @@
                         <i class="fa-solid fa-bolt text-xl"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <div class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                            <span>С кем-то в сети</span>
-                            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Онлайн</span>
+                        <div class="font-bold text-sm text-slate-800 flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span>С кем-то в сети</span>
+                                <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Онлайн</span>
+                            </div>
+                            <span class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span class="duel-online-searching-text">6 ищут пару</span>
+                            </span>
                         </div>
                         <div class="text-xs text-slate-400 mt-0.5">Быстрый подбор соперника в реальном времени</div>
                     </div>
@@ -2729,26 +3023,15 @@
                     <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
                 </button>
 
-                <!-- Mode 5: Time Attack (Режим на время) -->
-                <button id="duel-btn-time-attack" class="w-full bg-white border border-slate-100 hover:border-emerald-300 active:border-emerald-400 rounded-2xl p-4 flex items-center gap-4 text-left shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center text-xl flex-shrink-0">
-                        <i class="fa-solid fa-stopwatch text-slate-600 text-xl"></i>
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <div class="font-bold text-sm text-slate-800">Режим на время</div>
-                        <div class="text-xs text-slate-400 mt-0.5">Одиночный спринт: проверь скорость реакции</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
-                </button>
             </div>
         </div>
     </div>
 
     <!-- Room Lobby Modal (Waiting for friend) -->
     <div id="duel-lobby-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end justify-center p-0"
         role="dialog" aria-modal="true">
-        <div class="modal bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
+        <div class="modal bg-white w-full app-mobile-container rounded-t-3xl rounded-b-none overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
             <button id="duel-lobby-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all absolute top-5 right-5 cursor-pointer" aria-label="Закрыть">
                 <i class="fa-solid fa-times text-xs"></i>
             </button>
@@ -2793,9 +3076,9 @@
 
     <!-- Join by Code Modal -->
     <div id="duel-join-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end justify-center p-0"
         role="dialog" aria-modal="true">
-        <div class="modal bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
+        <div class="modal bg-white w-full app-mobile-container rounded-t-3xl rounded-b-none overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
             <button id="duel-join-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all absolute top-5 right-5 cursor-pointer" aria-label="Закрыть">
                 <i class="fa-solid fa-times text-xs"></i>
             </button>
@@ -2823,32 +3106,59 @@
 
     <!-- Matchmaking Modal (Looking for someone online) -->
     <div id="duel-matchmaking-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end justify-center p-0"
         role="dialog" aria-modal="true">
-        <div class="modal bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
-            <!-- Radar animation -->
-            <div class="relative w-24 h-24 mx-auto my-4 flex items-center justify-center">
-                <div class="radar-pulse-ring"></div>
-                <div class="radar-pulse-ring radar-pulse-ring-delayed"></div>
-                <div class="w-18 h-18 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-3xl z-10 shadow-sm">
+        <div class="modal bg-white w-full app-mobile-container rounded-t-3xl rounded-b-none overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
+            <!-- Radar / Status icon -->
+            <div id="duel-matchmaking-icon-wrap" class="relative w-24 h-24 mx-auto my-3 flex items-center justify-center">
+                <div id="duel-matchmaking-radar-ring-1" class="radar-pulse-ring"></div>
+                <div id="duel-matchmaking-radar-ring-2" class="radar-pulse-ring radar-pulse-ring-delayed"></div>
+                <div id="duel-matchmaking-center-icon" class="w-18 h-18 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-3xl z-10 shadow-sm transition-all">
                     <i class="fa-solid fa-bolt"></i>
                 </div>
             </div>
 
-            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Поиск соперника</h2>
-            <p id="duel-matchmaking-status" class="text-xs text-slate-500 mt-1 mb-6">Ищем свободного игрока в сети...</p>
+            <h2 id="duel-matchmaking-title" class="text-2xl font-extrabold text-slate-900 tracking-tight">Поиск соперника</h2>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-xs font-semibold text-emerald-700 my-2 mx-auto duel-online-badge">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>В сети: <strong class="duel-online-count-number">1</strong> • В поиске: <strong class="duel-online-searching-number">0</strong></span>
+            </div>
+            <p id="duel-matchmaking-status" class="text-xs text-slate-500 mb-3">Ищем свободного игрока в сети...</p>
 
-            <button id="duel-matchmaking-cancel-btn" class="w-full py-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-semibold rounded-2xl transition-all cursor-pointer">
-                Отмена поиска
-            </button>
+            <!-- Search timer bar -->
+            <div id="duel-matchmaking-timer-wrap" class="w-full bg-slate-100 rounded-full h-1.5 mb-2 overflow-hidden mx-auto max-w-[200px]">
+                <div id="duel-matchmaking-timer-bar" class="h-full bg-amber-400 rounded-full transition-none" style="width:100%;"></div>
+            </div>
+
+            <!-- Normal state: Cancel button -->
+            <div id="duel-matchmaking-searching-actions" class="mt-4">
+                <button id="duel-matchmaking-cancel-btn" class="w-full py-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-semibold rounded-2xl transition-all cursor-pointer">
+                    Отмена поиска
+                </button>
+            </div>
+
+            <!-- Not found state: honest user choice (hidden during search) -->
+            <div id="duel-matchmaking-not-found-actions" class="hidden space-y-2.5 mt-2">
+                <button id="duel-match-play-ai-btn" class="w-full py-3.5 bg-violet-600 hover:bg-violet-700 active:bg-violet-800 text-white font-bold rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]">
+                    <i class="fa-solid fa-robot text-lg"></i>
+                    <span>Сыграть с ИИ-ботом</span>
+                </button>
+                <button id="duel-match-keep-waiting-btn" class="w-full py-3 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-700 font-bold rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer border border-emerald-200 active:scale-[0.98]">
+                    <i class="fa-solid fa-clock text-base"></i>
+                    <span>Продолжать ждать игрока</span>
+                </button>
+                <button id="duel-match-not-found-close-btn" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-semibold rounded-2xl transition-all cursor-pointer text-sm">
+                    Закрыть
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- Incoming Challenge Modal (Minimalist Bottom Sheet) -->
     <div id="duel-incoming-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-end justify-center p-0"
         role="dialog" aria-modal="true">
-        <div class="modal bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
+        <div class="modal bg-white w-full app-mobile-container rounded-t-3xl rounded-b-none overflow-hidden shadow-2xl p-6 pb-8 safe-bottom text-center relative flex flex-col" style="max-height: 88dvh;">
             <button id="duel-incoming-close-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all absolute top-5 right-5 cursor-pointer" aria-label="Закрыть">
                 <i class="fa-solid fa-times text-xs"></i>
             </button>
@@ -2887,9 +3197,9 @@
 
     <!-- Word Duel / Time Attack Modal -->
     <div id="duel-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-stretch md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-stretch justify-center p-0"
         role="dialog" aria-modal="true">
-        <div class="duel-modal-wrapper bg-white w-full max-w-lg h-full md:h-auto md:max-h-[92vh] md:rounded-3xl flex flex-col overflow-hidden shadow-2xl">
+        <div class="duel-modal-wrapper bg-white w-full app-mobile-container h-full flex flex-col overflow-hidden shadow-2xl">
             
             <!-- Arena Header Bar -->
             <div class="duel-header-bar">
@@ -3009,6 +3319,10 @@
                         <i class="fa-brands fa-telegram text-base text-[#229ED9]"></i>
                         <span>Отправить ответ другу</span>
                     </button>
+                    <button id="duel-finish-btn" class="hidden duel-btn-secondary" type="button">
+                        <i class="fa-solid fa-check text-sm"></i>
+                        <span>Завершить</span>
+                    </button>
                     <button id="duel-share-btn" class="duel-btn-link" type="button">
                         <i class="fa-solid fa-share-nodes text-xs"></i>
                         <span>Поделиться счётом</span>
@@ -3020,9 +3334,9 @@
 
     <!-- Feedback / Proposal Modal -->
     <div id="feedback-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-end md:items-center justify-center p-0 md:p-6"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-end justify-center p-0"
         role="dialog" aria-modal="true">
-        <div class="bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl animate-in">
+        <div class="bg-white w-full app-mobile-container rounded-t-3xl rounded-b-none overflow-hidden shadow-2xl animate-in safe-bottom">
             <div class="p-5 border-b border-slate-100 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
@@ -3063,17 +3377,18 @@
         <i class="fa-solid fa-wifi-slash"></i>
         <span>Работаем оффлайн</span>
     </div>
-    <div id="custom-app-alert" class="hidden"></div>
+    <div id="custom-app-alert" class="hidden fixed inset-0 z-[9999] items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-all duration-300"></div>
     <script src="./js/utils.js?v=7"></script>
     <script src="./js/state.js?v=5"></script>
     <script src="./js/peerjs.min.js"></script>
-    <script src="./js/duel-network.js?v=1"></script>
-    <script src="./js/telegram.js?v=7"></script>
-    <script src="js/ui.js?v=53"></script>
-    <script src="./js/srs.js?v=39"></script>
+    <script src="./js/duel-network.js?v=5"></script>
+    <script src="./js/telegram.js?v=8"></script>
+    <script src="./js/reading-data.js?v=1"></script>
+    <script src="js/ui.js?v=81"></script>
+    <script src="./js/srs.js?v=48"></script>
     <script src="./js/course.js?v=5"></script>
     <script src="./js/messenger.js?v=5"></script>
-    <script src="./js/app.js?v=8"></script>
+    <script src="./js/app.js?v=19"></script>
 </body>
 
 </html>

@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Лезгинский транслитератор (Латиница)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./fonts.css">
   <style>
     :root {
       --bg: #0f172a;
@@ -19,8 +17,8 @@
       --text-muted: #94a3b8;
       --input-bg: #0f172a;
       --input-border: #334155;
-      --font-main: 'Plus Jakarta Sans', 'Noto Sans', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
     * {
@@ -204,16 +202,13 @@
 <div class="container">
   <header>
     <h1>Лезгинский транслитератор (Латиница)</h1>
-    <p class="desc">Практическая система: <b>гъ → ġ</b>, <b>хь → xh</b>, <b>гӀ → g'</b>, <b>хӀ → x'</b>, <b>ы → ɨ</b>, <b>ч → c</b>, <b>ж → j</b></p>
+    <p class="desc">Практическая система: <b>ч → ch</b>, <b>чӀ → ch'</b>, <b>ц → c</b>, <b>цӀ → c'</b>, <b>в → w</b>, <b>уь → y</b>, <b>ж → zh</b>, <b>дж → dzh</b>, <b>я → ja / æ</b></p>
   </header>
 
   <div class="controls">
     <button type="button" id="copyBtn">Скопировать латиницу</button>
     <button type="button" class="secondary" id="clearBtn">Очистить</button>
     <button type="button" class="secondary" id="sampleBtn">Вставить пример</button>
-    <label style="display:inline-flex; align-items:center; gap:8px; margin-left:12px; cursor:pointer; color:var(--text); font-size:0.95rem;">
-      <input type="checkbox" id="mazinCheck"> Мазинский диалект (--mazin)
-    </label>
   </div>
 
   <div class="editors">
@@ -231,11 +226,12 @@
   <details class="rules-summary">
     <summary>Справка по действующим правилам</summary>
     <ul>
-      <li><b>Увулярные / Диграфы:</b> гъ → <code>ġ</code>, гь → <code>h</code>, гӀ → <code>g'</code>, хь → <code>xh</code>, хъ → <code>qh</code>, хӀ → <code>x'</code>, къ → <code>q</code>, кь → <code>q'</code></li>
-      <li><b>Абруптивы:</b> пӀ → <code>p'</code>, тӀ → <code>t'</code>, кӀ → <code>k'</code>, цӀ → <code>ts'</code>, чӀ → <code>c'</code></li>
-      <li><b>Лабиализация:</b> гъв → <code>ġw</code>, хьв → <code>xhw</code>, хъв → <code>qhw</code>, кӀв → <code>k'w</code>, цӀв → <code>ts'w</code>, чӀв → <code>c'w</code> и т.д.</li>
-      <li><b>Гласные:</b> ы → <code>ɨ</code>, аа → <code>ā</code>, аьаь (--mazin) → <code>ǣ</code>, ъ → <code>'</code>, ь → (удаляется вне диграфов)</li>
-      <li><b>Мазинские кольца:</b> чӀ˚в → <code>c'˚w</code>, чh˚ → <code>ch̊</code>, ж˚в → <code>j̊w</code>, ш˚ → <code>sh̊</code> и т.д.</li>
+      <li><b>Абруптивы:</b> чӀ → <code>ch'</code>, цӀ → <code>c'</code>, кӀ → <code>k'</code>, тӀ → <code>t'</code>, пӀ → <code>p'</code>, кь → <code>q'</code></li>
+      <li><b>Шипящие и аффрикаты:</b> ч → <code>ch</code>, ш → <code>sh</code>, ж → <code>zh</code>, дж → <code>dzh</code>, дз → <code>dz</code>, ц → <code>c</code>, щ → <code>shch</code></li>
+      <li><b>Увулярные и гортанные:</b> къ → <code>q</code>, хъ → <code>qh</code>, гъ → <code>gh</code>, гь → <code>h</code>, хӀ → <code>h</code>, хь → <code>h</code>, х → <code>x</code></li>
+      <li><b>Гласные:</b> уь → <code>y</code>, я → <code>ja</code> (в начале слова / после гласных) и <code>æ</code> (после согласных), аь → <code>æ</code>, оь → <code>œ</code>, ы → <code>ə</code>, ю → <code>ju</code>, ё → <code>jo</code></li>
+      <li><b>Буква «Й»:</b> всегда → <code>j</code></li>
+      <li><b>Согласная «В» и знаки:</b> в → <code>w</code>; знаки <code>ъ</code>, <code>ь</code> и одиночная палочка <code>Ӏ</code> удаляются</li>
     </ul>
   </details>
 </div>
@@ -245,21 +241,17 @@
 // UI Логика
 const cyrInput = document.getElementById('cyrInput');
 const latOutput = document.getElementById('latOutput');
-const mazinCheck = document.getElementById('mazinCheck');
 const copyBtn = document.getElementById('copyBtn');
 const clearBtn = document.getElementById('clearBtn');
 const sampleBtn = document.getElementById('sampleBtn');
 
 function handleConvert() {
   if (typeof transliterateLezgi === 'function') {
-    latOutput.value = transliterateLezgi(cyrInput.value, mazinCheck ? mazinCheck.checked : false);
+    latOutput.value = transliterateLezgi(cyrInput.value);
   }
 }
 
 cyrInput.addEventListener('input', handleConvert);
-if (mazinCheck) {
-  mazinCheck.addEventListener('change', handleConvert);
-}
 
 copyBtn.addEventListener('click', () => {
   if (!latOutput.value) return;
@@ -278,8 +270,8 @@ clearBtn.addEventListener('click', () => {
 
 sampleBtn.addEventListener('click', () => {
   cyrInput.value = `Чи чӀал цӀай я! Жув, вац, цав, чан, ша!
-Гъед, хӀуьрмет, гӀвал, кӀвал.
-Мазин пример: аьаь, чӀ˚в, чh˚.
+Гъед, хӀуьрмет, кӀвал, къуьр, хъсан.
+Йис, майдан, чинебан, кьватӀ.
 Ел ава, беден сагърай, къвезвач, хъфизва.`;
   handleConvert();
 });

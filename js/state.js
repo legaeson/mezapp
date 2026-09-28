@@ -15,7 +15,7 @@
             'ш', 'э', 'ю', 'я'
         ];
         let currentTab = 'alphabet';
-        const PAGE_SIZE = window.innerWidth >= 768 ? 50 : 20;
+        const PAGE_SIZE = 20;
         let loadedCount = 0;
         let currentFilter = { search: '', category: 'all' };
         let practiceCategory = 'all';
@@ -23,6 +23,36 @@
         let deferredPrompt = null;
         let tabSwitchGuard = false;
         let isClosingProgrammatically = false;
+
+        let isLatinScript = false;
+        try {
+            localStorage.removeItem('lezgi_latin_mode');
+        } catch (e) {}
+
+        function isLatinEnabled() {
+            return false;
+        }
+
+        function setLatinEnabled(val) {
+            isLatinScript = false;
+            syncLatinUI();
+        }
+
+        function syncLatinUI() {
+            const toggle = document.getElementById('latin-mode-toggle');
+            if (toggle) toggle.checked = isLatinScript;
+
+            if (typeof renderWords === 'function' && document.getElementById('screen-vocabulary')?.classList.contains('active')) {
+                renderWords(true, false);
+            }
+            if (typeof renderAlphabet === 'function' && document.getElementById('screen-alphabet')?.classList.contains('active')) {
+                renderAlphabet();
+            }
+        }
+
+        window.isLatinEnabled = isLatinEnabled;
+        window.setLatinEnabled = setLatinEnabled;
+        window.syncLatinUI = syncLatinUI;
 
         const NICE_CATEGORY_NAMES = {
             'анатомия': 'Анатомия', 'быт': 'Быт', 'война': 'Война', 'время': 'Время', 'глаголы': 'Глаголы',

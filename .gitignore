@@ -6,3 +6,11 @@ testui/
 figma_export/
 *.zip
 deploy/
+FTP_INFO.md
+deploy_ftp.py
+deploy.bat
+ui/
+*.pkf
+*.wav
+audio/reading/*.wav
+
