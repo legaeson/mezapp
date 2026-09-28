@@ -132,7 +132,7 @@ test('Reading & Phonetics: Honest 0-based stats & real progress tracking', async
         assert.doesNotMatch(cStr, /q\.ruleDesc/, 'Feedback banner must not repeat generic ruleDesc');
     });
 
-    await t.test('All reading modes have minimum 15 questions, uvular N rule, and audio spelling levels', () => {
+    await t.test('All reading modes have minimum 15 questions, uvular consonants, and audio spelling levels', () => {
         const buildFuncMatch = content.match(/function buildReadingPhoneticsQuestions[\s\S]*?function renderReadingQuestion/);
         assert.ok(buildFuncMatch, 'buildReadingPhoneticsQuestions should exist');
         const bStr = buildFuncMatch[0];
@@ -152,13 +152,15 @@ test('Reading & Phonetics: Honest 0-based stats & real progress tracking', async
         // Workout session length is at least 15
         assert.match(bStr, /shuffled\.length\s*>\s*15/, 'Session should select at least 15 questions');
 
-        // Uvular N rule is present in theory and questions
-        assert.match(content, /Увулярная «Н» \[ɴ\] перед Къ, Гъ, Кь, Хъ/, 'Theory must include uvular N rule');
-        assert.match(bStr, /Къ, Гъ, Кь, Хъ/, 'Questions must test uvular N before Къ, Гъ, Кь, Хъ');
-        assert.match(bStr, /\[seɴʁer\]/, 'Questions must include [seɴʁer]');
-        assert.match(bStr, /\[peɴqʼ\]/, 'Questions must include [peɴqʼ]');
-        assert.match(bStr, /\[ʒeɴʁ\]/, 'Questions must include [ʒeɴʁ]');
-        assert.match(bStr, /\[teɴq\]/, 'Questions must include [teɴq]');
+        // Uvular consonants rule is present in theory and questions (no uvular N)
+        assert.match(content, /Увулярные смычные \(Къ, Хъ, Кь\)/, 'Theory must include uvular consonants rule');
+        assert.doesNotMatch(content, /Увулярная «Н» \[ɴ\]/, 'Theory must NOT include uvular N rule');
+        assert.doesNotMatch(bStr, /uvular_n/, 'Questions must not include uvular_n ruleId');
+        assert.doesNotMatch(bStr, /\[ɴ\]/, 'Questions must not include [ɴ]');
+        assert.match(bStr, /\[qʰsan\]/, 'Questions must include [qʰsan]');
+        assert.match(bStr, /\[qʼil\]/, 'Questions must include [qʼil]');
+        assert.match(bStr, /\[ʁil\]/, 'Questions must include [ʁil]');
+        assert.match(bStr, /\[vaʔ\]/, 'Questions must include [vaʔ]');
 
         // Labialization audio questions
         assert.match(bStr, /audio\/reading\/kval\.mp3/, 'Labialization audio question for кӀвал must exist');

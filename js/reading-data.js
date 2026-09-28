@@ -91,12 +91,8 @@ const READING_DATA = {
         },
         words: {
             title: 'Увулярные звуки',
-            subtitle: 'Глубокие звуки глотки и увулярная «Н» [ɴ]',
+            subtitle: 'Глубокие звуки глотки (Къ, Хъ, Кь, Гъ, Х, Гь, Хь, Ъ)',
             rules: [
-                {
-                    title: 'Увулярная «Н» [ɴ] перед Къ, Гъ, Кь, Хъ',
-                    body: 'особый закон лезгинской фонетики: сонорный звук <strong>«Н»</strong> перед увулярными согласными (<strong>Къ, Гъ, Кь, Хъ</strong>) ассимилируется и произносится глубоко в зеве у язычка как <strong>увулярный носовой сонант [ɴ]</strong>: <em>сенгъер</em> ➔ <span class="font-bold text-emerald-600 dark:text-emerald-400">[seɴʁer]</span>, <em>пенкь</em> ➔ <span class="font-bold text-emerald-600 dark:text-emerald-400">[peɴqʼ]</span>, <em>женгъ</em> ➔ <span class="font-bold text-emerald-600 dark:text-emerald-400">[ʒeɴʁ]</span>, <em>тенкъ</em> ➔ <span class="font-bold text-emerald-600 dark:text-emerald-400">[teɴq]</span>.'
-                },
                 {
                     title: 'Увулярные смычные (Къ, Хъ, Кь)',
                     body: '<strong>Къ [q]</strong> — глухой глубокий взрывной без выдоха; <strong>Хъ [qʰ]</strong> — глубокий взрывной с сильным выдохом (например, <span class="font-bold text-emerald-600 dark:text-emerald-400">[qʰsan]</span>); <strong>Кь [qʼ]</strong> — глубокий щелкающий звук.'
@@ -1351,156 +1347,159 @@ const READING_DATA = {
                 {
                     id: 84,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'Перед какими четырьмя согласными звук «Н» переходит в глубокий увулярный носовой сонант [ɴ]?',
-                    trans: '[ɴ]',
-                    tip: 'Сонант «н» ассимилируется перед четырьмя увулярными согласными: Къ, Гъ, Кь, Хъ — язык касается не зубов, а язычка (увулы): [ɴ].',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Какой согласный обозначает буква «Къ»?',
+                    trans: '[q]',
+                    tip: '«Къ» обозначает глухой увулярный смычный звук без выдоха (придыхания) [q].',
                     choices: [
-                        { text: 'Къ, Гъ, Кь, Хъ', correct: true },
-                        { text: 'К, Г, П, Т', correct: false },
-                        { text: 'С, З, Ш, Ж', correct: false }
+                        { text: 'Глухой глубокий смычный звук без выдоха [q]', correct: true },
+                        { text: 'Обычный звук [k]', correct: false },
+                        { text: 'Щелевой звук [x]', correct: false }
                     ]
                 },
                 {
                     id: 85,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'Как произносится сонорный «Н», если после него стоит увулярный согласный (Къ, Гъ, Кь, Хъ)?',
-                    trans: '[ɴ]',
-                    tip: 'Язык смыкается глубоко в зеве у язычка (увулы), образуя увулярный носовой сонант [ɴ].',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Какой звук обозначает буква «Хъ»?',
+                    trans: '[qʰ]',
+                    tip: '«Хъ» — это увулярный смычный звук с сильным придыханием (выдохом) [qʰ].',
                     choices: [
-                        { text: 'Как глубокий увулярный носовой сонант [ɴ]', correct: true },
-                        { text: 'Как обычный переднеязычный зубной звук [n]', correct: false },
-                        { text: 'Как губной звук [m]', correct: false }
+                        { text: 'Глубокий смычный звук с сильным выдохом (придыханием) [qʰ]', correct: true },
+                        { text: 'Простой русский звук [х]', correct: false },
+                        { text: 'Звонкий звук [g]', correct: false }
                     ]
                 },
                 {
                     id: 86,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'В каком из этих буквосочетаний звук «Н» звучит как увулярный [ɴ]?',
-                    trans: '[ɴ]',
-                    tip: 'Звук «н» становится увулярным только перед увулярными согласными: «нкъ», «нгъ», «нкь», «нхъ».',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Какой звук обозначает буква «Кь»?',
+                    trans: '[qʼ]',
+                    tip: '«Кь» — это увулярный смычно-гортанный абруптив [qʼ] (глубокий щелкающий звук).',
                     choices: [
-                        { text: 'В сочетаниях «нкъ», «нгъ», «нкь», «нхъ»', correct: true },
-                        { text: 'В сочетаниях «нт», «нд», «нс»', correct: false },
-                        { text: 'В сочетаниях «мп», «мб»', correct: false }
+                        { text: 'Глубокий смычно-гортанный щелкающий абруптив [qʼ]', correct: true },
+                        { text: 'Мягкий русский звук [к\']', correct: false },
+                        { text: 'Звонкий звук [b]', correct: false }
                     ]
                 },
                 {
                     id: 87,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
+                    ruleId: 'uvular_hq',
                     questionText: 'Какая транскрипция передаёт правильное звучание слова?',
-                    displayWordHtml: 'сенгъер',
-                    rawWord: 'сенгъер',
-                    meaning: 'окоп, траншея',
-                    trans: '[seɴʁer]',
-                    tip: 'Перед увулярной звонкой щелевой «гъ» буква «н» произносится как увулярный сонант [ɴ]: [seɴʁer].',
+                    displayWordHtml: 'къал',
+                    rawWord: 'къал',
+                    meaning: 'шум, скандал, ссора',
+                    trans: '[qal]',
+                    tip: 'Слово «къал» начинается с глухого увулярного взрывного звука [q]: [qal]. Сравните: «кал» [kʰal] (корова).',
                     choices: [
-                        { text: '[seɴʁer]', correct: true },
-                        { text: '[senʁer]', correct: false },
-                        { text: '[seŋger]', correct: false }
+                        { text: '[qal]', correct: true },
+                        { text: '[kal]', correct: false },
+                        { text: '[kʰal]', correct: false }
                     ]
                 },
                 {
                     id: 88,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'Какая транскрипция верна?',
-                    displayWordHtml: 'пенкь',
-                    rawWord: 'пенкь',
-                    meaning: 'гнилушка, труха, гнилой',
-                    trans: '[peɴqʼ]',
-                    tip: 'Перед абруптивной увулярной «кь» звук «н» ассимилируется в увулярный носовой [ɴ]: [peɴqʼ].',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Какая транскрипция верна для слова «хар» (град)?',
+                    displayWordHtml: 'хар',
+                    rawWord: 'хар',
+                    meaning: 'град',
+                    trans: '[χar]',
+                    tip: 'Буква «Х» в лезгинском языке произносится как глубокий увулярный щелевой [χ] (глубже русского [х]).',
                     choices: [
-                        { text: '[peɴqʼ]', correct: true },
-                        { text: '[penqʼ]', correct: false },
-                        { text: '[penk]', correct: false }
+                        { text: '[χar]', correct: true },
+                        { text: '[xar]', correct: false },
+                        { text: '[qar]', correct: false }
                     ]
                 },
                 {
                     id: 89,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'Какая транскрипция верна?',
-                    displayWordHtml: 'женгъ',
-                    rawWord: 'женгъ',
-                    meaning: 'битва, бой, сражение',
-                    trans: '[ʒeɴʁ]',
-                    tip: 'Перед «гъ» сонант «н» произносится глубоко в зеве у язычка: [ʒeɴʁ].',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Какая транскрипция верна для слова «гъед» (рыба / звезда)?',
+                    displayWordHtml: 'гъед',
+                    rawWord: 'гъед',
+                    meaning: 'рыба; звезда',
+                    trans: '[ʁed]',
+                    tip: 'Буква «Гъ» — звонкий увулярный щелевой [ʁ]. Согласный перед «е» остаётся твёрдым: [ʁed].',
                     choices: [
-                        { text: '[ʒeɴʁ]', correct: true },
-                        { text: '[ʒenʁ]', correct: false },
-                        { text: '[ʒeng]', correct: false }
+                        { text: '[ʁed]', correct: true },
+                        { text: '[gʲed]', correct: false },
+                        { text: '[ged]', correct: false }
                     ]
                 },
                 {
                     id: 90,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'Какая транскрипция верна?',
-                    displayWordHtml: 'тенкъ',
-                    rawWord: 'тенкъ',
-                    meaning: 'болотная кочка',
-                    trans: '[teɴq]',
-                    tip: 'Перед смычной увулярной «къ» звук «н» становится увулярным [ɴ]: [teɴq].',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Какая пара слов различается звуками «Къ» [q] и «К» [kʰ]?',
+                    trans: '[q] vs [kʰ]',
+                    tip: '«Къал» [qal] (шум) и «кал» [kʰal] (корова) — классическая смыслоразличительная пара.',
                     choices: [
-                        { text: '[teɴq]', correct: true },
-                        { text: '[tenq]', correct: false },
-                        { text: '[tenk]', correct: false }
+                        { text: '«къал» (шум) и «кал» (корова)', correct: true },
+                        { text: '«кьил» (голова) и «гъил» (рука)', correct: false },
+                        { text: '«яр» (заря) и «вар» (ворота)', correct: false }
                     ]
                 },
                 {
                     id: 91,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'В каком из этих слов звук «Н» произносится как увулярный [ɴ]?',
-                    trans: '[ɴ]',
-                    tip: 'В слове «сенгъер» за буквой «н» следует увулярная «гъ», поэтому «н» звучит увулярно как [ɴ].',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Какая транскрипция верна для слова «кьуьл» (танец)?',
+                    displayWordHtml: 'кьуьл',
+                    rawWord: 'кьуьл',
+                    meaning: 'танец',
+                    trans: '[qʼyl]',
+                    tip: 'Начинается с увулярного абруптива «Кь» [qʼ], за которым следует огубленный гласный переднего ряда «Уь» [y]: [qʼyl].',
                     choices: [
-                        { text: 'сенгъер', correct: true },
-                        { text: 'чинар', correct: false },
-                        { text: 'манзил', correct: false }
+                        { text: '[qʼyl]', correct: true },
+                        { text: '[kul]', correct: false },
+                        { text: '[qul]', correct: false }
                     ]
                 },
                 {
                     id: 92,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'В каком из этих слов звук «Н» произносится как увулярный [ɴ]?',
-                    trans: '[ɴ]',
-                    tip: 'В слове «женгъ» буква «н» стоит перед увулярной согласной «гъ» и произносится как [ɴ].',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Как произносится буква «Хь» перед гласными переднего ряда (Е, И)?',
+                    trans: '[ç]',
+                    tip: 'Перед «е» и «и» буква «Хь» звучит мягко как среднеязычный щелевой [ç] (например, «хьел» [çel] — стрела).',
                     choices: [
-                        { text: 'женгъ', correct: true },
-                        { text: 'ватан', correct: false },
-                        { text: 'булах', correct: false }
+                        { text: 'Мягко, как среднеязычный глухой щелевой [ç]', correct: true },
+                        { text: 'Твёрдо, как обычный глубокий [χ]', correct: false },
+                        { text: 'Как звонкий звук [ʒ]', correct: false }
                     ]
                 },
                 {
                     id: 93,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'Как произносится «Н» на стыке слов «вун хъфена» (ты ушёл)?',
-                    trans: '[wũɴ qʰfenaː]',
-                    tip: 'Перед словом на увулярный «хъ» сонант «н» звучит увулярно как [ɴ].',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Какая функция у буквы «Ъ» в лезгинских словах?',
+                    trans: '[ʔ]',
+                    tip: 'Буква «Ъ» передаёт самостоятельный согласный звук — гортанную паузу (смычку) [ʔ] (например, «ваъ» [vaʔ] — нет).',
                     choices: [
-                        { text: 'Как увулярный носовой сонант [ɴ]', correct: true },
-                        { text: 'Как обычный переднеязычный [n]', correct: false },
-                        { text: 'Буква «н» полностью исчезает', correct: false }
+                        { text: 'Обозначает самостоятельный согласный — гортанную паузу (смычку) [ʔ]', correct: true },
+                        { text: 'Служит только разделительным знаком, как в русском', correct: false },
+                        { text: 'Обозначает ударение', correct: false }
                     ]
                 },
                 {
                     id: 94,
                     modeId: 'words',
-                    ruleId: 'uvular_n',
-                    questionText: 'Как произносится «Н» на стыке слов «зун къведа» (я приду)?',
-                    trans: '[zũɴ qʷeda]',
-                    tip: 'Перед увулярной согласной «къ» сонант «н» ассимилируется в увулярный [ɴ].',
+                    ruleId: 'uvular_hq',
+                    questionText: 'Какая транскрипция верна для слова «къуш» (птица)?',
+                    displayWordHtml: 'къуш',
+                    rawWord: 'къуш',
+                    meaning: 'птица',
+                    trans: '[quʃ]',
+                    tip: 'Буква «Къ» — глухой глубокий смычный [q]: [quʃ].',
                     choices: [
-                        { text: 'Как увулярный носовой сонант [ɴ]', correct: true },
-                        { text: 'Как обычный зубной [n]', correct: false },
-                        { text: 'Как губной звук [m]', correct: false }
+                        { text: '[quʃ]', correct: true },
+                        { text: '[kuʃ]', correct: false },
+                        { text: '[kʼuʃ]', correct: false }
                     ]
                 },
                 {
