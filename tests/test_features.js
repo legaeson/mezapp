@@ -77,7 +77,7 @@ test('HTML: index.html structure verification', async (t) => {
 // 2. JavaScript Syntax & Parsing Tests
 // ====================================================================
 test('JavaScript: files parse without syntax errors', async (t) => {
-    const files = ['js/srs.js', 'js/app.js', 'js/ui.js', 'js/state.js', 'js/utils.js'];
+    const files = ['js/srs.js', 'js/app.js', 'js/ui.js', 'js/state.js', 'js/utils.js', 'js/reading-data.js'];
     for (const relPath of files) {
         await t.test(`File ${relPath} has valid syntax`, () => {
             const filePath = path.join(ROOT_DIR, relPath);
@@ -370,4 +370,47 @@ test('Pluralize & Practice Subtitle Formatting: no number duplication', async (t
 
     assert.ok(!formatReviewSubtitle(20).includes('20 20'));
     assert.ok(!formatReviewSubtitle(1).includes('1 1'));
+});
+
+// ====================================================================
+// 8. Theory Cards Configuration: max 2 examples & clean badges
+// ====================================================================
+test('Reading Practice Theory: cards configuration & max 2 examples', async (t) => {
+    const readingDataPath = path.join(ROOT_DIR, 'js/reading-data.js');
+    assert.ok(fs.existsSync(readingDataPath), 'js/reading-data.js must exist');
+    const code = fs.readFileSync(readingDataPath, 'utf-8');
+
+    const sandbox = { window: {} };
+    vm.createContext(sandbox);
+    vm.runInContext(code, sandbox);
+
+    const readingData = sandbox.window.READING_DATA;
+    assert.ok(readingData, 'READING_DATA must be defined on window');
+    assert.ok(readingData.theory, 'READING_DATA.theory must exist');
+
+    const expectedModes = ['labialization', 'nasalization', 'elision'];
+
+    for (const modeId of expectedModes) {
+        await t.test(`Mode "${modeId}" theory card is well-formed`, () => {
+            const modeTheory = readingData.theory[modeId];
+            assert.ok(modeTheory, `theory.${modeId} must exist`);
+            assert.ok(modeTheory.title && modeTheory.title.length > 0, `mode ${modeId} must have title`);
+            assert.ok(Array.isArray(modeTheory.rules) && modeTheory.rules.length > 0, `mode ${modeId} must have rules`);
+
+            for (const rule of modeTheory.rules) {
+                assert.ok(rule.title, `Rule in ${modeId} must have title`);
+                assert.ok(rule.desc || rule.body, `Rule in ${modeId} must have description`);
+                assert.ok(Array.isArray(rule.examples), `Rule in ${modeId} must have examples array`);
+                assert.ok(
+                    rule.examples.length <= 2,
+                    `Rule "${rule.title}" in mode "${modeId}" must have at most 2 examples (found ${rule.examples.length})`
+                );
+
+                for (const ex of rule.examples) {
+                    assert.ok(ex.word && ex.word.trim().length > 0, `Example in ${rule.title} must have word`);
+                    assert.ok(ex.ru && ex.ru.trim().length > 0, `Example in ${rule.title} must have Russian translation`);
+                }
+            }
+        });
+    }
 });

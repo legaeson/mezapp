@@ -184,23 +184,14 @@
         }
 
 
-        // Анимация — однократный fade-in-up через inline style (не оставляет классов)
+        // Анимации удалены для мгновенного отображения элементов
         function staggerCards(container) {
-            const children = container.children;
-            for (let i = 0; i < children.length; i++) {
-                const el = children[i];
-                const delay = Math.min(i, 14) * 0.015;
-                el.style.animation = `fade-in-up 0.3s ease-out ${delay}s both`;
-                el.addEventListener('animationend', function handler() {
-                    el.style.animation = '';
-                    el.removeEventListener('animationend', handler);
-                }, { once: true });
-            }
+            // Без анимации
         }
 
 
 
-        const AUDIO_ASSET_VERSION = '2026-05-27-2';
+        const AUDIO_ASSET_VERSION = '2026-10-06-4';
         const PRELOADED_AUDIO = {};
         const AUDIO_PLAYER = new Audio();
 

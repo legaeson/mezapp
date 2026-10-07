@@ -156,18 +156,6 @@
 
             content.innerHTML = `
 <div class="flex flex-col h-full w-full max-w-md practice-card-container mx-auto px-5 py-4 justify-between font-sans relative overflow-hidden" style="height: 100%;">
-  <!-- Верхняя панель и прогресс -->
-  <div class="space-y-2.5 pt-1 shrink-0">
-    <div class="flex items-center justify-between">
-      <button id="srs-close-btn" class="hidden md:flex w-9 h-9 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm transition hover:bg-slate-100 active:scale-95">✕</button>
-      <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Лезгинский язык</span>
-      <span class="text-sm font-bold text-slate-700">${learned} / ${total}</span>
-    </div>
-    <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-      <div class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: ${progress}%"></div>
-    </div>
-  </div>
-
   <!-- Карточка слова -->
   <div class="relative w-full flex items-center justify-center flex-1 min-h-0 py-4">
     <div id="flip-card" class="flip-card swipe-card-wrapper w-full h-full relative z-10">
@@ -264,29 +252,7 @@
             function animateAndMark(status, direction = 'down') {
                 if (isLocked) return;
                 isLocked = true;
-
-                if (cardEl) {
-                    cardEl.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease';
-
-                    if (status === 'easy') {
-                        if (badgeEasy) { badgeEasy.style.transition = 'opacity 0.15s ease, transform 0.15s ease'; badgeEasy.style.opacity = '1'; badgeEasy.style.transform = 'translateX(-50%) scale(1.05)'; }
-                        cardEl.style.transform = `translate3d(${Math.max(window.innerWidth, 500)}px, -20px, 0) rotate(18deg)`;
-                        cardEl.style.opacity = '0';
-                    } else if (status === 'wrong') {
-                        if (badgeWrong) { badgeWrong.style.transition = 'opacity 0.15s ease, transform 0.15s ease'; badgeWrong.style.opacity = '1'; badgeWrong.style.transform = 'translateX(-50%) scale(1.05)'; }
-                        cardEl.style.transform = `translate3d(-${Math.max(window.innerWidth, 500)}px, -20px, 0) rotate(-18deg)`;
-                        cardEl.style.opacity = '0';
-                    } else if (status === 'hard') {
-                        if (badgeHard) { badgeHard.style.transition = 'opacity 0.15s ease, transform 0.15s ease'; badgeHard.style.opacity = '1'; badgeHard.style.transform = 'translateX(-50%) scale(1.05)'; }
-                        const flyY = direction === 'up' ? -Math.max(window.innerHeight, 600) : Math.max(window.innerHeight, 600);
-                        cardEl.style.transform = `translate3d(0, ${flyY}px, 0) rotate(${direction === 'up' ? -3 : 3}deg)`;
-                        cardEl.style.opacity = '0';
-                    }
-                }
-
-                setTimeout(() => {
-                    markCard(status);
-                }, 260);
+                markCard(status);
             }
 
             function onPointerDown(e) {
@@ -397,7 +363,8 @@
             cardEl.addEventListener('pointerup', onPointerUp);
             cardEl.addEventListener('pointercancel', onPointerUp);
 
-            document.getElementById('srs-close-btn').addEventListener('click', endPractice);
+            const srsCloseBtn = document.getElementById('srs-close-btn');
+            if (srsCloseBtn) srsCloseBtn.addEventListener('click', endPractice);
 
             const reportBtns = document.querySelectorAll('.srs-report-btn');
             reportBtns.forEach(btn => {
@@ -699,12 +666,12 @@
             }
 
             const resWrap = document.createElement('div');
-            resWrap.className = 'app-header px-8 pt-10 pb-8 text-center flex flex-col items-center justify-center animate-fade-in';
+            resWrap.className = 'app-header px-8 pt-10 pb-8 text-center flex flex-col items-center justify-center';
 
             if (pct === 100) {
                 const cupWrap = document.createElement('div');
                 cupWrap.className = 'w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center mb-6 border border-amber-200/50 shadow-md relative';
-                cupWrap.innerHTML = '<i class="fa-solid fa-trophy text-5xl text-amber-500 animate-pulse"></i><span class="absolute -top-1 -right-1 text-2xl">🎉</span>';
+                cupWrap.innerHTML = '<i class="fa-solid fa-trophy text-5xl text-amber-500"></i><span class="absolute -top-1 -right-1 text-2xl">🎉</span>';
 
                 const title = document.createElement('h2');
                 title.className = 'text-2xl font-extrabold text-emerald-850 tracking-tight leading-tight';
@@ -778,6 +745,7 @@
             }
             if (typeof window.syncModalOpenState === "function") window.syncModalOpenState();
         }
+        window.endPractice = endPractice;
         function startPairs() {
             const pool = practiceCategory === 'all' ? WORDS : WORDS.filter(w => w.cat === practiceCategory);
 

@@ -1,16 +1,16 @@
-const CACHE_VERSION = '2.2.89';
+const CACHE_VERSION = '2.2.99';
 const CACHE_NAME = `lezgimez-pwa-v${CACHE_VERSION}`;
 
 const ALPHABET_AUDIO_FILES = [
   'а', 'б', 'в', 'г', 'гъ', 'гь', 'д', 'е', 'ж', 'з', 'и', 'й',
-  'к', 'к1', 'къ', 'кь', 'л', 'м', 'н', 'п', 'п1', 'р', 'с', 'т',
+  'к', 'къ', 'кь', 'к1', 'л', 'м', 'н', 'п', 'п1', 'р', 'с', 'т',
   'т1', 'у', 'уь', 'ф', 'х', 'хъ', 'хь', 'ц', 'ц1', 'ч', 'ч1',
   'ш', 'э', 'ю', 'я'
 ];
 
 const READING_AUDIO_FILES = [
-  'kval', 'svas', 'qvan', 'qved', 'gvechi', 'tval', 'cval', 'hva',
-  'zun', 'vun', 'van', 'kan', 'chin', 'cin', 'insan', 'qvan_nasal',
+  'kval', 'svas', 'qved', 'gvechi', 'tval', 'cval', 'hva',
+  'zun', 'vun', 'van', 'kyn', 'kan', 'chin', 'cin', 'insan',
   'twar', 't1war', 'ahwar', 'zver', 'qhver', 't1vet1',
   'kitab', 'tuhun', 'avay', 'fenay', 'rikyay'
 ];

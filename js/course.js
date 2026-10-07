@@ -75,6 +75,7 @@
             document.getElementById('course-unit-view').classList.add('hidden');
             document.querySelector('main')?.scrollTo({ top: 0, behavior: 'auto' });
         }
+        window.showCourseMainView = showCourseMainView;
 
         function renderCourseScreen() {
             const grid = document.getElementById('course-modules-grid');
@@ -216,7 +217,7 @@
         // ==================== COURSE EXERCISE ENGINE ====================
 
         function startCourseExercises(unit) {
-            let exercises = [...unit.exercises].filter(e => e.type !== 'listening');
+            let exercises = [...unit.exercises].filter(e => e.type !== 'listening' && !e.audioUrl && !e.audio);
             
             // Add translation exercises based on flashcards
             const vocab = exercises.filter(e => e.type === 'flashcard' && e.lz && e.ru);
@@ -305,7 +306,7 @@
 
             // Render exercise by type
             const body = document.createElement('div');
-            body.className = 'p-6 animate-fade-in';
+            body.className = 'p-6';
 
             switch (ex.type) {
                 case 'flashcard': renderCourseFlashcard(body, ex); break;
@@ -544,7 +545,7 @@
             });
 
             const btnWrap = document.createElement('div');
-            btnWrap.className = 'mt-6 w-full animate-fade-in course-continue-btn';
+            btnWrap.className = 'mt-6 w-full course-continue-btn';
             const btn = document.createElement('button');
             btn.className = 'w-full py-4 bg-emerald-600 active:bg-emerald-700 text-white font-bold rounded-3xl text-base transition-colors shadow-md shadow-emerald-100';
             btn.textContent = 'Продолжить';
@@ -622,7 +623,7 @@
                     if (answered) return;
                     answered = true;
                     const correct = i === ex.correctIdx;
-                    btn.className = `flex-1 py-6 px-4 rounded-3xl text-2xl font-bold border-2 transition-all ${correct ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-red-50 border-red-300 text-red-700 animate-shake'}`;
+                    btn.className = `flex-1 py-6 px-4 rounded-3xl text-2xl font-bold border-2 transition-all ${correct ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-red-50 border-red-300 text-red-700'}`;
                     if (!correct) {
                         const correctBtn = optionsWrap.children[ex.correctIdx];
                         correctBtn.className = 'flex-1 py-6 px-4 rounded-3xl text-2xl font-bold border-2 bg-emerald-50 border-emerald-500 text-emerald-700 transition-all';
@@ -690,9 +691,9 @@
                     });
                     
                     if (leftBtnEl) {
-                        leftBtnEl.className = 'py-3 px-3 rounded-2xl text-sm font-semibold bg-red-50 border-2 border-red-400 text-red-700 transition-all animate-shake pointer-events-none';
+                        leftBtnEl.className = 'py-3 px-3 rounded-2xl text-sm font-semibold bg-red-50 border-2 border-red-400 text-red-700 transition-all pointer-events-none';
                     }
-                    rightBtnEl.className = 'py-3 px-3 rounded-2xl text-sm font-semibold bg-red-50 border-2 border-red-400 text-red-700 transition-all animate-shake pointer-events-none';
+                    rightBtnEl.className = 'py-3 px-3 rounded-2xl text-sm font-semibold bg-red-50 border-2 border-red-400 text-red-700 transition-all pointer-events-none';
                     
                     grid.style.pointerEvents = 'none';
 
@@ -820,7 +821,7 @@
                 if (correct) {
                     targetArea.className = 'min-h-[56px] bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-3 mb-4 flex flex-wrap gap-2 items-center';
                 } else {
-                    targetArea.className = 'min-h-[56px] bg-red-50 border-2 border-red-300 rounded-2xl p-3 mb-4 flex flex-wrap gap-2 items-center animate-shake';
+                    targetArea.className = 'min-h-[56px] bg-red-50 border-2 border-red-300 rounded-2xl p-3 mb-4 flex flex-wrap gap-2 items-center';
                     const correctAnswer = document.createElement('div');
                     correctAnswer.className = 'text-sm text-emerald-700 bg-emerald-50 rounded-2xl px-4 py-3 mt-2';
                     correctAnswer.textContent = `Правильно: ${ex.correct}`;
@@ -869,7 +870,7 @@
                     if (answered) return;
                     answered = true;
                     const correct = i === ex.correct;
-                    btn.className = `w-full py-3.5 px-5 rounded-2xl text-base font-semibold border-2 transition-all text-left ${correct ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-red-50 border-red-300 text-red-700 animate-shake'}`;
+                    btn.className = `w-full py-3.5 px-5 rounded-2xl text-base font-semibold border-2 transition-all text-left ${correct ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-red-50 border-red-300 text-red-700'}`;
                     if (!correct) {
                         const correctBtn = optionsWrap.children[ex.correct];
                         correctBtn.className = 'w-full py-3.5 px-5 rounded-2xl text-base font-semibold border-2 bg-emerald-50 border-emerald-500 text-emerald-700 transition-all text-left';
@@ -1029,7 +1030,7 @@
                 if (!line.options) {
                     // Static line
                     const bubble = document.createElement('div');
-                    bubble.className = `max-w-[85%] px-4 py-3 rounded-2xl text-sm font-medium animate-fade-in ${line.speaker === 'А' || line.speaker === 'Хозяин' ? 'bg-slate-100 text-slate-800 self-start' : 'bg-emerald-50 text-emerald-800 self-end ml-auto'}`;
+                    bubble.className = `max-w-[85%] px-4 py-3 rounded-2xl text-sm font-medium ${line.speaker === 'А' || line.speaker === 'Хозяин' ? 'bg-slate-100 text-slate-800 self-start' : 'bg-emerald-50 text-emerald-800 self-end ml-auto'}`;
                     const speakerTag = document.createElement('div');
                     speakerTag.className = 'text-xs text-slate-400 font-bold mb-1';
                     speakerTag.textContent = line.speaker;
@@ -1043,7 +1044,7 @@
                 } else {
                     // Choice line
                     const choiceWrap = document.createElement('div');
-                    choiceWrap.className = 'animate-fade-in';
+                    choiceWrap.className = '';
                     const choiceLabel = document.createElement('div');
                     choiceLabel.className = 'text-xs text-emerald-600 font-bold mb-2';
                     choiceLabel.textContent = 'Выбери ответ:';
@@ -1065,7 +1066,7 @@
                             }
                             // Add the correct answer as a bubble
                             const bubble = document.createElement('div');
-                            bubble.className = 'max-w-[85%] px-4 py-3 rounded-2xl text-sm font-medium bg-emerald-50 text-emerald-800 ml-auto animate-fade-in';
+                            bubble.className = 'max-w-[85%] px-4 py-3 rounded-2xl text-sm font-medium bg-emerald-50 text-emerald-800 ml-auto';
                             const speakerTag = document.createElement('div');
                             speakerTag.className = 'text-xs text-slate-400 font-bold mb-1';
                             speakerTag.textContent = line.speaker || 'Б';
@@ -1128,7 +1129,7 @@
                     }
 
                     const correct = i === correctIdx;
-                    btn.className = `w-full py-3.5 px-5 rounded-2xl text-base font-semibold border-2 transition-all text-left ${correct ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-red-50 border-red-300 text-red-700 animate-shake'}`;
+                    btn.className = `w-full py-3.5 px-5 rounded-2xl text-base font-semibold border-2 transition-all text-left ${correct ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-red-50 border-red-300 text-red-700'}`;
                     if (!correct) {
                         optionsWrap.children[correctIdx].className = 'w-full py-3.5 px-5 rounded-2xl text-base font-semibold border-2 bg-emerald-50 border-emerald-500 text-emerald-700 transition-all text-left';
                     }
@@ -1174,7 +1175,7 @@
 
             if (isInfoOnly && (ex.lz || ex.ru)) {
                 const textWrap = document.createElement('div');
-                textWrap.className = 'bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center mb-8 mt-2 animate-fade-in';
+                textWrap.className = 'bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center mb-8 mt-2';
                 if (ex.lz) {
                     const lzText = document.createElement('div');
                     lzText.className = 'text-2xl font-extrabold text-emerald-700 mb-2';
@@ -1226,7 +1227,7 @@
 
                 if (currentIndex >= shuffledItems.length) {
                     const doneMsg = document.createElement('div');
-                    doneMsg.className = 'text-2xl font-bold text-emerald-600 animate-bounce text-center';
+                    doneMsg.className = 'text-2xl font-bold text-emerald-600 text-center';
                     doneMsg.textContent = 'Отлично!';
                     itemContainer.appendChild(doneMsg);
                     courseShowContinueBtn(wrap, !madeMistake);
@@ -1258,8 +1259,8 @@
                             }, 600);
                         } else {
                             madeMistake = true;
-                            btn.className = 'w-full py-4 bg-red-500 border-2 border-red-600 rounded-2xl text-base font-bold text-white animate-shake transition-all shadow-sm';
-                            card.className = 'px-8 py-10 bg-red-50 border-2 border-red-300 rounded-3xl text-2xl font-bold text-red-700 shadow-sm transition-all text-center w-full max-w-sm animate-shake';
+                            btn.className = 'w-full py-4 bg-red-500 border-2 border-red-600 rounded-2xl text-base font-bold text-white transition-all shadow-sm';
+                            card.className = 'px-8 py-10 bg-red-50 border-2 border-red-300 rounded-3xl text-2xl font-bold text-red-700 shadow-sm transition-all text-center w-full max-w-sm';
                             
                             setTimeout(() => {
                                 allBtns.forEach(b => b.disabled = false);
@@ -1304,12 +1305,12 @@
             saveCourseProgress();
 
             const resWrap = document.createElement('div');
-            resWrap.className = 'px-8 pt-10 pb-8 text-center flex flex-col items-center justify-center animate-fade-in';
+            resWrap.className = 'px-8 pt-10 pb-8 text-center flex flex-col items-center justify-center';
 
             if (pct === 100) {
                 const cupWrap = document.createElement('div');
                 cupWrap.className = 'w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center mb-6 border border-amber-200/50 shadow-md relative';
-                cupWrap.innerHTML = '<i class="fa-solid fa-trophy text-5xl text-amber-500 animate-pulse"></i><span class="absolute -top-1 -right-1 text-2xl">🎉</span>';
+                cupWrap.innerHTML = '<i class="fa-solid fa-trophy text-5xl text-amber-500"></i><span class="absolute -top-1 -right-1 text-2xl">🎉</span>';
 
                 const title = document.createElement('h2');
                 title.className = 'text-2xl font-extrabold text-emerald-850 tracking-tight leading-tight';

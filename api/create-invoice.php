@@ -48,6 +48,9 @@ if (empty($token)) {
 }
 
 $proxy = getenv('TELEGRAM_PROXY') ?: ($telegramProxy ?? ($proxy ?? ''));
+if (!empty($proxy) && strpos($proxy, 'socks5://') === 0) {
+    $proxy = 'socks5h://' . substr($proxy, 9);
+}
 $baseApiUrl = getenv('TELEGRAM_API_URL') ?: ($telegramApiUrl ?? 'https://api.telegram.org');
 
 $url = rtrim($baseApiUrl, '/') . "/bot" . trim($token) . "/createInvoiceLink";

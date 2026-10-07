@@ -213,14 +213,10 @@
             const loader = document.getElementById('app-loader');
             document.body.classList.remove('loading');
             if (!loader) return;
-            loader.style.pointerEvents = 'none';
-            loader.classList.add('fade-out');
-            setTimeout(() => {
-                try {
-                    loader.style.display = 'none';
-                    loader.remove();
-                } catch (e) {}
-            }, 350);
+            loader.style.display = 'none';
+            try {
+                loader.remove();
+            } catch (e) {}
         }
 
         function preloadAudioInBackground() {
@@ -282,26 +278,35 @@
             };
 
             const loadAsset = async (asset) => {
-                if (preloadedFinished) return;
                 const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-                const timeoutId = controller ? setTimeout(() => controller.abort(), 3500) : null;
+                const timeoutId = controller ? setTimeout(() => controller.abort(), 6000) : null;
                 try {
                     if (asset.key === 'words') {
-                        if (loaderStep1) loaderStep1.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-500 mr-3 text-base"></i>Загрузка слов...';
+                        if (loaderStep1 && !preloadedFinished) loaderStep1.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-500 mr-3 text-base"></i>Загрузка слов...';
                         const res = await fetch(asset.url, { signal: controller ? controller.signal : undefined });
                         if (timeoutId) clearTimeout(timeoutId);
                         if (!res.ok) throw new Error('HTTP ' + res.status);
-                        WORDS = await res.json();
-                        if (loaderStep1) loaderStep1.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-3 text-base"></i>Словарь и перевод загружены';
+                        const wordsData = await res.json();
+                        if (Array.isArray(wordsData) && wordsData.length > 0) {
+                            WORDS = wordsData;
+                        }
+                        if (loaderStep1 && !preloadedFinished) loaderStep1.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-3 text-base"></i>Словарь и перевод загружены';
                         const loadingEl = document.getElementById('words-loading');
                         if (loadingEl) loadingEl.style.display = 'none';
                     } else if (asset.key === 'grammar') {
-                        if (loaderStep2) loaderStep2.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-500 mr-3 text-base"></i>Загрузка грамматики...';
+                        if (loaderStep2 && !preloadedFinished) loaderStep2.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-500 mr-3 text-base"></i>Загрузка грамматики...';
                         const res = await fetch(asset.url, { signal: controller ? controller.signal : undefined });
                         if (timeoutId) clearTimeout(timeoutId);
                         if (!res.ok) throw new Error('HTTP ' + res.status);
-                        GRAMMAR = await res.json();
-                        if (loaderStep2) loaderStep2.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-3 text-base"></i>Грамматический справочник загружен';
+                        const grammarData = await res.json();
+                        if (Array.isArray(grammarData) && grammarData.length > 0) {
+                            GRAMMAR = grammarData;
+                            const practiceGrammarView = document.getElementById('practice-grammar-view');
+                            if (practiceGrammarView && !practiceGrammarView.classList.contains('hidden') && typeof renderGrammar === 'function') {
+                                renderGrammar();
+                            }
+                        }
+                        if (loaderStep2 && !preloadedFinished) loaderStep2.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-3 text-base"></i>Грамматический справочник загружен';
                     } else if (asset.key === 'course') {
                         const res = await fetch(asset.url, { signal: controller ? controller.signal : undefined });
                         if (timeoutId) clearTimeout(timeoutId);
@@ -314,9 +319,9 @@
                     if (timeoutId) clearTimeout(timeoutId);
                     warn(`[Preloader] Failed to load asset: ${asset.url}`, e);
                     if (asset.key === 'words') {
-                        if (loaderStep1) loaderStep1.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500 mr-3 text-base"></i>Словарь (локальный режим)';
+                        if (loaderStep1 && !preloadedFinished) loaderStep1.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500 mr-3 text-base"></i>Словарь (локальный режим)';
                     } else if (asset.key === 'grammar') {
-                        if (loaderStep2) loaderStep2.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500 mr-3 text-base"></i>Грамматика (локальный режим)';
+                        if (loaderStep2 && !preloadedFinished) loaderStep2.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500 mr-3 text-base"></i>Грамматика (локальный режим)';
                     }
                 } finally {
                     updateProgress();
@@ -521,7 +526,7 @@
                                 if (statusEl) statusEl.textContent = 'Вы находитесь в очереди. Как только реальный игрок нажмёт поиск, игра начнётся!';
                                 if (iconEl) {
                                     iconEl.className = 'w-18 h-18 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl z-10 shadow-sm';
-                                    iconEl.innerHTML = '<i class="fa-solid fa-hourglass-half text-2xl animate-pulse"></i>';
+                                    iconEl.innerHTML = '<i class="fa-solid fa-hourglass-half text-2xl"></i>';
                                 }
                                 if (searchingActions) searchingActions.classList.remove('hidden');
                                 if (notFoundActions) notFoundActions.classList.add('hidden');

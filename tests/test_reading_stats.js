@@ -42,17 +42,11 @@ test('Reading & Phonetics: Honest 0-based stats & real progress tracking', async
         assert.match(content, /saveReadingSkillStats\(stats\)/, 'Should save stats after recording');
     });
 
-    await t.test('Mode 1: Гласные и согласные has correct title, theory, and examples', () => {
-        assert.match(content, /title:\s*['"]1\.\s*Гласные и согласные['"]/, 'Mode 1 title should be 1. Гласные и согласные');
-        assert.match(content, /5 гласных фонем/, 'Theory should mention 5 vowel phonemes');
-        assert.doesNotMatch(content, /6 гласных звуков/, 'Should not claim 6 native vowels');
-        assert.match(content, /Чтение буквы «Я»/, 'Theory should explain pronunciation of Ya');
-        assert.match(content, /Чтение буквы «Е»/, 'Theory should explain pronunciation of E');
-        // Ensure misplaced examples like Кьвед or КӀвал are NOT in letters theory
-        const lettersTheoryMatch = content.match(/title\s*=\s*['"]Гласные и согласные['"][\s\S]*?renderReadingQuestion/);
-        assert.ok(lettersTheoryMatch, 'Letters theory block should exist');
-        assert.doesNotMatch(lettersTheoryMatch[0], /word:\s*['"]Кьвед['"]/, 'Misplaced Кьвед should not be in letters theory');
-        assert.doesNotMatch(lettersTheoryMatch[0], /word:\s*['"]КӀвал['"]/, 'Misplaced КӀвал should not be in letters theory');
+    await t.test('Mode 1: Лабиализация has correct title, theory, and examples', () => {
+        assert.match(content, /title:\s*['"]1\.\s*Лабиализация['"]/, 'Mode 1 title should be 1. Лабиализация');
+        assert.match(content, /Лабиализация/, 'Theory should explain labialization');
+        assert.match(content, /Вариант с \[ʷо\]/, 'Theory should explain [ʷо]');
+        assert.match(content, /Вариант с \[ʷœ\]/, 'Theory should explain [ʷœ]');
     });
 
     await t.test('All transcriptions in ORTHO_RULES and theory are in IPA (МФА)', () => {
@@ -86,8 +80,8 @@ test('Reading & Phonetics: Honest 0-based stats & real progress tracking', async
         const theoryStr = theoryFuncMatch[0];
         assert.doesNotMatch(theoryStr, /МФА/, 'Theory card should not contain literal "МФА"');
         assert.doesNotMatch(theoryStr, /Суть правила/, 'Theory card should not contain "Суть правила"');
-        assert.doesNotMatch(theoryStr, />Теория</, 'Theory card should not contain "Теория" badge');
-        assert.match(theoryStr, />—<\/span>[\s\S]*?\$\{b\.title\}:/, 'Theory rules should lead with green dash and title');
+        assert.match(theoryStr, />—<\/span>/, 'Theory examples should use green em-dash');
+        assert.doesNotMatch(theoryStr, /bg-emerald-50.*?>\$\{ex\.trans\}<\/span>/, 'Theory examples should not use green square badge');
     });
 
     await t.test('Question screen fills viewport height, removes word meaning and TTS, and supports authentic sound listening', () => {
@@ -116,12 +110,11 @@ test('Reading & Phonetics: Honest 0-based stats & real progress tracking', async
         const buildFuncMatch = content.match(/function buildReadingPhoneticsQuestions[\s\S]*?function renderReadingQuestion/);
         assert.ok(buildFuncMatch, 'buildReadingPhoneticsQuestions should exist');
         const bStr = buildFuncMatch[0];
-        assert.match(bStr, /audio\/alphabet\/уь\.mp3/, 'Should include authentic audio for letter уь');
-        assert.match(bStr, /Какой звук вы услышали\?/, 'Should ask "Какой звук вы услышали?"');
+        assert.match(bStr, /audio\/reading\/kval\.mp3/, 'Should include authentic audio for kval');
+        assert.match(bStr, /Какое слово вы слышите\?/, 'Should ask "Какое слово вы слышите?"');
         assert.doesNotMatch(bStr, /Слово и живая речь/, 'Should not include "Слово и живая речь"');
         assert.doesNotMatch(bStr, /увулярный взрывной с придыханием/, 'Choices must not contain parenthetical hints (увулярный взрывной)');
         assert.doesNotMatch(bStr, /ошибочное чтение через/, 'Choices must not contain parenthetical hints (ошибочное чтение)');
-        assert.doesNotMatch(bStr, /твёрдый \[b\]/, 'Choices must not contain parenthetical hints for [bæzi]');
 
         // Feedback banner must not repeat transcription or generic rule paragraphs
         const choiceFuncMatch = content.match(/function handleReadingChoice[\s\S]*?function renderReadingResults/);
@@ -130,6 +123,7 @@ test('Reading & Phonetics: Honest 0-based stats & real progress tracking', async
         assert.doesNotMatch(cStr, /Транскрипция:/, 'Feedback banner must not duplicate transcription');
         assert.doesNotMatch(cStr, /q\.ruleTitle/, 'Feedback banner must not repeat generic ruleTitle');
         assert.doesNotMatch(cStr, /q\.ruleDesc/, 'Feedback banner must not repeat generic ruleDesc');
+        assert.match(cStr, /!isCorrect\s*&&\s*q\.tip/, 'Tip must only be shown on wrong answers, not on correct answers');
     });
 
     await t.test('All reading modes have minimum 15 questions, uvular consonants, and audio spelling levels', () => {
@@ -142,25 +136,13 @@ test('Reading & Phonetics: Honest 0-based stats & real progress tracking', async
         const counts = {};
         modes.forEach(m => counts[m] = (counts[m] || 0) + 1);
 
-        assert.ok((counts.letters || 0) >= 15, `letters must have >= 15 questions, found ${counts.letters}`);
         assert.ok((counts.labialization || 0) >= 15, `labialization must have >= 15 questions, found ${counts.labialization}`);
         assert.ok((counts.nasalization || 0) >= 15, `nasalization must have >= 15 questions, found ${counts.nasalization}`);
         assert.ok((counts.elision || 0) >= 15, `elision must have >= 15 questions, found ${counts.elision}`);
-        assert.ok((counts.words || 0) >= 15, `words must have >= 15 questions, found ${counts.words}`);
-        assert.ok(modes.length >= 100, `Total questions should be >= 100, found ${modes.length}`);
+        assert.ok(modes.length >= 50, `Total questions should be >= 50, found ${modes.length}`);
 
         // Workout session length is at least 15
         assert.match(bStr, /shuffled\.length\s*>\s*15/, 'Session should select at least 15 questions');
-
-        // Uvular consonants rule is present in theory and questions (no uvular N)
-        assert.match(content, /Увулярные смычные \(Къ, Хъ, Кь\)/, 'Theory must include uvular consonants rule');
-        assert.doesNotMatch(content, /Увулярная «Н» \[ɴ\]/, 'Theory must NOT include uvular N rule');
-        assert.doesNotMatch(bStr, /uvular_n/, 'Questions must not include uvular_n ruleId');
-        assert.doesNotMatch(bStr, /\[ɴ\]/, 'Questions must not include [ɴ]');
-        assert.match(bStr, /\[qʰsan\]/, 'Questions must include [qʰsan]');
-        assert.match(bStr, /\[qʼil\]/, 'Questions must include [qʼil]');
-        assert.match(bStr, /\[ʁil\]/, 'Questions must include [ʁil]');
-        assert.match(bStr, /\[vaʔ\]/, 'Questions must include [vaʔ]');
 
         // Labialization audio questions
         assert.match(bStr, /audio\/reading\/kval\.mp3/, 'Labialization audio question for кӀвал must exist');

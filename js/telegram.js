@@ -28,6 +28,7 @@
                     if (safeTop === undefined) safeTop = tg.safeAreaInset?.top;
                     if (safeTop === undefined) safeTop = 0;
                     document.documentElement.style.setProperty('--tg-safe-area-inset-top', safeTop + 'px');
+                    document.documentElement.style.setProperty('--app-header-total-h', `calc(3.5rem + ${safeTop}px)`);
                 };
 
                 updateInsets();
@@ -103,6 +104,8 @@
                     if (grammarView && !grammarView.classList.contains('hidden')) {
                         if (typeof window.hideGrammarList === 'function') {
                             window.hideGrammarList();
+                        } else if (typeof hideGrammarList === 'function') {
+                            hideGrammarList();
                         } else {
                             const btn = document.getElementById('grammar-back-btn');
                             if (btn) btn.click();
@@ -595,6 +598,15 @@
 
             if (!nameEl) return;
 
+            if (badgeEl) {
+                badgeEl.style.display = 'none';
+                badgeEl.remove();
+            }
+            if (statusEl) {
+                statusEl.style.display = 'none';
+                statusEl.remove();
+            }
+
             const user = this.getUser();
             if (user) {
                 const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Пользователь Telegram';
@@ -602,14 +614,6 @@
                 avatarEl?.classList.remove('hidden');
                 if (subEl) {
                     subEl.textContent = user.username ? `@${user.username}` : `ID: ${user.id}`;
-                }
-                if (badgeEl) {
-                    badgeEl.textContent = 'TG';
-                    badgeEl.className = 'px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-700 rounded-full flex-shrink-0';
-                }
-                if (statusEl) {
-                    statusEl.classList.remove('hidden');
-                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span><span class="text-xs font-medium text-emerald-600 truncate">Синхронизировано</span>';
                 }
                 if (avatarEl) {
                     if (user.photo_url) {
@@ -632,18 +636,11 @@
                 if (subEl) {
                     subEl.textContent = 'В этом браузере';
                 }
-                if (badgeEl) {
-                    badgeEl.textContent = 'Web';
-                    badgeEl.className = 'px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-600 rounded-full flex-shrink-0';
-                }
-                if (statusEl) {
-                    statusEl.classList.add('hidden');
-                }
                 if (avatarEl) {
                     avatarEl.classList.add('hidden');
                 }
             }
-        }
+        },
     };
 
     window.TelegramApp = TelegramApp;
